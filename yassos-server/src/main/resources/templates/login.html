@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container">
+<div class="col-sm-4 col-sm-offset-4" style="margin-top: 20px;">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            YASSOS - SIGN ON
+        </div>
+        <form class="panel-body" method="post" action="/sign-on">
+            <input name="cb" th:value="${cb}" type="hidden"/>
+            <div class="form-group">
+                <label for="username">Email address</label>
+                <input type="text" class="form-control" id="username" placeholder="admin" value="admin">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" value="123456" id="password" placeholder="Password">
+            </div>
+
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="rememberMe" checked> Check me out
+                </label>
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
