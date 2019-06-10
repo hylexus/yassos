@@ -1,0 +1,6 @@
+yassos:
+  server:
+    url-prefix: http://127.0.0.1:9000/yassos
+    login-url: ${yassos.server.url-prefix}/login
+  client:
+

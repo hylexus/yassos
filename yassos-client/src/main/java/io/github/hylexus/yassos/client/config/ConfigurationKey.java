@@ -19,6 +19,10 @@
 package io.github.hylexus.yassos.client.config;
 
 
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Objects;
 
 /**
@@ -28,38 +32,42 @@ import java.util.Objects;
  * @author Scott Battaglia
  * @since 3.4.0
  */
+@Slf4j
 public final class ConfigurationKey<E> {
 
+    @Getter
     private final String name;
 
+    @Getter
     private final E defaultValue;
 
-    public ConfigurationKey(final String name) {
-        this(name, null);
+    private final ConfigurationKeyValidator<E> validator;
+
+    public void validate(E value, String msg) {
+        if (this.validator == null) {
+            log.error("validator is null, ConfigurationKey is {}", name);
+            return;
+        }
+
+        validator.validate(value, msg);
     }
 
-    public ConfigurationKey(final String name, final E defaultValue) {
-        Objects.requireNonNull(name, "name must not be null.");
+    public ConfigurationKey(final String name, final E defaultValue, ConfigurationKeyValidator<E> validator) {
         this.name = name;
         this.defaultValue = defaultValue;
+        this.validator = validator;
+        if (validator != null) {
+            validator.validate(this.defaultValue, "name must not be null.");
+        }
     }
 
-    /**
-     * The referencing name of the configuration key (i.e. what you would use to look it up in your configuration strategy)
-     *
-     * @return the name.  MUST NOT BE NULL.
-     */
-    public String getName() {
-        return this.name;
-    }
+    @FunctionalInterface
+    public interface ConfigurationKeyValidator<E> {
+        void validate(E value, String msg);
 
-
-    /**
-     * The (optional) default value to use when this configuration key is not set.  If a value is provided it should be used. A <code>null</code> value indicates that there is no default.
-     *
-     * @return the default value or null.
-     */
-    public E getDefaultValue() {
-        return this.defaultValue;
+        ConfigurationKeyValidator<String> NOT_EMPTY = (v, msg) -> {
+            if (StringUtils.isEmpty(v))
+                throw new IllegalArgumentException(msg);
+        };
     }
 }
