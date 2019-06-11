@@ -8,6 +8,7 @@ import io.github.hylexus.yassos.core.exception.UserAuthException;
 import io.github.hylexus.yassos.core.model.LoginForm;
 import io.github.hylexus.yassos.service.TokenGenerator;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -68,17 +69,12 @@ public class SsoController {
 
         log.debug("request param : {}", loginForm);
         final String sessionId = tokenGenerator.generateToken(loginForm);
-        if (sessionManager.getSessionByToken(sessionId) != null) {
-            doAfterLoginSuccess(sessionId, loginForm, response);
-            log.debug("located in cache, sessionId = {}", sessionId);
-            return;
-        }
-
         final SessionInfo sessionInfo = userService.login(loginForm);
         sessionInfo.sessionId(sessionId);
         sessionManager.put(sessionId, sessionInfo);
         log.debug("login in newly, sessionId = {}", sessionId);
 
+        doAfterLoginSuccess(sessionId, loginForm, response);
         final String originalUrl;
         if (callbackUrl.equalsIgnoreCase(DEFAULT_CALLBACK_URI)) {
             originalUrl = CommonUtils.generateCallbackUrl(DEFAULT_CALLBACK_URI, sessionId);
@@ -97,7 +93,20 @@ public class SsoController {
     }
 
     @ResponseBody
-    @GetMapping("/user-info")
+    @GetMapping("/sign-out")
+    public Boolean signOut(
+            @RequestParam(required = false, name = "token", defaultValue = "") String token) {
+        if (StringUtils.isEmpty(token)) {
+            return true;
+        }
+        sessionManager.removeSessionByToken(token);
+        log.debug("logout.... token : {}", token);
+
+        return true;
+    }
+
+    @ResponseBody
+    @GetMapping("/validate")
     public SessionInfo userInfo(@RequestParam("token") String token) {
         return sessionManager.getSessionByToken(token);
     }

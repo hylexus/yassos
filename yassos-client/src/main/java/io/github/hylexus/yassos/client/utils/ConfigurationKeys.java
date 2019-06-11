@@ -11,9 +11,12 @@ import static io.github.hylexus.yassos.client.config.ConfigurationKey.Configurat
 public interface ConfigurationKeys {
     String CALLBACK_ADDRESS_NAME = "cb";
 
-    ConfigurationKey<String> CONFIG_SSO_LOGIN_URL = new ConfigurationKey<>("ssoLoginUrl", null, null);
+    ConfigurationKey<String> CONFIG_SSO_LOGIN_URL = new ConfigurationKey<>("loginUrl", null, NOT_EMPTY);
+    ConfigurationKey<Boolean> CONFIG_USE_SESSION = new ConfigurationKey<>("useSession", true, null);
+    ConfigurationKey<String> CONFIG_SESSION_KEY = new ConfigurationKey<>("sessionKey", "x-current-session", NOT_EMPTY);
     ConfigurationKey<String> CONFIG_TOKEN_VALIDATION_URI = new ConfigurationKey<>("tokenValidationUrl", "validate", NOT_EMPTY);
     ConfigurationKey<String> CONFIG_SERVER_URL_PREFIX = new ConfigurationKey<>("serverUrlPrefix", null, NOT_EMPTY);
     ConfigurationKey<String> CONFIG_TOKEN = new ConfigurationKey<>("tokenName", "x-token", null);
     ConfigurationKey<Boolean> CONFIG_ENCODE_URL = new ConfigurationKey<>("encodeUrl", false, null);
+    ConfigurationKey<Boolean> CONFIG_THROW_EXCEPTION_IF_VALIDATE_EXCEPTION = new ConfigurationKey<>("throwExceptionIfTokenValidateException", false, null);
 }

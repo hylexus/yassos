@@ -43,31 +43,38 @@ public final class ConfigurationKey<E> {
 
     private final ConfigurationKeyValidator<E> validator;
 
-    public void validate(E value, String msg) {
+    public void validate(String name, E value, boolean force) {
         if (this.validator == null) {
-            log.error("validator is null, ConfigurationKey is {}", name);
-            return;
+            if (force) {
+                throw new IllegalArgumentException("[" + name + "] attempt to FORCE validation, but validator is null");
+            }
+        } else {
+            this.validator.validate(name, value);
         }
+    }
 
-        validator.validate(value, msg);
+    public void validate(E value, boolean force) {
+        validate(this.name, value, force);
+    }
+
+    public void validate() {
+        validate(this.defaultValue, false);
     }
 
     public ConfigurationKey(final String name, final E defaultValue, ConfigurationKeyValidator<E> validator) {
-        this.name = name;
+        this.name = Objects.requireNonNull(name, "name must be not null");
         this.defaultValue = defaultValue;
         this.validator = validator;
-        if (validator != null) {
-            validator.validate(this.defaultValue, "name must not be null.");
-        }
     }
 
     @FunctionalInterface
     public interface ConfigurationKeyValidator<E> {
-        void validate(E value, String msg);
+        void validate(String name, E value);
 
-        ConfigurationKeyValidator<String> NOT_EMPTY = (v, msg) -> {
-            if (StringUtils.isEmpty(v))
-                throw new IllegalArgumentException(msg);
+        ConfigurationKeyValidator<String> NOT_EMPTY = (name, value) -> {
+            if (value == null) throw new NullPointerException();
+            if (StringUtils.isEmpty(value))
+                throw new IllegalArgumentException(name + " must be not null");
         };
     }
 }

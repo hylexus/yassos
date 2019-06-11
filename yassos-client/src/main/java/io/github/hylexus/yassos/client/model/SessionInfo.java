@@ -24,4 +24,36 @@ public interface SessionInfo {
     default Object extra() {
         return null;
     }
+
+    SessionInfo INVALID_SESSION = new SessionInfo() {
+        @Override
+        public String sessionId() {
+            return null;
+        }
+
+        @Override
+        public void sessionId(String id) {
+
+        }
+
+        @Override
+        public boolean isValid() {
+            return false;
+        }
+
+        @Override
+        public String username() {
+            return null;
+        }
+
+        @Override
+        public Date authenticationDate() {
+            return null;
+        }
+
+        @Override
+        public Date expiredAt() {
+            return null;
+        }
+    };
 }
