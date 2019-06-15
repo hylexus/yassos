@@ -1,9 +1,10 @@
 package io.github.hylexus.yassos.client.utils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Objects;
 
-import static io.github.hylexus.yassos.client.utils.ConfigurationKeys.CALLBACK_ADDRESS_NAME;
 import static io.github.hylexus.yassos.client.utils.ConfigurationKeys.CONFIG_TOKEN;
 
 /**
@@ -11,10 +12,6 @@ import static io.github.hylexus.yassos.client.utils.ConfigurationKeys.CONFIG_TOK
  * Created At 2019-06-07 19:50
  */
 public class CommonUtils {
-    public static String generateRedirectToLoginUrl(String loginUrl, String originalUrl, Boolean encodeUrl) {
-        return loginUrl + "?" + CALLBACK_ADDRESS_NAME +
-                "=" + originalUrl;
-    }
 
     public static String generateCallbackUrl(String target, String token) {
         if (target.contains("?")) {
@@ -36,5 +33,10 @@ public class CommonUtils {
             // never-happened
             return url;
         }
+    }
+
+
+    public static boolean isAjaxRequest(HttpServletRequest request) {
+        return Objects.equals(request.getHeader("X-Requested-With"), "XMLHttpRequest");
     }
 }

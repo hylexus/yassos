@@ -15,10 +15,4 @@ public interface RedirectStrategy {
      */
     void redirect(HttpServletRequest request, HttpServletResponse response, String targetUrl) throws IOException;
 
-    class DefaultRedirectStrategy implements RedirectStrategy {
-        @Override
-        public void redirect(HttpServletRequest request, HttpServletResponse response, String targetUrl) throws IOException {
-            response.sendRedirect(targetUrl);
-        }
-    }
 }

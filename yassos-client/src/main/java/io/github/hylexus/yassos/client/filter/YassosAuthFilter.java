@@ -5,8 +5,10 @@ import io.github.hylexus.yassos.client.config.ConfigurationKey;
 import io.github.hylexus.yassos.client.exception.TokenValidateException;
 import io.github.hylexus.yassos.client.model.SessionInfo;
 import io.github.hylexus.yassos.client.service.RedirectStrategy;
+import io.github.hylexus.yassos.client.service.SessionInfoFetcher;
 import io.github.hylexus.yassos.client.service.TokenResolver;
-import io.github.hylexus.yassos.client.service.TokenValidator;
+import io.github.hylexus.yassos.client.service.impl.DefaultRedirectStrategy;
+import io.github.hylexus.yassos.client.service.impl.DefaultTokenResolver;
 import io.github.hylexus.yassos.client.utils.CommonUtils;
 import io.github.hylexus.yassos.client.utils.ConfigurationKeys;
 import lombok.Getter;
@@ -38,7 +40,7 @@ public class YassosAuthFilter implements Filter {
 
     private RedirectStrategy redirectStrategy;
 
-    private TokenValidator tokenValidator;
+    private SessionInfoFetcher sessionInfoFetcher;
 
     private String loginUrl;
 
@@ -56,18 +58,18 @@ public class YassosAuthFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
 
         if (this.redirectStrategy == null) {
-            log.info("redirectStrategy is null, use default implementation {} instead", RedirectStrategy.DefaultRedirectStrategy.class.getName());
-            this.redirectStrategy = new RedirectStrategy.DefaultRedirectStrategy();
+            log.info("redirectStrategy is null, use default implementation {} instead", DefaultRedirectStrategy.class.getName());
+            this.redirectStrategy = new DefaultRedirectStrategy();
         }
 
         if (this.tokenResolver == null) {
-            log.info("tokenResolver is null, use default implementation {} instead", TokenResolver.DefaultTokenResolver.class.getName());
-            this.tokenResolver = new TokenResolver.DefaultTokenResolver();
+            log.info("tokenResolver is null, use default implementation {} instead", DefaultTokenResolver.class.getName());
+            this.tokenResolver = new DefaultTokenResolver();
         }
         // server-url-prefix
-        initString(filterConfig, () -> this.serverUrlPrefix == null, this::setServerUrlPrefix, CONFIG_SERVER_URL_PREFIX, true);
+        initString(filterConfig, () -> this.serverUrlPrefix == null, this::setServerUrlPrefix, CONFIG_SOO_SERVER_URL_PREFIX, true);
         // SSO server login url
-        initString(filterConfig, () -> this.loginUrl == null, this::setLoginUrl, CONFIG_SSO_LOGIN_URL, true);
+        initString(filterConfig, () -> this.loginUrl == null, this::setLoginUrl, CONFIG_SSO_SERVER_LOGIN_URL, true);
 
         // throw-exception-if-validate-exception
         initBoolean(filterConfig, () -> this.throwExceptionIfTokenValidateException == null, this::setThrowExceptionIfTokenValidateException, CONFIG_THROW_EXCEPTION_IF_VALIDATE_EXCEPTION);
@@ -130,16 +132,14 @@ public class YassosAuthFilter implements Filter {
             // 1. resolve token from request
             final String token = this.tokenResolver.resolveToken(req).orElse(null);
             if (StringUtils.isEmpty(token)) {
-                String targetUrl = generateRedirectToLoginUrl(req.getRequestURL().toString());
-                this.redirectStrategy.redirect(req, resp, targetUrl);
+                this.redirectToLoginUrl(req, resp);
                 return;
             }
 
             // 2. validate token from sso-server
-            final SessionInfo sessionInfo = this.tokenValidator.validateToken(token, generateTokenValidationUrl(token));
+            final SessionInfo sessionInfo = this.sessionInfoFetcher.fetchSessionInfo(token, generateTokenValidationUrl(token));
             if (sessionInfo == null || !sessionInfo.isValid()) {
-                String targetUrl = CommonUtils.generateRedirectToLoginUrl(this.loginUrl, req.getRequestURL().toString(), this.encodeUrl);
-                this.redirectStrategy.redirect(req, resp, targetUrl);
+                this.redirectToLoginUrl(req, resp);
                 return;
             }
 
@@ -150,21 +150,30 @@ public class YassosAuthFilter implements Filter {
             if (this.throwExceptionIfTokenValidateException) {
                 throw new ServletException(e);
             }
+
+            this.redirectToLoginUrl(req, resp);
+            log.error("token validation fails.", e);
+            return;
         }
 
         chain.doFilter(req, resp);
+    }
+
+    private void redirectToLoginUrl(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String targetUrl = generateRedirectToLoginUrl(req);
+        this.redirectStrategy.redirect(req, resp, targetUrl);
     }
 
     protected final String getSessionKey() {
         return this.sessionKey == null ? CONFIG_SESSION_KEY.getDefaultValue() : this.sessionKey;
     }
 
-    private String generateRedirectToLoginUrl(String originalUrl) {
+    private String generateRedirectToLoginUrl(HttpServletRequest request) {
         // eg. http://localhost:8080/yassos/login?cb=${originalUrl}
         if (this.encodeUrl) {
-            return String.format("%s?%s=%s", loginUrl, ConfigurationKeys.CALLBACK_ADDRESS_NAME, this.encodeUrl(originalUrl));
+            return String.format("%s?%s=%s", loginUrl, ConfigurationKeys.CALLBACK_ADDRESS_NAME, this.encodeUrl(request.getRequestURL().toString()));
         }
-        return String.format("%s?%s=%s", loginUrl, ConfigurationKeys.CALLBACK_ADDRESS_NAME, originalUrl);
+        return String.format("%s?%s=%s", loginUrl, ConfigurationKeys.CALLBACK_ADDRESS_NAME, request.getRequestURL().toString());
     }
 
     private String generateTokenValidationUrl(String token) {
@@ -178,8 +187,8 @@ public class YassosAuthFilter implements Filter {
         );
     }
 
-    private String encodeUrl(String url) {
-        return url;
+    protected String encodeUrl(String url) {
+        return CommonUtils.encodeUrl(url);
     }
 
 }

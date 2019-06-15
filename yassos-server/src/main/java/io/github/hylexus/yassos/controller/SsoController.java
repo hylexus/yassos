@@ -89,6 +89,8 @@ public class SsoController {
     private void doAfterLoginSuccess(final String token, final LoginForm loginForm, final HttpServletResponse response) {
         final Cookie cookie = new Cookie(CONFIG_TOKEN.getDefaultValue(), token);
         cookie.setMaxAge(loginForm.isRememberMe() ? Integer.MAX_VALUE : -1);
+        cookie.setPath("/");
+        cookie.setDomain("mine.com");
         response.addCookie(cookie);
     }
 

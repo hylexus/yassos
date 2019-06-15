@@ -7,14 +7,14 @@ import io.github.hylexus.yassos.client.model.SessionInfo;
  * @author hylexus
  * Created At 2019-06-10 21:57
  */
-public interface TokenValidator {
+public interface SessionInfoFetcher {
     /**
      * @param token ticket
      * @param url   the target url to access with this {@code token} (ticket)
      * @return current session info if
      * @throws TokenValidateException throw an exception if token validation fails.
      */
-    SessionInfo validateToken(String token, String url) throws TokenValidateException;
+    SessionInfo fetchSessionInfo(String token, String url) throws TokenValidateException;
 
     /**
      * @param token ticket

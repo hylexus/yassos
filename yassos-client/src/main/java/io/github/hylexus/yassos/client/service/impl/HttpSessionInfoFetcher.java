@@ -1,9 +1,10 @@
-package io.github.hylexus.yassos.client.service;
+package io.github.hylexus.yassos.client.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import io.github.hylexus.yassos.client.exception.TokenValidateException;
 import io.github.hylexus.yassos.client.model.DefaultSessionInfo;
 import io.github.hylexus.yassos.client.model.SessionInfo;
+import io.github.hylexus.yassos.client.service.SessionInfoFetcher;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -19,12 +20,12 @@ import static io.github.hylexus.yassos.client.model.SessionInfo.INVALID_SESSION;
  * Created At 2019-06-11 21:35
  */
 @Slf4j
-public class HttpTokenValidator implements TokenValidator {
+public class HttpSessionInfoFetcher implements SessionInfoFetcher {
 
     final private OkHttpClient client = new OkHttpClient();
 
     @Override
-    public SessionInfo validateToken(String token, String url) {
+    public SessionInfo fetchSessionInfo(String token, String url) {
         final Request request = new Request.Builder()
                 .url(url)
                 .get()

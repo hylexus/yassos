@@ -1,9 +1,9 @@
 package cn.yassos.sample.boot.config;
 
 import io.github.hylexus.yassos.client.filter.YassosAuthFilter;
-import io.github.hylexus.yassos.client.service.HttpTokenValidator;
-import io.github.hylexus.yassos.client.service.RedirectStrategy;
-import io.github.hylexus.yassos.client.service.TokenResolver;
+import io.github.hylexus.yassos.client.service.impl.BearerTokenResolver;
+import io.github.hylexus.yassos.client.service.impl.DefaultRedirectStrategy;
+import io.github.hylexus.yassos.client.service.impl.HttpSessionInfoFetcher;
 import io.github.hylexus.yassos.client.utils.ConfigurationKeys;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -21,15 +21,16 @@ public class SsoConfig {
     @Bean
     public FilterRegistrationBean<YassosAuthFilter> filterRegistration() {
         final YassosAuthFilter filter = new YassosAuthFilter();
-        filter.setRedirectStrategy(new RedirectStrategy.DefaultRedirectStrategy());
-        filter.setTokenResolver(new TokenResolver.DefaultTokenResolver());
-        filter.setTokenValidator(new HttpTokenValidator());
+        filter.setRedirectStrategy(new DefaultRedirectStrategy());
+        filter.setTokenResolver(new BearerTokenResolver());
+//        filter.setTokenResolver(new DefaultTokenResolver());
+        filter.setSessionInfoFetcher(new HttpSessionInfoFetcher());
 
         final FilterRegistrationBean<YassosAuthFilter> registration = new FilterRegistrationBean<>();
 
         registration.setFilter(filter);
-        registration.addInitParameter(ConfigurationKeys.CONFIG_SSO_LOGIN_URL.getName(), "http://localhost:9000/login");
-        registration.addInitParameter(ConfigurationKeys.CONFIG_SERVER_URL_PREFIX.getName(), "http://localhost:9000/");
+        registration.addInitParameter(ConfigurationKeys.CONFIG_SSO_SERVER_LOGIN_URL.getName(), "http://sso.mine.com:9000/login");
+        registration.addInitParameter(ConfigurationKeys.CONFIG_SOO_SERVER_URL_PREFIX.getName(), "http://sso.mine.com:9000/");
 
         registration.setUrlPatterns(Arrays.asList("/*"));
         return registration;
