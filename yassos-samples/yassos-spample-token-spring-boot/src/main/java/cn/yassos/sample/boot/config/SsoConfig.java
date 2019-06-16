@@ -1,15 +1,17 @@
 package cn.yassos.sample.boot.config;
 
-import io.github.hylexus.yassos.client.filter.YassosAuthFilter;
-import io.github.hylexus.yassos.client.service.impl.BearerTokenResolver;
-import io.github.hylexus.yassos.client.service.impl.DefaultRedirectStrategy;
-import io.github.hylexus.yassos.client.service.impl.HttpSessionInfoFetcher;
+import io.github.hylexus.yassos.client.filter.AbstractYassosSingOnFilter;
+import io.github.hylexus.yassos.client.filter.DefaultYassosSinOnFilter;
+import io.github.hylexus.yassos.client.redirect.DefaultRedirectStrategy;
+import io.github.hylexus.yassos.client.token.resolver.DefaultTokenResolver;
+import io.github.hylexus.yassos.client.token.HttpSessionInfoFetcher;
 import io.github.hylexus.yassos.client.utils.ConfigurationKeys;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Arrays;
+import java.util.HashSet;
 
 /**
  * @author hylexus
@@ -19,20 +21,25 @@ import java.util.Arrays;
 public class SsoConfig {
 
     @Bean
-    public FilterRegistrationBean<YassosAuthFilter> filterRegistration() {
-        final YassosAuthFilter filter = new YassosAuthFilter();
+    public FilterRegistrationBean<AbstractYassosSingOnFilter> filterRegistration() {
+        final HashSet<String> ignoreAntPatterns = new HashSet<>();
+        ignoreAntPatterns.add("/*.ico");
+        ignoreAntPatterns.add("/*.css");
+        ignoreAntPatterns.add("/*.js");
+
+        final AbstractYassosSingOnFilter filter = new DefaultYassosSinOnFilter();
         filter.setRedirectStrategy(new DefaultRedirectStrategy());
-        filter.setTokenResolver(new BearerTokenResolver());
-//        filter.setTokenResolver(new DefaultTokenResolver());
+        filter.setTokenResolver(new DefaultTokenResolver());
         filter.setSessionInfoFetcher(new HttpSessionInfoFetcher());
+        filter.setIgnoreAntPatterns(ignoreAntPatterns);
 
-        final FilterRegistrationBean<YassosAuthFilter> registration = new FilterRegistrationBean<>();
+        final FilterRegistrationBean<AbstractYassosSingOnFilter> registration = new FilterRegistrationBean<>(filter);
 
-        registration.setFilter(filter);
         registration.addInitParameter(ConfigurationKeys.CONFIG_SSO_SERVER_LOGIN_URL.getName(), "http://sso.mine.com:9000/login");
         registration.addInitParameter(ConfigurationKeys.CONFIG_SOO_SERVER_URL_PREFIX.getName(), "http://sso.mine.com:9000/");
 
         registration.setUrlPatterns(Arrays.asList("/*"));
+//        registration.
         return registration;
     }
 }

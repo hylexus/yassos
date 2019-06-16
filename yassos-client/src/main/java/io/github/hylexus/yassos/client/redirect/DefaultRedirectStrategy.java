@@ -1,4 +1,4 @@
-package io.github.hylexus.yassos.client.service.impl;
+package io.github.hylexus.yassos.client.redirect;
 
 /**
  * @author hylexus
@@ -6,7 +6,8 @@ package io.github.hylexus.yassos.client.service.impl;
  */
 
 import com.alibaba.fastjson.JSON;
-import io.github.hylexus.yassos.client.service.RedirectStrategy;
+import io.github.hylexus.yassos.client.model.Resp;
+import io.github.hylexus.yassos.client.redirect.RedirectStrategy;
 import io.github.hylexus.yassos.client.utils.CommonUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,9 +23,9 @@ public class DefaultRedirectStrategy implements RedirectStrategy {
         if (isAjaxRequest(request)) {
             final HashMap<String, Object> resp = new HashMap<>();
             resp.put("location", targetUrl);
-            resp.put("code", HttpServletResponse.SC_UNAUTHORIZED);
 
-            final String responseJson = JSON.toJSONString(resp);
+            Resp respResult = Resp.success(HttpServletResponse.SC_UNAUTHORIZED, "unauthorized", resp);
+            final String responseJson = JSON.toJSONString(respResult);
 
             response.setContentType("application/json;charset=utf-8");
             response.getWriter().write(responseJson);

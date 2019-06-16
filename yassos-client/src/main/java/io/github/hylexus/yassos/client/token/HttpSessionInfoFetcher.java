@@ -1,10 +1,10 @@
-package io.github.hylexus.yassos.client.service.impl;
+package io.github.hylexus.yassos.client.token;
 
 import com.alibaba.fastjson.JSON;
 import io.github.hylexus.yassos.client.exception.TokenValidateException;
 import io.github.hylexus.yassos.client.model.DefaultSessionInfo;
 import io.github.hylexus.yassos.client.model.SessionInfo;
-import io.github.hylexus.yassos.client.service.SessionInfoFetcher;
+import io.github.hylexus.yassos.client.token.SessionInfoFetcher;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

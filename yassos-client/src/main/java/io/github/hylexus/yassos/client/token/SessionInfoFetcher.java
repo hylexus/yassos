@@ -1,4 +1,4 @@
-package io.github.hylexus.yassos.client.service;
+package io.github.hylexus.yassos.client.token;
 
 import io.github.hylexus.yassos.client.exception.TokenValidateException;
 import io.github.hylexus.yassos.client.model.SessionInfo;

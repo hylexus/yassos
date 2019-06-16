@@ -4,13 +4,16 @@ package io.github.hylexus.yassos.client.filter;
 import io.github.hylexus.yassos.client.config.ConfigurationKey;
 import io.github.hylexus.yassos.client.exception.TokenValidateException;
 import io.github.hylexus.yassos.client.model.SessionInfo;
-import io.github.hylexus.yassos.client.service.RedirectStrategy;
-import io.github.hylexus.yassos.client.service.SessionInfoFetcher;
-import io.github.hylexus.yassos.client.service.TokenResolver;
-import io.github.hylexus.yassos.client.service.impl.DefaultRedirectStrategy;
-import io.github.hylexus.yassos.client.service.impl.DefaultTokenResolver;
+import io.github.hylexus.yassos.client.redirect.RedirectStrategy;
+import io.github.hylexus.yassos.client.token.SessionInfoFetcher;
+import io.github.hylexus.yassos.client.token.resolver.TokenResolver;
+import io.github.hylexus.yassos.client.redirect.DefaultRedirectStrategy;
+import io.github.hylexus.yassos.client.token.resolver.DefaultTokenResolver;
+import io.github.hylexus.yassos.client.token.HttpSessionInfoFetcher;
+import io.github.hylexus.yassos.client.utils.AntPathMatcher;
 import io.github.hylexus.yassos.client.utils.CommonUtils;
 import io.github.hylexus.yassos.client.utils.ConfigurationKeys;
+import io.github.hylexus.yassos.client.utils.PathMatcher;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -21,6 +24,8 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
@@ -34,25 +39,30 @@ import static io.github.hylexus.yassos.client.utils.ConfigurationKeys.*;
 @Setter
 @Getter
 @Accessors(chain = true)
-public class YassosAuthFilter implements Filter {
+public abstract class AbstractYassosSingOnFilter implements Filter {
 
-    private TokenResolver tokenResolver;
+    protected PathMatcher pathMatcher = new AntPathMatcher();
+    protected TokenResolver tokenResolver;
 
-    private RedirectStrategy redirectStrategy;
+    protected RedirectStrategy redirectStrategy;
 
-    private SessionInfoFetcher sessionInfoFetcher;
+    protected SessionInfoFetcher sessionInfoFetcher;
 
-    private String loginUrl;
+    protected Set<String> ignoreAntPatterns;
 
-    private Boolean encodeUrl;
+    protected String loginUrl;
 
-    private String serverUrlPrefix;
+    protected String logoutUri;
 
-    private Boolean throwExceptionIfTokenValidateException;
+    protected Boolean encodeUrl;
 
-    private Boolean useSession;
+    protected String serverUrlPrefix;
 
-    private String sessionKey;
+    protected Boolean throwExceptionIfTokenValidateException;
+
+    protected Boolean useSession;
+
+    protected String sessionKey;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -66,10 +76,24 @@ public class YassosAuthFilter implements Filter {
             log.info("tokenResolver is null, use default implementation {} instead", DefaultTokenResolver.class.getName());
             this.tokenResolver = new DefaultTokenResolver();
         }
-        // server-url-prefix
+
+        if (this.sessionInfoFetcher == null) {
+            log.info("sessionInfoFetcher is null, use default implementation {} instead", HttpSessionInfoFetcher.class.getName());
+            this.sessionInfoFetcher = new HttpSessionInfoFetcher();
+        }
+        if (this.ignoreAntPatterns == null) {
+            this.ignoreAntPatterns = new HashSet<>();
+        }
+        log.info("ignoredAntPatterns:");
+        for (String pattern : this.ignoreAntPatterns) {
+            log.info("\t{}", pattern);
+        }
+        // sso-server-url-prefix
         initString(filterConfig, () -> this.serverUrlPrefix == null, this::setServerUrlPrefix, CONFIG_SOO_SERVER_URL_PREFIX, true);
-        // SSO server login url
+        // sso-server login url
         initString(filterConfig, () -> this.loginUrl == null, this::setLoginUrl, CONFIG_SSO_SERVER_LOGIN_URL, true);
+        // client logout url
+        initString(filterConfig, () -> this.logoutUri == null, this::setLogoutUri, CONFIG_CLIENT_LOGOUT_URI, true);
 
         // throw-exception-if-validate-exception
         initBoolean(filterConfig, () -> this.throwExceptionIfTokenValidateException == null, this::setThrowExceptionIfTokenValidateException, CONFIG_THROW_EXCEPTION_IF_VALIDATE_EXCEPTION);
@@ -85,7 +109,7 @@ public class YassosAuthFilter implements Filter {
 
     }
 
-    private void initString(FilterConfig filterConfig, BooleanSupplier supplier, Consumer<String> consumer, ConfigurationKey<String> configurationKey, boolean forceValidate) {
+    protected void initString(FilterConfig filterConfig, BooleanSupplier supplier, Consumer<String> consumer, ConfigurationKey<String> configurationKey, boolean forceValidate) {
         if (!supplier.getAsBoolean())
             return;
         final String name = configurationKey.getName();
@@ -102,7 +126,7 @@ public class YassosAuthFilter implements Filter {
 
     }
 
-    private void initBoolean(FilterConfig filterConfig, BooleanSupplier supplier, Consumer<Boolean> consumer, ConfigurationKey<Boolean> configKey) {
+    protected void initBoolean(FilterConfig filterConfig, BooleanSupplier supplier, Consumer<Boolean> consumer, ConfigurationKey<Boolean> configKey) {
         if (!supplier.getAsBoolean())
             return;
 
@@ -123,20 +147,51 @@ public class YassosAuthFilter implements Filter {
 
     }
 
+    protected boolean shouldBeIgnored(String uri) {
+        for (String pattern : this.ignoreAntPatterns) {
+            if (this.pathMatcher.match(pattern, uri)) {
+                log.debug("uri [{}] was ignored by pattern [{}]", uri, pattern);
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest req = (HttpServletRequest) request;
         final HttpServletResponse resp = (HttpServletResponse) response;
 
         try {
-            // 1. resolve token from request
+            final String requestURI = req.getRequestURI();
+            log.debug(">>> requestURI = {}", requestURI);
+
+            // 1. logout url ?
+            if (this.isLogoutUrl(req)) {
+                final String token = this.tokenResolver.resolveToken(req).orElse(null);
+                if (StringUtils.isNotEmpty(token)) {
+                    boolean success = this.sessionInfoFetcher.expireToken(token);
+                    log.debug("logout result = {}", success);
+                }
+                this.doAfterLogout(req, resp, chain, token);
+                log.debug("<<< logout.");
+                return;
+            }
+
+            // 2. ignored ?
+            if (this.shouldBeIgnored(requestURI)) {
+                chain.doFilter(request, response);
+                return;
+            }
+
+            // 3. resolve token from request
             final String token = this.tokenResolver.resolveToken(req).orElse(null);
             if (StringUtils.isEmpty(token)) {
                 this.redirectToLoginUrl(req, resp);
                 return;
             }
 
-            // 2. validate token from sso-server
+            // 4. validate token from sso-server
             final SessionInfo sessionInfo = this.sessionInfoFetcher.fetchSessionInfo(token, generateTokenValidationUrl(token));
             if (sessionInfo == null || !sessionInfo.isValid()) {
                 this.redirectToLoginUrl(req, resp);
@@ -159,7 +214,19 @@ public class YassosAuthFilter implements Filter {
         chain.doFilter(req, resp);
     }
 
-    private void redirectToLoginUrl(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private boolean isLogoutUrl(HttpServletRequest req) {
+        final String uri = req.getRequestURI();
+        if (StringUtils.isEmpty(uri)) {
+            return false;
+        }
+
+        return this.pathMatcher.match(this.logoutUri, uri);
+    }
+
+    protected void doAfterLogout(HttpServletRequest req, HttpServletResponse resp, FilterChain chain, String token) throws IOException {
+    }
+
+    protected void redirectToLoginUrl(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String targetUrl = generateRedirectToLoginUrl(req);
         this.redirectStrategy.redirect(req, resp, targetUrl);
     }
@@ -168,7 +235,7 @@ public class YassosAuthFilter implements Filter {
         return this.sessionKey == null ? CONFIG_SESSION_KEY.getDefaultValue() : this.sessionKey;
     }
 
-    private String generateRedirectToLoginUrl(HttpServletRequest request) {
+    protected String generateRedirectToLoginUrl(HttpServletRequest request) {
         // eg. http://localhost:8080/yassos/login?cb=${originalUrl}
         if (this.encodeUrl) {
             return String.format("%s?%s=%s", loginUrl, ConfigurationKeys.CALLBACK_ADDRESS_NAME, this.encodeUrl(request.getRequestURL().toString()));
@@ -176,7 +243,7 @@ public class YassosAuthFilter implements Filter {
         return String.format("%s?%s=%s", loginUrl, ConfigurationKeys.CALLBACK_ADDRESS_NAME, request.getRequestURL().toString());
     }
 
-    private String generateTokenValidationUrl(String token) {
+    protected String generateTokenValidationUrl(String token) {
         final String validateUriName = ConfigurationKeys.CONFIG_TOKEN_VALIDATION_URI.getDefaultValue();
         // eg. http://localhost:8080/validate?token=${token}
         return String.format("%s?token=%s",

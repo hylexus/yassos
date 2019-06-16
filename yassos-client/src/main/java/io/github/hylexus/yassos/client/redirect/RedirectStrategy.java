@@ -1,4 +1,4 @@
-package io.github.hylexus.yassos.client.service;
+package io.github.hylexus.yassos.client.redirect;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

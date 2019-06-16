@@ -1,4 +1,4 @@
-package io.github.hylexus.yassos.client.service;
+package io.github.hylexus.yassos.client.token.resolver;
 
 import io.github.hylexus.yassos.client.exception.TokenValidateException;
 

@@ -1,7 +1,6 @@
-package io.github.hylexus.yassos.client.service.impl;
+package io.github.hylexus.yassos.client.token.resolver;
 
 import io.github.hylexus.yassos.client.exception.TokenValidateException;
-import io.github.hylexus.yassos.client.service.TokenResolver;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,16 +25,16 @@ public class BearerTokenResolver implements TokenResolver {
         log.debug("1. Attempt to parse [{}] from RequestHeader", AUTHORIZATION_HEADER);
         final String bearer = request.getHeader(AUTHORIZATION_HEADER);
         if (StringUtils.isNotEmpty(bearer) && bearer.startsWith(AUTHORIZATION_TOKEN_PREFIX)) {
-            log.debug("\ttokenValue : {}", bearer);
+            log.debug("\t{} = {}", AUTHORIZATION_HEADER, bearer);
             if (bearer.length() > AUTHORIZATION_TOKEN_PREFIX_LENGTH) {
                 return Optional.of(bearer.substring(AUTHORIZATION_TOKEN_PREFIX_LENGTH));
             }
         }
-        log.warn("\ttokenValue : {}, IGNORED(not a valid BearerToken format).", bearer);
 
+        log.debug("\t{} : {}, IGNORED(not a valid BearerToken format).", AUTHORIZATION_HEADER, bearer);
         log.debug("2. Attempt to parse [{}] from request parameters.", AUTHORIZATION_TOKEN);
         final String parameter = request.getParameter(AUTHORIZATION_TOKEN);
-        log.debug("\ttokenValue : {}", parameter);
+        log.debug("\t{} = {}", AUTHORIZATION_TOKEN, parameter);
 
         return Optional.ofNullable(parameter);
     }

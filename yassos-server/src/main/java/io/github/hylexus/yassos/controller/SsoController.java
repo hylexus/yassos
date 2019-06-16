@@ -42,7 +42,8 @@ public class SsoController {
     public ModelAndView login(@RequestParam(required = false, defaultValue = DEFAULT_CALLBACK_URI, name = CALLBACK_ADDRESS_NAME) String callbackUrl) {
         log.info("{}", callbackUrl);
         ModelAndView mv = new ModelAndView("login");
-        mv.addObject(CALLBACK_ADDRESS_NAME, callbackUrl);
+        mv.addObject("redirect_url_name",CALLBACK_ADDRESS_NAME);
+        mv.addObject("redirect_url_value",callbackUrl);
         return mv;
     }
 
