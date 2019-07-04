@@ -1,4 +1,4 @@
-package io.github.hylexus.yassos.core;
+package io.github.hylexus.yassos.support.session;
 
 import io.github.hylexus.yassos.client.model.SessionInfo;
 

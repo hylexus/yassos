@@ -1,13 +1,19 @@
 package io.github.hylexus.yassos;
 
-import io.github.hylexus.yassos.core.SessionManager;
-import io.github.hylexus.yassos.core.UserService;
-import io.github.hylexus.yassos.service.BuiltinSessionManagerForDebugging;
-import io.github.hylexus.yassos.service.BuiltinUserServiceForDebugging;
 import io.github.hylexus.yassos.service.TokenGenerator;
+import io.github.hylexus.yassos.service.UserDetailService;
+import io.github.hylexus.yassos.support.auth.CredentialsMatcher;
+import io.github.hylexus.yassos.support.model.DefaultUserDetails;
+import io.github.hylexus.yassos.support.model.UserDetails;
+import io.github.hylexus.yassos.support.session.BuiltinRedisSessionManager;
+import io.github.hylexus.yassos.support.session.SessionInfoEnhancer;
+import io.github.hylexus.yassos.support.session.SessionManager;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
+
+import java.util.Random;
 
 /**
  * @author hylexus
@@ -26,11 +32,33 @@ public class YassosServerApplication {
 
     @Bean
     public SessionManager sessionManager() {
-        return new BuiltinSessionManagerForDebugging();
+        return new BuiltinRedisSessionManager();
     }
 
     @Bean
-    public UserService userService() {
-        return new BuiltinUserServiceForDebugging();
+    public UserDetailService userDetailService() {
+        return new UserDetailService() {
+            @Override
+            public UserDetails loadByUsername(String username) {
+                return new DefaultUserDetails()
+                        .setUsername(username)
+                        .setPassword("123456")
+                        .setUserId(new Random().nextLong())
+                        .setLocked(false)
+                        .setCredentialExpired(false);
+            }
+        };
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(CredentialsMatcher.class)
+    public CredentialsMatcher credentialsMatcher() {
+        return new CredentialsMatcher.PlainTextCredentialsMatcher();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(SessionInfoEnhancer.class)
+    public SessionInfoEnhancer sessionInfoEnhancer() {
+        return new SessionInfoEnhancer.NoneEnhancementEnhancer();
     }
 }

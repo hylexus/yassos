@@ -7,33 +7,59 @@ import java.util.Date;
  * Created At 2019-06-07 16:49
  */
 public interface SessionInfo {
-    String sessionId();
+    String getSessionId();
 
-    void sessionId(String id);
+    SessionInfo setSessionId(String id);
 
-    String username();
-
-    Date authenticationDate();
-
-    Date expiredAt();
-
-    default boolean isValid() {
-        return expiredAt() != null && expiredAt().getTime() > System.currentTimeMillis();
+    default String getUserId() {
+        return null;
     }
 
-    default Object extra() {
+    String getUsername();
+
+    String getAvatarUrl();
+
+    Date getAuthenticationDate();
+
+    Date getExpiredAt();
+
+    default boolean isValid() {
+        return getExpiredAt() != null && getExpiredAt().getTime() > System.currentTimeMillis();
+    }
+
+    default Object getExtraInfo() {
         return null;
     }
 
     SessionInfo INVALID_SESSION = new SessionInfo() {
         @Override
-        public String sessionId() {
+        public String getSessionId() {
             return null;
         }
 
         @Override
-        public void sessionId(String id) {
+        public SessionInfo setSessionId(String id) {
+            return this;
+        }
 
+        @Override
+        public String getUsername() {
+            return null;
+        }
+
+        @Override
+        public String getAvatarUrl() {
+            return null;
+        }
+
+        @Override
+        public Date getAuthenticationDate() {
+            return null;
+        }
+
+        @Override
+        public Date getExpiredAt() {
+            return null;
         }
 
         @Override
@@ -41,19 +67,5 @@ public interface SessionInfo {
             return false;
         }
 
-        @Override
-        public String username() {
-            return null;
-        }
-
-        @Override
-        public Date authenticationDate() {
-            return null;
-        }
-
-        @Override
-        public Date expiredAt() {
-            return null;
-        }
     };
 }

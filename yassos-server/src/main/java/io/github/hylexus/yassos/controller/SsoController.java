@@ -1,12 +1,15 @@
 package io.github.hylexus.yassos.controller;
 
+import io.github.hylexus.yassos.client.model.DefaultSessionInfo;
 import io.github.hylexus.yassos.client.model.SessionInfo;
 import io.github.hylexus.yassos.client.utils.CommonUtils;
-import io.github.hylexus.yassos.core.SessionManager;
-import io.github.hylexus.yassos.core.UserService;
-import io.github.hylexus.yassos.core.exception.UserAuthException;
-import io.github.hylexus.yassos.core.model.LoginForm;
+import io.github.hylexus.yassos.core.model.UsernamePasswordToken;
+import io.github.hylexus.yassos.exception.UserAuthException;
 import io.github.hylexus.yassos.service.TokenGenerator;
+import io.github.hylexus.yassos.service.UserService;
+import io.github.hylexus.yassos.support.model.UserDetails;
+import io.github.hylexus.yassos.support.session.SessionInfoEnhancer;
+import io.github.hylexus.yassos.support.session.SessionManager;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +17,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
 
 import static io.github.hylexus.yassos.client.utils.ConfigurationKeys.CALLBACK_ADDRESS_NAME;
-import static io.github.hylexus.yassos.client.utils.ConfigurationKeys.CONFIG_TOKEN;
 
 /**
  * @author hylexus
@@ -38,12 +41,15 @@ public class SsoController {
     @Autowired
     private UserService userService;
 
+    @Autowired(required = false)
+    private SessionInfoEnhancer sessionInfoEnhancer;
+
     @GetMapping("/login")
     public ModelAndView login(@RequestParam(required = false, defaultValue = DEFAULT_CALLBACK_URI, name = CALLBACK_ADDRESS_NAME) String callbackUrl) {
-        log.info("{}", callbackUrl);
+        log.info("to login page, redirect_url : {}", callbackUrl);
         ModelAndView mv = new ModelAndView("login");
-        mv.addObject("redirect_url_name",CALLBACK_ADDRESS_NAME);
-        mv.addObject("redirect_url_value",callbackUrl);
+        mv.addObject("redirect_url_name", CALLBACK_ADDRESS_NAME);
+        mv.addObject("redirect_url_value", callbackUrl);
         return mv;
     }
 
@@ -64,18 +70,29 @@ public class SsoController {
 
     @RequestMapping("/sign-on")
     public void doLogin(
-            LoginForm loginForm,
+            UsernamePasswordToken usernamePasswordToken,
             @RequestParam(required = false, defaultValue = DEFAULT_CALLBACK_URI, name = CALLBACK_ADDRESS_NAME) String callbackUrl,
-            HttpServletResponse response) throws IOException {
+            HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        log.debug("request param : {}", loginForm);
-        final String sessionId = tokenGenerator.generateToken(loginForm);
-        final SessionInfo sessionInfo = userService.login(loginForm);
-        sessionInfo.sessionId(sessionId);
+        final String username = usernamePasswordToken.getUsername();
+        // TODO pre-check for repeated-login
+        log.debug("1. user [{}] attempt to login.", username);
+        final UserDetails userDetails = userService.login(usernamePasswordToken);
+
+        final String sessionId = tokenGenerator.generateToken(request, response, usernamePasswordToken);
+        log.debug("2. sessionId generated : {}", sessionId);
+
+        SessionInfo sessionInfo = this.buildSessionInfo(sessionId, userDetails);
+        log.debug("3. built session : {}", sessionInfo);
+
+        if (this.sessionInfoEnhancer != null) {
+            sessionInfo = this.sessionInfoEnhancer.enhance(sessionInfo, userDetails);
+            log.debug("4. enhanced session : {}", sessionInfo);
+        }
+
         sessionManager.put(sessionId, sessionInfo);
-        log.debug("login in newly, sessionId = {}", sessionId);
+        log.debug("5. putted to sessionManager");
 
-        doAfterLoginSuccess(sessionId, loginForm, response);
         final String originalUrl;
         if (callbackUrl.equalsIgnoreCase(DEFAULT_CALLBACK_URI)) {
             originalUrl = CommonUtils.generateCallbackUrl(DEFAULT_CALLBACK_URI, sessionId);
@@ -83,16 +100,17 @@ public class SsoController {
             originalUrl = CommonUtils.generateCallbackUrl(callbackUrl, sessionId);
         }
 
-        log.debug("original url {}", originalUrl);
         response.sendRedirect(originalUrl);
+        log.debug("6. redirect to <{}> after login", originalUrl);
     }
 
-    private void doAfterLoginSuccess(final String token, final LoginForm loginForm, final HttpServletResponse response) {
-        final Cookie cookie = new Cookie(CONFIG_TOKEN.getDefaultValue(), token);
-        cookie.setMaxAge(loginForm.isRememberMe() ? Integer.MAX_VALUE : -1);
-        cookie.setPath("/");
-        cookie.setDomain("mine.com");
-        response.addCookie(cookie);
+    private SessionInfo buildSessionInfo(String sessionId, UserDetails user) {
+
+        return new DefaultSessionInfo().setAuthenticationDate(new Date())
+                .setUsername(user.getUsername())
+                .setAvatarUrl(user.getAvatarUrl())
+                .setSessionId(sessionId)
+                .setExpiredAt(null);
     }
 
     @ResponseBody
@@ -111,6 +129,8 @@ public class SsoController {
     @ResponseBody
     @GetMapping("/validate")
     public SessionInfo userInfo(@RequestParam("token") String token) {
-        return sessionManager.getSessionByToken(token);
+        SessionInfo sessionInfo = sessionManager.getSessionByToken(token);
+        log.debug("validate session: {}", sessionInfo);
+        return sessionInfo;
     }
 }

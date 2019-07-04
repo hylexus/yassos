@@ -1,7 +1,9 @@
 package io.github.hylexus.yassos.service;
 
-import io.github.hylexus.yassos.core.model.LoginForm;
+import io.github.hylexus.yassos.core.model.UsernamePasswordToken;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 /**
@@ -10,12 +12,12 @@ import java.util.UUID;
  */
 @FunctionalInterface
 public interface TokenGenerator {
-    String generateToken(LoginForm loginForm);
+    String generateToken(HttpServletRequest request, HttpServletResponse response, UsernamePasswordToken usernamePasswordToken);
 
     class DefaultTokenGenerator implements TokenGenerator {
 
         @Override
-        public String generateToken(LoginForm loginForm) {
+        public String generateToken(HttpServletRequest request, HttpServletResponse response, UsernamePasswordToken usernamePasswordToken) {
             return UUID.randomUUID().toString().replaceAll("-", "");
         }
     }

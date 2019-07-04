@@ -11,8 +11,8 @@ import java.util.Date;
  * @author hylexus
  * Created At 2019-06-09 16:27
  */
-@Getter
 @Setter
+@Getter
 @Accessors(chain = true)
 @ToString
 public class DefaultSessionInfo implements SessionInfo {
@@ -20,29 +20,6 @@ public class DefaultSessionInfo implements SessionInfo {
     private String username;
     private Date authenticationDate;
     private Date expiredAt;
+    private String avatarUrl;
 
-    @Override
-    public String sessionId() {
-        return sessionId;
-    }
-
-    @Override
-    public void sessionId(String id) {
-        setSessionId(id);
-    }
-
-    @Override
-    public String username() {
-        return username;
-    }
-
-    @Override
-    public Date authenticationDate() {
-        return authenticationDate;
-    }
-
-    @Override
-    public Date expiredAt() {
-        return expiredAt;
-    }
 }
