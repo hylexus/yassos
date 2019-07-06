@@ -5,9 +5,9 @@ import io.github.hylexus.yassos.service.UserDetailService;
 import io.github.hylexus.yassos.support.auth.CredentialsMatcher;
 import io.github.hylexus.yassos.support.model.DefaultUserDetails;
 import io.github.hylexus.yassos.support.model.UserDetails;
-import io.github.hylexus.yassos.support.session.BuiltinRedisSessionManager;
 import io.github.hylexus.yassos.support.session.SessionInfoEnhancer;
 import io.github.hylexus.yassos.support.session.SessionManager;
+import io.github.hylexus.yassos.support.session.SimpleRedisSessionManager;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -27,12 +27,12 @@ public class YassosServerApplication {
 
     @Bean
     public TokenGenerator tokenGenerator() {
-        return new TokenGenerator.DefaultTokenGenerator();
+        return new TokenGenerator.SimpleUUIDTokenGenerator();
     }
 
     @Bean
     public SessionManager sessionManager() {
-        return new BuiltinRedisSessionManager();
+        return new SimpleRedisSessionManager();
     }
 
     @Bean
@@ -45,7 +45,8 @@ public class YassosServerApplication {
                         .setPassword("123456")
                         .setUserId(new Random().nextLong())
                         .setLocked(false)
-                        .setCredentialExpired(false);
+                        .setCredentialExpired(false)
+                        .setAvatarUrl("https://static.my-server.com/avatar/" + username + ".png");
             }
         };
     }

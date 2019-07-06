@@ -12,6 +12,6 @@ spring:
     database: 0
 yassos:
   session:
-    idle-time: 60s
+    idle-time: 10m
     redis:
       key-prefix: 'yassos_session:'

@@ -1,6 +1,6 @@
 package io.github.hylexus.yassos.support.session;
 
-import io.github.hylexus.yassos.client.model.SessionInfo;
+import io.github.hylexus.yassos.client.model.YassosSession;
 import io.github.hylexus.yassos.support.model.UserDetails;
 
 /**
@@ -9,12 +9,12 @@ import io.github.hylexus.yassos.support.model.UserDetails;
  */
 public interface SessionInfoEnhancer {
 
-    SessionInfo enhance(SessionInfo sessionInfo, UserDetails userDetails);
+    YassosSession enhance(YassosSession yassosSession, UserDetails userDetails);
 
     class NoneEnhancementEnhancer implements SessionInfoEnhancer {
         @Override
-        public SessionInfo enhance(SessionInfo sessionInfo, UserDetails userDetails) {
-            return sessionInfo;
+        public YassosSession enhance(YassosSession yassosSession, UserDetails userDetails) {
+            return yassosSession;
         }
     }
 }

@@ -5,6 +5,8 @@ yassos:
   client:
 server:
   port: 1010
+  servlet:
+    context-path: /client
 logging:
   level:
     io.github.hylexus.yassos: debug

@@ -1,6 +1,6 @@
 package io.github.hylexus.yassos.client.repo;
 
-import io.github.hylexus.yassos.client.model.SessionInfo;
+import io.github.hylexus.yassos.client.model.YassosSession;
 
 /**
  * @author hylexus
@@ -8,7 +8,7 @@ import io.github.hylexus.yassos.client.model.SessionInfo;
  */
 public class HttpUserRepository implements UserRepository {
     @Override
-    public SessionInfo getBySessionId(String token) {
+    public YassosSession getBySessionId(String token) {
         return null;
     }
 }

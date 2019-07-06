@@ -1,6 +1,6 @@
 package io.github.hylexus.yassos.support.session;
 
-import io.github.hylexus.yassos.client.model.SessionInfo;
+import io.github.hylexus.yassos.client.model.YassosSession;
 
 /**
  * @author hylexus
@@ -8,9 +8,13 @@ import io.github.hylexus.yassos.client.model.SessionInfo;
  */
 public interface SessionManager {
 
-    SessionInfo getSessionByToken(String token);
+    YassosSession getSessionByToken(String token, boolean updateLastAccessTime);
 
-    void put(String token, SessionInfo sessionInfo);
+    default YassosSession getSessionByToken(String token) {
+        return getSessionByToken(token, false);
+    }
+
+    void put(String token, YassosSession yassosSession);
 
     void removeSessionByToken(String token);
 }

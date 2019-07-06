@@ -10,6 +10,7 @@ import static io.github.hylexus.yassos.client.config.ConfigurationKey.Configurat
  */
 public interface ConfigurationKeys {
     String CALLBACK_ADDRESS_NAME = "redirect_url";
+    String DEFAULT_DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
     ConfigurationKey<String> CONFIG_SSO_SERVER_LOGIN_URL = new ConfigurationKey<>("loginUrl", null, NOT_EMPTY);
     ConfigurationKey<String> CONFIG_SOO_SERVER_URL_PREFIX = new ConfigurationKey<>("serverUrlPrefix", null, NOT_EMPTY);
@@ -21,4 +22,5 @@ public interface ConfigurationKeys {
     ConfigurationKey<String> CONFIG_TOKEN = new ConfigurationKey<>("tokenName", "x-yassos-token", null);
     ConfigurationKey<Boolean> CONFIG_ENCODE_URL = new ConfigurationKey<>("encodeUrl", false, null);
     ConfigurationKey<Boolean> CONFIG_THROW_EXCEPTION_IF_VALIDATE_EXCEPTION = new ConfigurationKey<>("throwExceptionIfTokenValidateException", false, null);
+    ConfigurationKey<String> CONFIG_DEFAULT_DATETIME_PATTERN = new ConfigurationKey<>("defaultDatePattern", DEFAULT_DATE_PATTERN, null);
 }

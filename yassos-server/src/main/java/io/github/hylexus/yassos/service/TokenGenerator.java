@@ -14,7 +14,7 @@ import java.util.UUID;
 public interface TokenGenerator {
     String generateToken(HttpServletRequest request, HttpServletResponse response, UsernamePasswordToken usernamePasswordToken);
 
-    class DefaultTokenGenerator implements TokenGenerator {
+    class SimpleUUIDTokenGenerator implements TokenGenerator {
 
         @Override
         public String generateToken(HttpServletRequest request, HttpServletResponse response, UsernamePasswordToken usernamePasswordToken) {

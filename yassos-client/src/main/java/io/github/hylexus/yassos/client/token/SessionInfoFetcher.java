@@ -1,7 +1,7 @@
 package io.github.hylexus.yassos.client.token;
 
 import io.github.hylexus.yassos.client.exception.TokenValidateException;
-import io.github.hylexus.yassos.client.model.SessionInfo;
+import io.github.hylexus.yassos.client.model.YassosSession;
 
 /**
  * @author hylexus
@@ -14,7 +14,7 @@ public interface SessionInfoFetcher {
      * @return current session info if
      * @throws TokenValidateException throw an exception if token validation fails.
      */
-    SessionInfo fetchSessionInfo(String token, String url) throws TokenValidateException;
+    YassosSession fetchSessionInfo(String token, String url) throws TokenValidateException;
 
     /**
      * @param token ticket

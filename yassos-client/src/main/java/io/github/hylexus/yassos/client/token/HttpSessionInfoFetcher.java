@@ -2,9 +2,8 @@ package io.github.hylexus.yassos.client.token;
 
 import com.alibaba.fastjson.JSON;
 import io.github.hylexus.yassos.client.exception.TokenValidateException;
-import io.github.hylexus.yassos.client.model.DefaultSessionInfo;
-import io.github.hylexus.yassos.client.model.SessionInfo;
-import io.github.hylexus.yassos.client.token.SessionInfoFetcher;
+import io.github.hylexus.yassos.client.model.DefaultSessionImpl;
+import io.github.hylexus.yassos.client.model.YassosSession;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -13,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 
-import static io.github.hylexus.yassos.client.model.SessionInfo.INVALID_SESSION;
+import static io.github.hylexus.yassos.client.model.YassosSession.INVALID_SESSION;
 
 /**
  * @author hylexus
@@ -25,7 +24,7 @@ public class HttpSessionInfoFetcher implements SessionInfoFetcher {
     final private OkHttpClient client = new OkHttpClient();
 
     @Override
-    public SessionInfo fetchSessionInfo(String token, String url) {
+    public YassosSession fetchSessionInfo(String token, String url) {
         final Request request = new Request.Builder()
                 .url(url)
                 .get()
@@ -55,9 +54,9 @@ public class HttpSessionInfoFetcher implements SessionInfoFetcher {
             return INVALID_SESSION;
         }
 
-        final DefaultSessionInfo sessionInfo;
+        final YassosSession sessionInfo;
         try {
-            sessionInfo = JSON.parseObject(body, DefaultSessionInfo.class);
+            sessionInfo = JSON.parseObject(body, DefaultSessionImpl.class);
         } catch (Exception e) {
             log.error("token validation parse error, body : {}", body);
             return INVALID_SESSION;

@@ -1,17 +1,20 @@
 package io.github.hylexus.yassos.controller;
 
-import io.github.hylexus.yassos.client.model.DefaultSessionInfo;
-import io.github.hylexus.yassos.client.model.SessionInfo;
+import io.github.hylexus.yassos.client.model.YassosSession;
 import io.github.hylexus.yassos.client.utils.CommonUtils;
 import io.github.hylexus.yassos.core.model.UsernamePasswordToken;
 import io.github.hylexus.yassos.exception.UserAuthException;
 import io.github.hylexus.yassos.service.TokenGenerator;
 import io.github.hylexus.yassos.service.UserService;
 import io.github.hylexus.yassos.support.model.UserDetails;
+import io.github.hylexus.yassos.support.props.YassosSessionProps;
 import io.github.hylexus.yassos.support.session.SessionInfoEnhancer;
 import io.github.hylexus.yassos.support.session.SessionManager;
+import io.github.hylexus.yassos.support.session.SimpleYassosSession;
+import io.github.hylexus.yassos.support.session.SimpleYassosSessionAttr;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +23,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
 
 import static io.github.hylexus.yassos.client.utils.ConfigurationKeys.CALLBACK_ADDRESS_NAME;
 
@@ -43,6 +45,9 @@ public class SsoController {
 
     @Autowired(required = false)
     private SessionInfoEnhancer sessionInfoEnhancer;
+
+    @Autowired
+    private YassosSessionProps sessionProps;
 
     @GetMapping("/login")
     public ModelAndView login(@RequestParam(required = false, defaultValue = DEFAULT_CALLBACK_URI, name = CALLBACK_ADDRESS_NAME) String callbackUrl) {
@@ -75,22 +80,22 @@ public class SsoController {
             HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         final String username = usernamePasswordToken.getUsername();
-        // TODO pre-check for repeated-login
+
         log.debug("1. user [{}] attempt to login.", username);
         final UserDetails userDetails = userService.login(usernamePasswordToken);
 
         final String sessionId = tokenGenerator.generateToken(request, response, usernamePasswordToken);
         log.debug("2. sessionId generated : {}", sessionId);
 
-        SessionInfo sessionInfo = this.buildSessionInfo(sessionId, userDetails);
-        log.debug("3. built session : {}", sessionInfo);
+        YassosSession yassosSession = this.buildSessionInfo(sessionId, userDetails);
+        log.debug("3. built session : {}", yassosSession);
 
         if (this.sessionInfoEnhancer != null) {
-            sessionInfo = this.sessionInfoEnhancer.enhance(sessionInfo, userDetails);
-            log.debug("4. enhanced session : {}", sessionInfo);
+            yassosSession = this.sessionInfoEnhancer.enhance(yassosSession, userDetails);
+            log.debug("4. enhanced session : {}", yassosSession);
         }
 
-        sessionManager.put(sessionId, sessionInfo);
+        sessionManager.put(sessionId, yassosSession);
         log.debug("5. putted to sessionManager");
 
         final String originalUrl;
@@ -104,13 +109,19 @@ public class SsoController {
         log.debug("6. redirect to <{}> after login", originalUrl);
     }
 
-    private SessionInfo buildSessionInfo(String sessionId, UserDetails user) {
+    private YassosSession buildSessionInfo(String sessionId, UserDetails user) {
 
-        return new DefaultSessionInfo().setAuthenticationDate(new Date())
+        final LocalDateTime now = org.joda.time.LocalDateTime.now();
+        final LocalDateTime expiredAt = now.plusSeconds((int) sessionProps.getIdleTime().getSeconds());
+        final SimpleYassosSessionAttr sessionAttr = new SimpleYassosSessionAttr()
+                .setAvatarUrl(user.getAvatarUrl());
+
+        return new SimpleYassosSession().setAuthenticationDate(now.toDate().getTime())
                 .setUsername(user.getUsername())
-                .setAvatarUrl(user.getAvatarUrl())
-                .setSessionId(sessionId)
-                .setExpiredAt(null);
+                .setToken(sessionId)
+                .setExpiredAt(expiredAt.toDate().getTime())
+                .setLastAccessTime(now.toDate().getTime())
+                .setSessionAttr(sessionAttr);
     }
 
     @ResponseBody
@@ -128,9 +139,9 @@ public class SsoController {
 
     @ResponseBody
     @GetMapping("/validate")
-    public SessionInfo userInfo(@RequestParam("token") String token) {
-        SessionInfo sessionInfo = sessionManager.getSessionByToken(token);
-        log.debug("validate session: {}", sessionInfo);
-        return sessionInfo;
+    public YassosSession userInfo(@RequestParam("token") String token) {
+        YassosSession yassosSession = sessionManager.getSessionByToken(token, true);
+        log.debug("validate session: {}", yassosSession);
+        return yassosSession;
     }
 }

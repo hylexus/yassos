@@ -7,7 +7,6 @@ package io.github.hylexus.yassos.client.redirect;
 
 import com.alibaba.fastjson.JSON;
 import io.github.hylexus.yassos.client.model.Resp;
-import io.github.hylexus.yassos.client.redirect.RedirectStrategy;
 import io.github.hylexus.yassos.client.utils.CommonUtils;
 import lombok.extern.slf4j.Slf4j;
 

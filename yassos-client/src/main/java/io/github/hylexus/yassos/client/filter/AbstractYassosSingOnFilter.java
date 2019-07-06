@@ -2,14 +2,13 @@ package io.github.hylexus.yassos.client.filter;
 
 
 import io.github.hylexus.yassos.client.config.ConfigurationKey;
-import io.github.hylexus.yassos.client.exception.TokenValidateException;
-import io.github.hylexus.yassos.client.model.SessionInfo;
-import io.github.hylexus.yassos.client.redirect.RedirectStrategy;
-import io.github.hylexus.yassos.client.token.SessionInfoFetcher;
-import io.github.hylexus.yassos.client.token.resolver.TokenResolver;
+import io.github.hylexus.yassos.client.model.YassosSession;
 import io.github.hylexus.yassos.client.redirect.DefaultRedirectStrategy;
-import io.github.hylexus.yassos.client.token.resolver.DefaultTokenResolver;
+import io.github.hylexus.yassos.client.redirect.RedirectStrategy;
 import io.github.hylexus.yassos.client.token.HttpSessionInfoFetcher;
+import io.github.hylexus.yassos.client.token.SessionInfoFetcher;
+import io.github.hylexus.yassos.client.token.resolver.DefaultTokenResolver;
+import io.github.hylexus.yassos.client.token.resolver.TokenResolver;
 import io.github.hylexus.yassos.client.utils.AntPathMatcher;
 import io.github.hylexus.yassos.client.utils.CommonUtils;
 import io.github.hylexus.yassos.client.utils.ConfigurationKeys;
@@ -187,27 +186,29 @@ public abstract class AbstractYassosSingOnFilter implements Filter {
             // 3. resolve token from request
             final String token = this.tokenResolver.resolveToken(req).orElse(null);
             if (StringUtils.isEmpty(token)) {
+                log.debug("redirect to login page (token is null or empty) ");
                 this.redirectToLoginUrl(req, resp);
                 return;
             }
 
             // 4. validate token from sso-server
-            final SessionInfo sessionInfo = this.sessionInfoFetcher.fetchSessionInfo(token, generateTokenValidationUrl(token));
-            if (sessionInfo == null || !sessionInfo.isValid()) {
+            final YassosSession yassosSession = this.sessionInfoFetcher.fetchSessionInfo(token, generateTokenValidationUrl(token));
+            if (yassosSession == null || !yassosSession.isValid()) {
+                log.debug("redirect to login page (session invalid : {})", yassosSession);
                 this.redirectToLoginUrl(req, resp);
                 return;
             }
 
             if (this.useSession) {
-                req.getSession().setAttribute(getSessionKey(), sessionInfo);
+                req.getSession().setAttribute(getSessionKey(), yassosSession);
             }
-        } catch (TokenValidateException e) {
+        } catch (Exception e) {
             if (this.throwExceptionIfTokenValidateException) {
                 throw new ServletException(e);
             }
 
+            log.error("redirect to login page (token validation fails)", e);
             this.redirectToLoginUrl(req, resp);
-            log.error("token validation fails.", e);
             return;
         }
 
