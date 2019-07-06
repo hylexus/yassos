@@ -1,4 +1,4 @@
-package io.github.hylexus.yassos.core.model;
+package io.github.hylexus.yassos.model;
 
 import lombok.Getter;
 import lombok.Setter;

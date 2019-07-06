@@ -8,6 +8,7 @@ import io.github.hylexus.yassos.support.model.UserDetails;
 import io.github.hylexus.yassos.support.session.SessionInfoEnhancer;
 import io.github.hylexus.yassos.support.session.SessionManager;
 import io.github.hylexus.yassos.support.session.SimpleRedisSessionManager;
+import io.github.hylexus.yassos.support.session.YassosSessionAttrConverter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -61,5 +62,11 @@ public class YassosServerApplication {
     @ConditionalOnMissingBean(SessionInfoEnhancer.class)
     public SessionInfoEnhancer sessionInfoEnhancer() {
         return new SessionInfoEnhancer.NoneEnhancementEnhancer();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(YassosSessionAttrConverter.class)
+    public YassosSessionAttrConverter yassosSessionAttrConverter() {
+        return new YassosSessionAttrConverter.SimpleYassosSessionAttrConverter();
     }
 }

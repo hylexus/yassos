@@ -1,7 +1,7 @@
 package io.github.hylexus.yassos.service;
 
-import io.github.hylexus.yassos.core.model.UsernamePasswordToken;
 import io.github.hylexus.yassos.exception.*;
+import io.github.hylexus.yassos.model.UsernamePasswordToken;
 import io.github.hylexus.yassos.support.auth.CredentialsMatcher;
 import io.github.hylexus.yassos.support.model.UserDetails;
 import lombok.NonNull;

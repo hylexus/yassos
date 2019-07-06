@@ -1,12 +1,10 @@
 package io.github.hylexus.yassos.support.session;
 
-import com.alibaba.fastjson.JSON;
 import io.github.hylexus.yassos.client.model.YassosSession;
 import io.github.hylexus.yassos.client.model.YassosSessionAttr;
 import io.github.hylexus.yassos.support.props.YassosSessionProps;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.CollectionUtils;
@@ -34,6 +32,9 @@ public class SimpleRedisSessionManager implements SessionManager {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
+    @Autowired
+    private YassosSessionAttrConverter sessionAttrConverter;
+
     private static final String HASH_KEY_USERNAME = "username";
     private static final String HASH_KEY_TOKEN = "token";
     private static final String HASH_KEY_LAST_ACCESS_TIME = "last_access";
@@ -56,10 +57,11 @@ public class SimpleRedisSessionManager implements SessionManager {
         session.setAuthenticationDate(string2Date(entries.getOrDefault(HASH_KEY_CREATED_AT, "").toString()));
         session.setLastAccessTime(string2Date(entries.getOrDefault(HASH_KEY_LAST_ACCESS_TIME, "").toString()));
 
-        session.setSessionAttr(JSON.parseObject(entries.getOrDefault(HASH_KEY_SESSION_ATTR, "{}").toString(), YassosSessionAttr.DefaultYassosSessionAttr.class));
+        YassosSessionAttr sessionAttr = sessionAttrConverter.fromString(entries.getOrDefault(HASH_KEY_SESSION_ATTR, "{}").toString());
+        session.setSessionAttr(sessionAttr);
 
         if (updateLastAccessTime) {
-            final Long now = LocalDateTime.now().toDate().getTime();
+            final Long now = System.currentTimeMillis();
             session.setLastAccessTime(now);
 
             redisTemplate.opsForHash().put(tokenKey, HASH_KEY_LAST_ACCESS_TIME, date2String(now));
@@ -104,7 +106,7 @@ public class SimpleRedisSessionManager implements SessionManager {
         redisTemplate.opsForHash().put(tokenKey, HASH_KEY_CREATED_AT, date2String(yassosSession.getAuthenticationDate()));
 
         if (yassosSession.getSessionAttr() != null) {
-            redisTemplate.opsForHash().put(tokenKey, HASH_KEY_SESSION_ATTR, JSON.toJSONString(yassosSession.getSessionAttr()));
+            redisTemplate.opsForHash().put(tokenKey, HASH_KEY_SESSION_ATTR, sessionAttrConverter.toString(yassosSession.getSessionAttr()));
         }
 
         ttl(usernameKey);

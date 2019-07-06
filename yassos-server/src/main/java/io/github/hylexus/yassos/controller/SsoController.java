@@ -2,8 +2,8 @@ package io.github.hylexus.yassos.controller;
 
 import io.github.hylexus.yassos.client.model.YassosSession;
 import io.github.hylexus.yassos.client.utils.CommonUtils;
-import io.github.hylexus.yassos.core.model.UsernamePasswordToken;
 import io.github.hylexus.yassos.exception.UserAuthException;
+import io.github.hylexus.yassos.model.UsernamePasswordToken;
 import io.github.hylexus.yassos.service.TokenGenerator;
 import io.github.hylexus.yassos.service.UserService;
 import io.github.hylexus.yassos.support.model.UserDetails;
