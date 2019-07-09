@@ -1,8 +1,8 @@
 package io.github.hylexus.yassos.client.filter;
 
 import com.alibaba.fastjson.JSON;
-import io.github.hylexus.yassos.client.model.Resp;
-import io.github.hylexus.yassos.client.utils.CommonUtils;
+import io.github.hylexus.yassos.core.model.Resp;
+import io.github.hylexus.yassos.core.util.CommonUtils;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;

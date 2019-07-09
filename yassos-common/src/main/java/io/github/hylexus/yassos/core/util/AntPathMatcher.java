@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.github.hylexus.yassos.client.utils;
+package io.github.hylexus.yassos.core.util;
 
 import org.apache.commons.lang3.StringUtils;
 

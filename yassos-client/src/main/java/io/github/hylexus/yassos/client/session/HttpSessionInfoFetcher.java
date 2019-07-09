@@ -1,9 +1,8 @@
-package io.github.hylexus.yassos.client.token;
+package io.github.hylexus.yassos.client.session;
 
 import com.alibaba.fastjson.JSON;
 import io.github.hylexus.yassos.client.exception.TokenValidateException;
-import io.github.hylexus.yassos.client.model.DefaultSessionImpl;
-import io.github.hylexus.yassos.client.model.YassosSession;
+import io.github.hylexus.yassos.core.session.YassosSession;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -12,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 
-import static io.github.hylexus.yassos.client.model.YassosSession.INVALID_SESSION;
+import static io.github.hylexus.yassos.core.session.YassosSession.INVALID_SESSION;
 
 /**
  * @author hylexus

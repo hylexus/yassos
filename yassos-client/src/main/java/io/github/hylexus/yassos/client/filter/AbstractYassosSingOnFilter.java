@@ -1,18 +1,18 @@
 package io.github.hylexus.yassos.client.filter;
 
 
-import io.github.hylexus.yassos.client.config.ConfigurationKey;
-import io.github.hylexus.yassos.client.model.YassosSession;
 import io.github.hylexus.yassos.client.redirect.DefaultRedirectStrategy;
 import io.github.hylexus.yassos.client.redirect.RedirectStrategy;
-import io.github.hylexus.yassos.client.token.HttpSessionInfoFetcher;
-import io.github.hylexus.yassos.client.token.SessionInfoFetcher;
+import io.github.hylexus.yassos.client.session.HttpSessionInfoFetcher;
+import io.github.hylexus.yassos.client.session.SessionInfoFetcher;
 import io.github.hylexus.yassos.client.token.resolver.DefaultTokenResolver;
 import io.github.hylexus.yassos.client.token.resolver.TokenResolver;
-import io.github.hylexus.yassos.client.utils.AntPathMatcher;
-import io.github.hylexus.yassos.client.utils.CommonUtils;
-import io.github.hylexus.yassos.client.utils.ConfigurationKeys;
-import io.github.hylexus.yassos.client.utils.PathMatcher;
+import io.github.hylexus.yassos.core.config.ConfigurationKey;
+import io.github.hylexus.yassos.core.config.ConfigurationKeys;
+import io.github.hylexus.yassos.core.session.YassosSession;
+import io.github.hylexus.yassos.core.util.AntPathMatcher;
+import io.github.hylexus.yassos.core.util.CommonUtils;
+import io.github.hylexus.yassos.core.util.PathMatcher;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -28,7 +28,7 @@ import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
-import static io.github.hylexus.yassos.client.utils.ConfigurationKeys.*;
+import static io.github.hylexus.yassos.core.config.ConfigurationKeys.*;
 
 /**
  * @author hylexus

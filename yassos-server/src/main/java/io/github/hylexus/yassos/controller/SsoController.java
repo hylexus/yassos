@@ -1,17 +1,17 @@
 package io.github.hylexus.yassos.controller;
 
-import io.github.hylexus.yassos.client.model.YassosSession;
-import io.github.hylexus.yassos.client.utils.CommonUtils;
+import io.github.hylexus.yassos.core.session.YassosSession;
+import io.github.hylexus.yassos.core.util.CommonUtils;
 import io.github.hylexus.yassos.exception.UserAuthException;
 import io.github.hylexus.yassos.model.UsernamePasswordToken;
 import io.github.hylexus.yassos.service.TokenGenerator;
 import io.github.hylexus.yassos.service.UserService;
 import io.github.hylexus.yassos.support.model.UserDetails;
 import io.github.hylexus.yassos.support.props.YassosSessionProps;
-import io.github.hylexus.yassos.support.session.SessionInfoEnhancer;
-import io.github.hylexus.yassos.support.session.SessionManager;
 import io.github.hylexus.yassos.support.session.SimpleYassosSession;
 import io.github.hylexus.yassos.support.session.SimpleYassosSessionAttr;
+import io.github.hylexus.yassos.support.session.enhance.SessionInfoEnhancer;
+import io.github.hylexus.yassos.support.session.manager.SessionManager;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDateTime;
@@ -23,8 +23,9 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
-import static io.github.hylexus.yassos.client.utils.ConfigurationKeys.CALLBACK_ADDRESS_NAME;
+import static io.github.hylexus.yassos.core.config.ConfigurationKeys.CALLBACK_ADDRESS_NAME;
 
 /**
  * @author hylexus
@@ -81,35 +82,47 @@ public class SsoController {
 
         final String username = usernamePasswordToken.getUsername();
 
-        log.debug("1. user [{}] attempt to login.", username);
+        log.debug("user [{}] attempt to login.", username);
+
         final UserDetails userDetails = userService.login(usernamePasswordToken);
 
-        final String sessionId = tokenGenerator.generateToken(request, response, usernamePasswordToken);
-        log.debug("2. sessionId generated : {}", sessionId);
-
-        YassosSession yassosSession = this.buildSessionInfo(sessionId, userDetails);
-        log.debug("3. built session : {}", yassosSession);
-
-        if (this.sessionInfoEnhancer != null) {
-            yassosSession = this.sessionInfoEnhancer.enhance(yassosSession, userDetails);
-            log.debug("4. enhanced session : {}", yassosSession);
-        }
-
-        sessionManager.put(sessionId, yassosSession);
-        log.debug("5. putted to sessionManager");
+        final YassosSession yassosSession = buildSession(request, response, usernamePasswordToken, userDetails);
 
         final String originalUrl;
         if (callbackUrl.equalsIgnoreCase(DEFAULT_CALLBACK_URI)) {
-            originalUrl = CommonUtils.generateCallbackUrl(DEFAULT_CALLBACK_URI, sessionId);
+            originalUrl = CommonUtils.generateCallbackUrl(DEFAULT_CALLBACK_URI, yassosSession.getToken());
         } else {
-            originalUrl = CommonUtils.generateCallbackUrl(callbackUrl, sessionId);
+            originalUrl = CommonUtils.generateCallbackUrl(callbackUrl, yassosSession.getToken());
         }
 
         response.sendRedirect(originalUrl);
-        log.debug("6. redirect to <{}> after login", originalUrl);
+        log.debug("redirect to <{}> after login", originalUrl);
     }
 
-    private YassosSession buildSessionInfo(String sessionId, UserDetails user) {
+    private YassosSession buildSession(HttpServletRequest request, HttpServletResponse response, UsernamePasswordToken usernamePasswordToken, UserDetails userDetails) {
+        final Optional<YassosSession> existingSession = this.sessionManager.getSessionByUsername(usernamePasswordToken.getUsername(), true);
+        if (existingSession.isPresent()) {
+            log.debug("return a existing session");
+            return existingSession.get();
+        }
+
+        final String token = tokenGenerator.generateToken(request, response, usernamePasswordToken);
+        log.debug("token generated : {}", token);
+
+        YassosSession session = this.createNewSession(token, userDetails);
+        log.debug("built session : {}", session);
+
+        if (this.sessionInfoEnhancer != null) {
+            session = this.sessionInfoEnhancer.enhance(session, userDetails);
+            log.debug("enhanced session : {}", session);
+        }
+
+        sessionManager.put(token, session);
+        log.debug("a new session putted to sessionManager");
+        return session;
+    }
+
+    private YassosSession createNewSession(String sessionId, UserDetails user) {
 
         final LocalDateTime now = org.joda.time.LocalDateTime.now();
         final LocalDateTime expiredAt = now.plusSeconds((int) sessionProps.getIdleTime().getSeconds());
@@ -140,8 +153,13 @@ public class SsoController {
     @ResponseBody
     @GetMapping("/validate")
     public YassosSession userInfo(@RequestParam("token") String token) {
-        YassosSession yassosSession = sessionManager.getSessionByToken(token, true);
-        log.debug("validate session: {}", yassosSession);
-        return yassosSession;
+        final Optional<YassosSession> sessionInfo = sessionManager.getSessionByToken(token, true);
+        if (sessionInfo.isPresent()) {
+            YassosSession session = sessionInfo.get();
+            log.debug("[validate-session] token={}, result: {}", token, session);
+            return session;
+        }
+        log.debug("[validate-session] token={}, result: null", token);
+        return null;
     }
 }

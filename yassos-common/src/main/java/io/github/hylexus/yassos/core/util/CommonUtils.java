@@ -1,11 +1,11 @@
-package io.github.hylexus.yassos.client.utils;
+package io.github.hylexus.yassos.core.util;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Objects;
 
-import static io.github.hylexus.yassos.client.utils.ConfigurationKeys.CONFIG_TOKEN;
+import static io.github.hylexus.yassos.core.config.ConfigurationKeys.CONFIG_TOKEN;
 
 /**
  * @author hylexus

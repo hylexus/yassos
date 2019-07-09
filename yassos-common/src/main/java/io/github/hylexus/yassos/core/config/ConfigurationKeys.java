@@ -1,8 +1,6 @@
-package io.github.hylexus.yassos.client.utils;
+package io.github.hylexus.yassos.core.config;
 
-import io.github.hylexus.yassos.client.config.ConfigurationKey;
-
-import static io.github.hylexus.yassos.client.config.ConfigurationKey.ConfigurationKeyValidator.NOT_EMPTY;
+import static io.github.hylexus.yassos.core.config.ConfigurationKey.ConfigurationKeyValidator.NOT_EMPTY;
 
 /**
  * @author hylexus

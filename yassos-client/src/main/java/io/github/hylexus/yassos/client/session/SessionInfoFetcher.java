@@ -1,7 +1,7 @@
-package io.github.hylexus.yassos.client.token;
+package io.github.hylexus.yassos.client.session;
 
 import io.github.hylexus.yassos.client.exception.TokenValidateException;
-import io.github.hylexus.yassos.client.model.YassosSession;
+import io.github.hylexus.yassos.core.session.YassosSession;
 
 /**
  * @author hylexus

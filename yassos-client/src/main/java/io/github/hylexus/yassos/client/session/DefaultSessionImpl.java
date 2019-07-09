@@ -1,5 +1,7 @@
-package io.github.hylexus.yassos.client.model;
+package io.github.hylexus.yassos.client.session;
 
+import io.github.hylexus.yassos.core.session.YassosSession;
+import io.github.hylexus.yassos.core.session.YassosSessionAttr;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

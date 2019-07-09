@@ -1,6 +1,6 @@
 package cn.yassos.sample.boot.model;
 
-import io.github.hylexus.yassos.client.model.YassosSessionAttr;
+import io.github.hylexus.yassos.core.session.YassosSessionAttr;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

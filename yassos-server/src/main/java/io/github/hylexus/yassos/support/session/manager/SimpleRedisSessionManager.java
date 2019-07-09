@@ -1,8 +1,9 @@
-package io.github.hylexus.yassos.support.session;
+package io.github.hylexus.yassos.support.session.manager;
 
-import io.github.hylexus.yassos.client.model.YassosSession;
-import io.github.hylexus.yassos.client.model.YassosSessionAttr;
-import io.github.hylexus.yassos.support.props.YassosSessionProps;
+import io.github.hylexus.yassos.core.session.YassosSession;
+import io.github.hylexus.yassos.core.session.YassosSessionAttr;
+import io.github.hylexus.yassos.support.session.SimpleYassosSession;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -24,16 +26,10 @@ import java.util.concurrent.TimeUnit;
  * Created At 2019-07-03 22:02
  */
 @Slf4j
-public class SimpleRedisSessionManager implements SessionManager {
-
-    @Autowired
-    private YassosSessionProps sessionProps;
+public class SimpleRedisSessionManager extends AbstractSessionManager {
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
-
-    @Autowired
-    private YassosSessionAttrConverter sessionAttrConverter;
 
     private static final String HASH_KEY_USERNAME = "username";
     private static final String HASH_KEY_TOKEN = "token";
@@ -42,13 +38,13 @@ public class SimpleRedisSessionManager implements SessionManager {
     private static final String HASH_KEY_SESSION_ATTR = "attr";
 
     @Override
-    public YassosSession getSessionByToken(String token, boolean updateLastAccessTime) {
-        String tokenKey = generateTokenKey(token);
+    public Optional<YassosSession> getSessionByToken(String token, boolean updateLastAccessTime) {
+        final String tokenKey = generateTokenKey(token);
 
-        SimpleYassosSession session = new SimpleYassosSession();
-        Map<Object, Object> entries = redisTemplate.opsForHash().entries(tokenKey);
+        final SimpleYassosSession session = new SimpleYassosSession();
+        final Map<Object, Object> entries = redisTemplate.opsForHash().entries(tokenKey);
         if (CollectionUtils.isEmpty(entries)) {
-            return null;
+            return Optional.empty();
         }
 
         session.setUsername(entries.getOrDefault(HASH_KEY_USERNAME, "").toString());
@@ -57,7 +53,7 @@ public class SimpleRedisSessionManager implements SessionManager {
         session.setAuthenticationDate(string2Date(entries.getOrDefault(HASH_KEY_CREATED_AT, "").toString()));
         session.setLastAccessTime(string2Date(entries.getOrDefault(HASH_KEY_LAST_ACCESS_TIME, "").toString()));
 
-        YassosSessionAttr sessionAttr = sessionAttrConverter.fromString(entries.getOrDefault(HASH_KEY_SESSION_ATTR, "{}").toString());
+        final YassosSessionAttr sessionAttr = sessionAttrConverter.fromString(entries.getOrDefault(HASH_KEY_SESSION_ATTR, "{}").toString());
         session.setSessionAttr(sessionAttr);
 
         if (updateLastAccessTime) {
@@ -75,21 +71,20 @@ public class SimpleRedisSessionManager implements SessionManager {
         if (expire != null) {
             session.setExpiredAt(session.getLastAccessTime() + expire);
         }
-        return session;
+
+        return Optional.of(session);
     }
 
-    private void ttl(String key) {
-        redisTemplate.expire(key, sessionProps.getIdleTime().getSeconds(), TimeUnit.SECONDS);
-    }
+    @Override
+    public Optional<String> getTokenByUsername(@NonNull String username) {
+        final String usernameKey = generateUsernameKey(username);
+        final String token = redisTemplate.opsForValue().get(usernameKey);
 
-    private String date2String(Long localDateTime) {
-        return String.valueOf(localDateTime);
-    }
+        if (StringUtils.isBlank(token)) {
+            return Optional.empty();
+        }
 
-    private Long string2Date(String str) {
-        if (StringUtils.isEmpty(str))
-            return null;
-        return Long.valueOf(str);
+        return Optional.of(token);
     }
 
     @Override
@@ -119,12 +114,17 @@ public class SimpleRedisSessionManager implements SessionManager {
         redisTemplate.delete(generateUsernameKey(token));
     }
 
-    private String generateTokenKey(String token) {
-        return sessionProps.getRedis().getKeyPrefix() + token;
+    private String date2String(Long localDateTime) {
+        return String.valueOf(localDateTime);
     }
 
-    private String generateUsernameKey(String username) {
-        return sessionProps.getRedis().getKeyPrefix() + username;
+    private Long string2Date(String str) {
+        if (StringUtils.isEmpty(str))
+            return null;
+        return Long.valueOf(str);
     }
 
+    private void ttl(String key) {
+        redisTemplate.expire(key, sessionProps.getIdleTime().getSeconds(), TimeUnit.SECONDS);
+    }
 }

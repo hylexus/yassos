@@ -1,4 +1,4 @@
-package io.github.hylexus.yassos.client.model;
+package io.github.hylexus.yassos.core.session;
 
 import lombok.Getter;
 import lombok.Setter;

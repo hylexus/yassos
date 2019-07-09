@@ -1,6 +1,6 @@
 package cn.yassos.sample.boot.controller;
 
-import io.github.hylexus.yassos.client.utils.ConfigurationKeys;
+import io.github.hylexus.yassos.core.config.ConfigurationKeys;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 

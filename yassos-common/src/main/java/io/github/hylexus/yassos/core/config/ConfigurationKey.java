@@ -16,11 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.github.hylexus.yassos.client.config;
+package io.github.hylexus.yassos.core.config;
 
 
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Objects;
@@ -32,7 +31,6 @@ import java.util.Objects;
  * @author Scott Battaglia
  * @since 3.4.0
  */
-@Slf4j
 public final class ConfigurationKey<E> {
 
     @Getter

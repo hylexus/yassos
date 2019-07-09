@@ -1,6 +1,6 @@
 package io.github.hylexus.yassos.client.repo;
 
-import io.github.hylexus.yassos.client.model.YassosSession;
+import io.github.hylexus.yassos.core.session.YassosSession;
 
 /**
  * @author hylexus

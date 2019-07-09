@@ -10,7 +10,7 @@
     <modules>
         <module>yassos-client</module>
         <module>yassos-server</module>
-        <module>yassos-core</module>
+        <module>yassos-common</module>
         <module>yassos-samples</module>
     </modules>
     <packaging>pom</packaging>
@@ -29,6 +29,18 @@
                 <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.hylexus</groupId>
+                <artifactId>yassos-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.hylexus</groupId>
+                <artifactId>yassos-client</artifactId>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
@@ -74,28 +86,22 @@
     <build>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.1</version>
-                    <configuration>
-                        <source>${java.version}</source>
-                        <target>${java.version}</target>
-                    </configuration>
-                </plugin>
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>2.3.2</version>
                     <configuration>
-                        <source>1.8</source>
-                        <target>1.8</target>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
                         <encoding>${project.build.sourceEncoding}</encoding>
-                        <compilerVersion>1.8</compilerVersion>
+                        <compilerVersion>${java.version}</compilerVersion>
                         <annotationProcessors>
-                            <annotationProcessor>org.springframework.boot.configurationprocessor.ConfigurationMetadataAnnotationProcessor</annotationProcessor>
-                            <annotationProcessor>lombok.launch.AnnotationProcessorHider$AnnotationProcessor</annotationProcessor>
+                            <annotationProcessor>
+                                org.springframework.boot.configurationprocessor.ConfigurationMetadataAnnotationProcessor
+                            </annotationProcessor>
+                            <annotationProcessor>lombok.launch.AnnotationProcessorHider$AnnotationProcessor
+                            </annotationProcessor>
                             <!--                        <annotationProcessor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</annotationProcessor>-->
                         </annotationProcessors>
                     </configuration>

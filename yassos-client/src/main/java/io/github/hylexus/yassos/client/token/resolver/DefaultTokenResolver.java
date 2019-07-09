@@ -8,7 +8,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
-import static io.github.hylexus.yassos.client.utils.ConfigurationKeys.CONFIG_TOKEN;
+import static io.github.hylexus.yassos.core.config.ConfigurationKeys.CONFIG_TOKEN;
 
 @Slf4j
 public class DefaultTokenResolver implements TokenResolver {

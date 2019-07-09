@@ -1,5 +1,4 @@
-package io.github.hylexus.yassos.client.model;
-
+package io.github.hylexus.yassos.core.session;
 
 /**
  * @author hylexus
@@ -15,6 +14,8 @@ public interface YassosSession {
     Long getAuthenticationDate();
 
     Long getLastAccessTime();
+
+    YassosSession setLastAccessTime(Long lastAccessTime);
 
     Long getExpiredAt();
 
@@ -49,6 +50,11 @@ public interface YassosSession {
 
         @Override
         public Long getLastAccessTime() {
+            return null;
+        }
+
+        @Override
+        public YassosSession setLastAccessTime(Long lastAccessTime) {
             return null;
         }
 

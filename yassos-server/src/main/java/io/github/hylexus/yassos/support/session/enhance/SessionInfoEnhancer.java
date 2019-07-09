@@ -1,6 +1,6 @@
-package io.github.hylexus.yassos.support.session;
+package io.github.hylexus.yassos.support.session.enhance;
 
-import io.github.hylexus.yassos.client.model.YassosSession;
+import io.github.hylexus.yassos.core.session.YassosSession;
 import io.github.hylexus.yassos.support.model.UserDetails;
 
 /**
