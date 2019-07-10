@@ -3,8 +3,6 @@ package io.github.hylexus.yassos;
 import io.github.hylexus.yassos.service.UserDetailService;
 import io.github.hylexus.yassos.support.model.DefaultUserDetails;
 import io.github.hylexus.yassos.support.model.UserDetails;
-import io.github.hylexus.yassos.support.session.manager.SessionManager;
-import io.github.hylexus.yassos.support.session.manager.SimpleRedisSessionManager;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -19,11 +17,6 @@ import java.util.Random;
 public class YassosServerApplication {
     public static void main(String[] args) {
         SpringApplication.run(YassosServerApplication.class, args);
-    }
-
-    @Bean
-    public SessionManager sessionManager() {
-        return new SimpleRedisSessionManager();
     }
 
     @Bean

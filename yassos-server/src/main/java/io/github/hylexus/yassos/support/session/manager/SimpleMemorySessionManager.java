@@ -45,12 +45,19 @@ public class SimpleMemorySessionManager extends AbstractSessionManager implement
 
     @Override
     public void put(String token, YassosSession yassosSession) {
-        sessionCache.put(token, yassosSession);
+        sessionCache.put(generateTokenKey(token), yassosSession);
+        usernameCache.put(generateUsernameKey(yassosSession.getUsername()), token);
     }
 
     @Override
     public void removeSessionByToken(String token) {
-        sessionCache.invalidate(token);
+        String tokenKey = generateTokenKey(token);
+        YassosSession session = sessionCache.getIfPresent(tokenKey);
+        if (session != null) {
+            String usernameKey = generateUsernameKey(session.getUsername());
+            usernameCache.invalidate(usernameKey);
+        }
+        sessionCache.invalidate(tokenKey);
     }
 
     @Override
