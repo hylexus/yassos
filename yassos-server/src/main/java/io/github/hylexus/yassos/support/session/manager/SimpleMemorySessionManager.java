@@ -26,8 +26,8 @@ public class SimpleMemorySessionManager extends AbstractSessionManager implement
 
     @Override
     public Optional<YassosSession> getSessionByToken(String token, boolean updateLastAccessTime) {
-        String tokenKey = generateTokenKey(token);
-        YassosSession session = sessionCache.getIfPresent(tokenKey);
+        final String tokenKey = generateTokenKey(token);
+        final YassosSession session = sessionCache.getIfPresent(tokenKey);
         if (session == null) {
             return Optional.empty();
         }
@@ -39,7 +39,7 @@ public class SimpleMemorySessionManager extends AbstractSessionManager implement
             final String usernameKey = generateUsernameKey(session.getUsername());
             usernameCache.put(usernameKey, session.getToken());
         }
-
+        session.setExpiredAt(session.getLastAccessTime() + globalProps.getSession().getIdleTime().getSeconds());
         return Optional.of(session);
     }
 
@@ -50,9 +50,9 @@ public class SimpleMemorySessionManager extends AbstractSessionManager implement
     }
 
     @Override
-    public void removeSessionByToken(String token) {
-        String tokenKey = generateTokenKey(token);
-        YassosSession session = sessionCache.getIfPresent(tokenKey);
+    public void removeSessionByToken(@NonNull String token) {
+        final String tokenKey = generateTokenKey(token);
+        final YassosSession session = sessionCache.getIfPresent(tokenKey);
         if (session != null) {
             String usernameKey = generateUsernameKey(session.getUsername());
             usernameCache.invalidate(usernameKey);
@@ -75,12 +75,12 @@ public class SimpleMemorySessionManager extends AbstractSessionManager implement
         final long ttlInSeconds = globalProps.getSession().getIdleTime().getSeconds();
 
         sessionCache = CacheBuilder.newBuilder()
-                .expireAfterWrite(ttlInSeconds, TimeUnit.SECONDS)
+                .expireAfterAccess(ttlInSeconds, TimeUnit.SECONDS)
                 .recordStats()
                 .build();
 
         usernameCache = CacheBuilder.newBuilder()
-                .expireAfterWrite(ttlInSeconds, TimeUnit.SECONDS)
+                .expireAfterAccess(ttlInSeconds, TimeUnit.SECONDS)
                 .recordStats()
                 .build();
     }

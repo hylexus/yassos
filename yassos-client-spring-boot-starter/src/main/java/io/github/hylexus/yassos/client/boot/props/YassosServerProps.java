@@ -1,4 +1,4 @@
-package io.github.hylexus.boot.props;
+package io.github.hylexus.yassos.client.boot.props;
 
 import lombok.Getter;
 import lombok.Setter;

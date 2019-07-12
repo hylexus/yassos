@@ -15,6 +15,6 @@ import java.time.Duration;
 @ConfigurationProperties(prefix = "yassos.session")
 public class YassosSessionProps {
 
-    private Duration idleTime = Duration.ofMinutes(10);
+    private Duration idleTime = Duration.ofMinutes(30);
     private YassosRedisSessionStoreProps redis = new YassosRedisSessionStoreProps();
 }

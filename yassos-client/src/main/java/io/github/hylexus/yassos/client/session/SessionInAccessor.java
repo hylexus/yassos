@@ -7,20 +7,21 @@ import io.github.hylexus.yassos.core.session.YassosSession;
  * @author hylexus
  * Created At 2019-06-10 21:57
  */
-public interface SessionInfoFetcher {
+public interface SessionInAccessor {
     /**
      * @param token ticket
-     * @param url   the target url to access with this {@code token} (ticket)
-     * @return current session info if
+     * @param url   the target url to <b>fetch</b> information about this {@code token} (ticket) .
+     * @return current session information
      * @throws TokenValidateException throw an exception if token validation fails.
      */
     YassosSession fetchSessionInfo(String token, String url) throws TokenValidateException;
 
     /**
      * @param token ticket
-     * @return true if the token is expired successfully
+     * @param url   the target url to <b>destroy</b> this {@code token} (ticket)
+     * @return true if the token was destroyed successfully
      * @throws TokenValidateException throw an exception if the communication to SSO-server is abnormal or other abnormalities occur
      */
-    boolean expireToken(String token) throws TokenValidateException;
+    boolean destroyToken(String token, String url) throws TokenValidateException;
 
 }

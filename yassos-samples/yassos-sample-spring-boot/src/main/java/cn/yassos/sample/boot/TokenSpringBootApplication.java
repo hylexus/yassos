@@ -9,7 +9,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 public class TokenSpringBootApplication {
+
     public static void main(String[] args) {
         SpringApplication.run(TokenSpringBootApplication.class, args);
     }
+
 }

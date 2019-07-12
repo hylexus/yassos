@@ -1,14 +1,14 @@
-package io.github.hylexus.boot.config;
+package io.github.hylexus.yassos.client.boot.config;
 
-import io.github.hylexus.boot.props.YassosClientProps;
-import io.github.hylexus.boot.props.YassosFilterMetadataProps;
-import io.github.hylexus.boot.props.YassosServerProps;
+import io.github.hylexus.yassos.client.boot.props.YassosClientProps;
+import io.github.hylexus.yassos.client.boot.props.YassosFilterMetadataProps;
+import io.github.hylexus.yassos.client.boot.props.YassosServerProps;
 import io.github.hylexus.yassos.client.filter.AbstractYassosSingOnFilter;
 import io.github.hylexus.yassos.client.filter.DefaultYassosSinOnFilter;
 import io.github.hylexus.yassos.client.redirect.DefaultRedirectStrategy;
 import io.github.hylexus.yassos.client.redirect.RedirectStrategy;
-import io.github.hylexus.yassos.client.session.HttpSessionInfoFetcher;
-import io.github.hylexus.yassos.client.session.SessionInfoFetcher;
+import io.github.hylexus.yassos.client.session.HttpSessionInAccessor;
+import io.github.hylexus.yassos.client.session.SessionInAccessor;
 import io.github.hylexus.yassos.client.token.resolver.DefaultTokenResolver;
 import io.github.hylexus.yassos.client.token.resolver.TokenResolver;
 import lombok.extern.slf4j.Slf4j;
@@ -46,13 +46,13 @@ public class YassosClientAutoConfiguration {
     @ConditionalOnProperty(prefix = "yassos.client", name = "enable", havingValue = "true")
     public FilterRegistrationBean<AbstractYassosSingOnFilter> yassosSingOnFilterFilterRegistrationBean(
             TokenResolver tokenResolver,
-            SessionInfoFetcher sessionInfoFetcher,
+            SessionInAccessor sessionInAccessor,
             RedirectStrategy redirectStrategy) {
 
         final AbstractYassosSingOnFilter filter = new DefaultYassosSinOnFilter();
 
         filter.setTokenResolver(tokenResolver);
-        filter.setSessionInfoFetcher(sessionInfoFetcher);
+        filter.setSessionInAccessor(sessionInAccessor);
         filter.setRedirectStrategy(redirectStrategy);
 
         filter.setIgnoreUriPatterns(clientProps.getIgnoreUriPatterns());
@@ -88,9 +88,9 @@ public class YassosClientAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean(SessionInfoFetcher.class)
-    public SessionInfoFetcher sessionInfoFetcher() {
-        log.info("|:-- use HttpSessionInfoFetcher");
-        return new HttpSessionInfoFetcher();
+    @ConditionalOnMissingBean(SessionInAccessor.class)
+    public SessionInAccessor sessionInfoFetcher() {
+        log.info("|:-- use HttpSessionInAccessor");
+        return new HttpSessionInAccessor();
     }
 }

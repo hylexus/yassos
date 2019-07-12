@@ -18,7 +18,7 @@ import static io.github.hylexus.yassos.core.session.YassosSession.INVALID_SESSIO
  * Created At 2019-06-11 21:35
  */
 @Slf4j
-public class HttpSessionInfoFetcher implements SessionInfoFetcher {
+public class HttpSessionInAccessor implements SessionInAccessor {
 
     final private OkHttpClient client = new OkHttpClient();
 
@@ -65,7 +65,8 @@ public class HttpSessionInfoFetcher implements SessionInfoFetcher {
     }
 
     @Override
-    public boolean expireToken(String token) throws TokenValidateException {
+    public boolean destroyToken(String token, String url) throws TokenValidateException {
+        // TODO destroy token
         return false;
     }
 

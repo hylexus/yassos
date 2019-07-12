@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  io.github.hylexus.boot.config.YassosClientAutoConfiguration
+  io.github.hylexus.yassos.client.boot.config.YassosClientAutoConfiguration

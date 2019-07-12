@@ -109,7 +109,7 @@ public class SimpleRedisSessionManager extends AbstractSessionManager {
     }
 
     @Override
-    public void removeSessionByToken(String token) {
+    public void removeSessionByToken(@NonNull String token) {
         redisTemplate.delete(generateTokenKey(token));
         redisTemplate.delete(generateUsernameKey(token));
     }

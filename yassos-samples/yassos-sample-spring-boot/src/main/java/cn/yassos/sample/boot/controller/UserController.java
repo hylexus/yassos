@@ -1,6 +1,7 @@
 package cn.yassos.sample.boot.controller;
 
-import io.github.hylexus.yassos.core.config.ConfigurationKeys;
+import io.github.hylexus.yassos.client.boot.props.YassosClientProps;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,11 +14,15 @@ import javax.servlet.http.HttpSession;
 @RestController
 public class UserController {
 
-    private static final String DEFAULT_DATETIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    /**
+     * registered by {@link io.github.hylexus.yassos.client.boot.config.YassosClientAutoConfiguration}
+     */
+    @Autowired
+    private YassosClientProps clientProps;
 
     @GetMapping("/user/me")
     public Object userInfo(HttpSession session) {
-        Object attribute = session.getAttribute(ConfigurationKeys.CONFIG_SESSION_KEY.getDefaultValue());
+        Object attribute = session.getAttribute(clientProps.getSessionKey());
         if (attribute != null) {
             return attribute;
         }

@@ -12,7 +12,7 @@ spring:
     database: 0
 yassos:
   session:
-    idle-time: 20m
+    idle-time: 30m
     redis:
       key-prefix: 'yassos_session:'
   cookie:
