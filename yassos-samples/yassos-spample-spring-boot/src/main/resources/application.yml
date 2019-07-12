@@ -1,0 +1,27 @@
+server:
+  port: 1010
+  servlet:
+    context-path: /client
+logging:
+  level:
+    io.github.hylexus.yassos: debug
+yassos:
+  client:
+    enable: true
+    ignore-uri-patterns:
+      - /*.ico
+      - /*.js
+      - /*.css
+    encode-url: false
+    logout-uri: /logout
+    throw-exception-if-token-validate-exception: true
+    use-session: true
+    session-key: yassos_session_key
+  server:
+    server-url-prefix: http://sso.mine.com:9000/
+    sign-on-url: http://sso.mine.com:9000/login
+    sign-out-url: http://sso.mine.com:9000/login
+  filter-metadata:
+    name: yassos-client-filter
+    url-patterns: /*
+    order: 1

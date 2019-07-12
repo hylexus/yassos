@@ -12,6 +12,14 @@ spring:
     database: 0
 yassos:
   session:
-    idle-time: 10m
+    idle-time: 20m
     redis:
       key-prefix: 'yassos_session:'
+  cookie:
+    enabled: true
+    http-only: false
+    secure: false
+    path: /
+    max-age: 40m
+    name: x-yassos-token
+    domain: .mine.com

@@ -1,6 +1,6 @@
 package io.github.hylexus.yassos.support.session.manager;
 
-import io.github.hylexus.yassos.support.props.YassosSessionProps;
+import io.github.hylexus.yassos.support.props.YassosGlobalProps;
 import io.github.hylexus.yassos.support.session.YassosSessionAttrConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -11,18 +11,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class AbstractSessionManager implements SessionManager {
 
     @Autowired
-    protected YassosSessionProps sessionProps;
+    protected YassosGlobalProps globalProps;
 
     @Autowired
     protected YassosSessionAttrConverter sessionAttrConverter;
 
 
     protected String generateTokenKey(String token) {
-        return sessionProps.getRedis().getKeyPrefix() + token;
+        return globalProps.getSession().getRedis().getKeyPrefix() + token;
     }
 
     protected String generateUsernameKey(String username) {
-        return sessionProps.getRedis().getKeyPrefix() + username;
+        return globalProps.getSession().getRedis().getKeyPrefix() + username;
     }
 
 }

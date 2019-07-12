@@ -22,7 +22,6 @@ import org.springframework.context.annotation.Bean;
  * Created At 2019-07-03 22:00
  */
 @Slf4j
-@EnableConfigurationProperties({YassosSessionProps.class})
 public class BuiltinYassosServerConfig implements ApplicationContextAware {
 
     protected ApplicationContext applicationContext;

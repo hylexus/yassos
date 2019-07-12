@@ -125,6 +125,6 @@ public class SimpleRedisSessionManager extends AbstractSessionManager {
     }
 
     private void ttl(String key) {
-        redisTemplate.expire(key, sessionProps.getIdleTime().getSeconds(), TimeUnit.SECONDS);
+        redisTemplate.expire(key, globalProps.getSession().getIdleTime().getSeconds(), TimeUnit.SECONDS);
     }
 }

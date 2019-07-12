@@ -7,7 +7,7 @@ import io.github.hylexus.yassos.client.session.HttpSessionInfoFetcher;
 import io.github.hylexus.yassos.client.session.SessionInfoFetcher;
 import io.github.hylexus.yassos.client.token.resolver.DefaultTokenResolver;
 import io.github.hylexus.yassos.client.token.resolver.TokenResolver;
-import io.github.hylexus.yassos.core.config.ConfigurationKey;
+import io.github.hylexus.yassos.client.util.ServletUtils;
 import io.github.hylexus.yassos.core.config.ConfigurationKeys;
 import io.github.hylexus.yassos.core.session.YassosSession;
 import io.github.hylexus.yassos.core.util.AntPathMatcher;
@@ -23,11 +23,11 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
 
+import static io.github.hylexus.yassos.client.util.ServletUtils.initBoolean;
+import static io.github.hylexus.yassos.client.util.ServletUtils.initString;
 import static io.github.hylexus.yassos.core.config.ConfigurationKeys.*;
 
 /**
@@ -47,15 +47,17 @@ public abstract class AbstractYassosSingOnFilter implements Filter {
 
     protected SessionInfoFetcher sessionInfoFetcher;
 
-    protected Set<String> ignoreAntPatterns;
+    protected List<String> ignoreUriPatterns;
 
-    protected String loginUrl;
+    protected String ssoServerLoginUrl;
 
-    protected String logoutUri;
+    protected String ssoServerLogoutUrl;
+
+    protected String ssoServerUrlPrefix;
+
+    protected String clientSideLogoutUri;
 
     protected Boolean encodeUrl;
-
-    protected String serverUrlPrefix;
 
     protected Boolean throwExceptionIfTokenValidateException;
 
@@ -80,19 +82,19 @@ public abstract class AbstractYassosSingOnFilter implements Filter {
             log.info("sessionInfoFetcher is null, use default implementation {} instead", HttpSessionInfoFetcher.class.getName());
             this.sessionInfoFetcher = new HttpSessionInfoFetcher();
         }
-        if (this.ignoreAntPatterns == null) {
-            this.ignoreAntPatterns = new HashSet<>();
+        if (this.ignoreUriPatterns == null) {
+            this.ignoreUriPatterns = ServletUtils.initIgnoreUriPattern(filterConfig);
         }
-        log.info("ignoredAntPatterns:");
-        for (String pattern : this.ignoreAntPatterns) {
+        log.info("|:-- ignoredAntPatterns:");
+        for (String pattern : this.ignoreUriPatterns) {
             log.info("\t{}", pattern);
         }
         // sso-server-url-prefix
-        initString(filterConfig, () -> this.serverUrlPrefix == null, this::setServerUrlPrefix, CONFIG_SOO_SERVER_URL_PREFIX, true);
+        initString(filterConfig, () -> this.ssoServerUrlPrefix == null, this::setSsoServerUrlPrefix, CONFIG_SOO_SERVER_URL_PREFIX, true);
         // sso-server login url
-        initString(filterConfig, () -> this.loginUrl == null, this::setLoginUrl, CONFIG_SSO_SERVER_LOGIN_URL, true);
+        initString(filterConfig, () -> this.ssoServerLoginUrl == null, this::setSsoServerLoginUrl, CONFIG_SSO_SERVER_LOGIN_URL, true);
         // client logout url
-        initString(filterConfig, () -> this.logoutUri == null, this::setLogoutUri, CONFIG_CLIENT_LOGOUT_URI, true);
+        initString(filterConfig, () -> this.clientSideLogoutUri == null, this::setClientSideLogoutUri, CONFIG_CLIENT_LOGOUT_URI, true);
 
         // throw-exception-if-validate-exception
         initBoolean(filterConfig, () -> this.throwExceptionIfTokenValidateException == null, this::setThrowExceptionIfTokenValidateException, CONFIG_THROW_EXCEPTION_IF_VALIDATE_EXCEPTION);
@@ -108,46 +110,8 @@ public abstract class AbstractYassosSingOnFilter implements Filter {
 
     }
 
-    protected void initString(FilterConfig filterConfig, BooleanSupplier supplier, Consumer<String> consumer, ConfigurationKey<String> configurationKey, boolean forceValidate) {
-        if (!supplier.getAsBoolean())
-            return;
-        final String name = configurationKey.getName();
-        final String defaultValue = configurationKey.getDefaultValue();
-        final String initParameter = filterConfig.getInitParameter(name);
-        if (StringUtils.isEmpty(initParameter)) {
-            log.info("[{}] is null, use default value <{}>", name, defaultValue);
-            consumer.accept(defaultValue);
-        } else {
-            log.info("parse [{}] from filterConfig, value : <{}>", name, initParameter);
-            configurationKey.validate(initParameter, forceValidate);
-            consumer.accept(initParameter);
-        }
-
-    }
-
-    protected void initBoolean(FilterConfig filterConfig, BooleanSupplier supplier, Consumer<Boolean> consumer, ConfigurationKey<Boolean> configKey) {
-        if (!supplier.getAsBoolean())
-            return;
-
-        final String name = configKey.getName();
-        final Boolean defaultValue = configKey.getDefaultValue();
-        final String initParameter = filterConfig.getInitParameter(name);
-        if (StringUtils.isEmpty(initParameter)) {
-            log.info("[{}] is null, use default value <{}>", name, defaultValue);
-            consumer.accept(defaultValue);
-        } else {
-            try {
-                consumer.accept(Boolean.parseBoolean(initParameter));
-            } catch (Exception e) {
-                consumer.accept(defaultValue);
-                log.error("parse [{}] error, use default value <{}>", name, defaultValue);
-            }
-        }
-
-    }
-
     protected boolean shouldBeIgnored(String uri) {
-        for (String pattern : this.ignoreAntPatterns) {
+        for (String pattern : this.ignoreUriPatterns) {
             if (this.pathMatcher.match(pattern, uri)) {
                 log.debug("uri [{}] was ignored by pattern [{}]", uri, pattern);
                 return true;
@@ -221,7 +185,7 @@ public abstract class AbstractYassosSingOnFilter implements Filter {
             return false;
         }
 
-        return this.pathMatcher.match(this.logoutUri, uri);
+        return this.pathMatcher.match(this.clientSideLogoutUri, uri);
     }
 
     protected void doAfterLogout(HttpServletRequest req, HttpServletResponse resp, FilterChain chain, String token) throws IOException {
@@ -239,18 +203,18 @@ public abstract class AbstractYassosSingOnFilter implements Filter {
     protected String generateRedirectToLoginUrl(HttpServletRequest request) {
         // eg. http://localhost:8080/yassos/login?cb=${originalUrl}
         if (this.encodeUrl) {
-            return String.format("%s?%s=%s", loginUrl, ConfigurationKeys.CALLBACK_ADDRESS_NAME, this.encodeUrl(request.getRequestURL().toString()));
+            return String.format("%s?%s=%s", ssoServerLoginUrl, ConfigurationKeys.CALLBACK_ADDRESS_NAME, this.encodeUrl(request.getRequestURL().toString()));
         }
-        return String.format("%s?%s=%s", loginUrl, ConfigurationKeys.CALLBACK_ADDRESS_NAME, request.getRequestURL().toString());
+        return String.format("%s?%s=%s", ssoServerLoginUrl, ConfigurationKeys.CALLBACK_ADDRESS_NAME, request.getRequestURL().toString());
     }
 
     protected String generateTokenValidationUrl(String token) {
         final String validateUriName = ConfigurationKeys.CONFIG_TOKEN_VALIDATION_URI.getDefaultValue();
         // eg. http://localhost:8080/validate?token=${token}
         return String.format("%s?token=%s",
-                this.serverUrlPrefix.endsWith("/") ?
-                        this.serverUrlPrefix + validateUriName :
-                        this.serverUrlPrefix + "/" + validateUriName,
+                this.ssoServerUrlPrefix.endsWith("/") ?
+                        this.ssoServerUrlPrefix + validateUriName :
+                        this.ssoServerUrlPrefix + "/" + validateUriName,
                 token
         );
     }

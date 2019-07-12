@@ -12,6 +12,7 @@
         <module>yassos-server</module>
         <module>yassos-common</module>
         <module>yassos-samples</module>
+        <module>yassos-client-spring-boot-starter</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -40,6 +41,12 @@
             <dependency>
                 <groupId>io.github.hylexus</groupId>
                 <artifactId>yassos-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.hylexus</groupId>
+                <artifactId>yassos-client-spring-boot-starter</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -96,14 +103,6 @@
                         <target>${java.version}</target>
                         <encoding>${project.build.sourceEncoding}</encoding>
                         <compilerVersion>${java.version}</compilerVersion>
-                        <annotationProcessors>
-                            <annotationProcessor>
-                                org.springframework.boot.configurationprocessor.ConfigurationMetadataAnnotationProcessor
-                            </annotationProcessor>
-                            <annotationProcessor>lombok.launch.AnnotationProcessorHider$AnnotationProcessor
-                            </annotationProcessor>
-                            <!--                        <annotationProcessor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</annotationProcessor>-->
-                        </annotationProcessors>
                     </configuration>
                 </plugin>
             </plugins>

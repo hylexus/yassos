@@ -7,7 +7,8 @@ import io.github.hylexus.yassos.model.UsernamePasswordToken;
 import io.github.hylexus.yassos.service.TokenGenerator;
 import io.github.hylexus.yassos.service.UserService;
 import io.github.hylexus.yassos.support.model.UserDetails;
-import io.github.hylexus.yassos.support.props.YassosSessionProps;
+import io.github.hylexus.yassos.support.props.YassosCookieProps;
+import io.github.hylexus.yassos.support.props.YassosGlobalProps;
 import io.github.hylexus.yassos.support.session.SimpleYassosSession;
 import io.github.hylexus.yassos.support.session.SimpleYassosSessionAttr;
 import io.github.hylexus.yassos.support.session.enhance.SessionInfoEnhancer;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -48,7 +50,8 @@ public class SsoController {
     private SessionInfoEnhancer sessionInfoEnhancer;
 
     @Autowired
-    private YassosSessionProps sessionProps;
+    private YassosGlobalProps globalProps;
+
 
     @GetMapping("/login")
     public ModelAndView login(@RequestParam(required = false, defaultValue = DEFAULT_CALLBACK_URI, name = CALLBACK_ADDRESS_NAME) String callbackUrl) {
@@ -95,8 +98,26 @@ public class SsoController {
             originalUrl = CommonUtils.generateCallbackUrl(callbackUrl, yassosSession.getToken());
         }
 
+        doAfterLogin(request, response, yassosSession);
+
         response.sendRedirect(originalUrl);
         log.debug("redirect to <{}> after login", originalUrl);
+    }
+
+    private void doAfterLogin(HttpServletRequest request, HttpServletResponse response, YassosSession yassosSession) {
+        if (!globalProps.getCookie().isEnabled()) {
+            log.debug("yassos-cookie was disabled");
+            return;
+        }
+        final YassosCookieProps cookieProps = globalProps.getCookie();
+
+        final Cookie cookie = new Cookie(cookieProps.getName(), yassosSession.getToken());
+        cookie.setDomain(cookieProps.getDomain());
+        cookie.setMaxAge((int) cookieProps.getMaxAge().getSeconds());
+        cookie.setPath(cookieProps.getPath());
+        cookie.setSecure(cookieProps.isSecure());
+        cookie.setHttpOnly(cookieProps.isHttpOnly());
+        response.addCookie(cookie);
     }
 
     private YassosSession buildSession(HttpServletRequest request, HttpServletResponse response, UsernamePasswordToken usernamePasswordToken, UserDetails userDetails) {
@@ -125,7 +146,7 @@ public class SsoController {
     private YassosSession createNewSession(String sessionId, UserDetails user) {
 
         final LocalDateTime now = org.joda.time.LocalDateTime.now();
-        final LocalDateTime expiredAt = now.plusSeconds((int) sessionProps.getIdleTime().getSeconds());
+        final LocalDateTime expiredAt = now.plusSeconds((int) globalProps.getSession().getIdleTime().getSeconds());
         final SimpleYassosSessionAttr sessionAttr = new SimpleYassosSessionAttr()
                 .setAvatarUrl(user.getAvatarUrl());
 

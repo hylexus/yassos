@@ -3,7 +3,7 @@ package io.github.hylexus.yassos.support.session.manager;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import io.github.hylexus.yassos.core.session.YassosSession;
-import io.github.hylexus.yassos.support.props.YassosSessionProps;
+import io.github.hylexus.yassos.support.props.YassosGlobalProps;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 public class SimpleMemorySessionManager extends AbstractSessionManager implements InitializingBean {
 
     @Autowired
-    private YassosSessionProps sessionConfig;
+    private YassosGlobalProps globalProps;
 
     private Cache<String, YassosSession> sessionCache;
     private Cache<String, String> usernameCache;
@@ -72,7 +72,7 @@ public class SimpleMemorySessionManager extends AbstractSessionManager implement
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        final long ttlInSeconds = sessionConfig.getIdleTime().getSeconds();
+        final long ttlInSeconds = globalProps.getSession().getIdleTime().getSeconds();
 
         sessionCache = CacheBuilder.newBuilder()
                 .expireAfterWrite(ttlInSeconds, TimeUnit.SECONDS)

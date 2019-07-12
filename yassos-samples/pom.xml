@@ -13,7 +13,8 @@
 
     <packaging>pom</packaging>
     <modules>
-        <module>yassos-spample-token-spring-boot</module>
+        <module>yassos-spample-spring-boot</module>
+        <module>yassos-sample-web</module>
     </modules>
 
 </project>
