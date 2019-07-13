@@ -3,8 +3,9 @@ package io.github.hylexus.yassos.client.boot.config;
 import io.github.hylexus.yassos.client.boot.props.YassosClientProps;
 import io.github.hylexus.yassos.client.boot.props.YassosFilterMetadataProps;
 import io.github.hylexus.yassos.client.boot.props.YassosServerProps;
-import io.github.hylexus.yassos.client.filter.AbstractYassosSingOnFilter;
-import io.github.hylexus.yassos.client.filter.DefaultYassosSinOnFilter;
+import io.github.hylexus.yassos.client.filter.YassosSingOnFilter;
+import io.github.hylexus.yassos.client.handler.BuiltinLogoutHandlerForDebugging;
+import io.github.hylexus.yassos.client.handler.LogoutHandler;
 import io.github.hylexus.yassos.client.redirect.DefaultRedirectStrategy;
 import io.github.hylexus.yassos.client.redirect.RedirectStrategy;
 import io.github.hylexus.yassos.client.session.HttpSessionInAccessor;
@@ -44,16 +45,18 @@ public class YassosClientAutoConfiguration {
 
     @Bean
     @ConditionalOnProperty(prefix = "yassos.client", name = "enable", havingValue = "true")
-    public FilterRegistrationBean<AbstractYassosSingOnFilter> yassosSingOnFilterFilterRegistrationBean(
+    public FilterRegistrationBean<YassosSingOnFilter> yassosSingOnFilterFilterRegistrationBean(
             TokenResolver tokenResolver,
             SessionInAccessor sessionInAccessor,
-            RedirectStrategy redirectStrategy) {
+            RedirectStrategy redirectStrategy,
+            LogoutHandler logoutHandler) {
 
-        final AbstractYassosSingOnFilter filter = new DefaultYassosSinOnFilter();
+        final YassosSingOnFilter filter = new YassosSingOnFilter();
 
         filter.setTokenResolver(tokenResolver);
         filter.setSessionInAccessor(sessionInAccessor);
         filter.setRedirectStrategy(redirectStrategy);
+        filter.setLogoutHandler(logoutHandler);
 
         filter.setIgnoreUriPatterns(clientProps.getIgnoreUriPatterns());
         filter.setClientSideLogoutUri(clientProps.getLogoutUri());
@@ -65,11 +68,17 @@ public class YassosClientAutoConfiguration {
         filter.setSsoServerLoginUrl(serverProps.getSignOnUrl());
         filter.setSsoServerUrlPrefix(serverProps.getServerUrlPrefix());
 
-        final FilterRegistrationBean<AbstractYassosSingOnFilter> registrationBean = new FilterRegistrationBean<>(filter);
+        final FilterRegistrationBean<YassosSingOnFilter> registrationBean = new FilterRegistrationBean<>(filter);
         registrationBean.setUrlPatterns(filterMetadataProps.getUrlPatterns());
         registrationBean.setOrder(filterMetadataProps.getOrder());
         registrationBean.setName(filterMetadataProps.getName());
         return registrationBean;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(LogoutHandler.class)
+    public LogoutHandler logoutHandler() {
+        return new BuiltinLogoutHandlerForDebugging();
     }
 
     @Bean

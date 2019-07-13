@@ -109,6 +109,11 @@ public class SsoController {
             log.debug("yassos-cookie was disabled");
             return;
         }
+        final Cookie cookie = buildCookie(yassosSession);
+        response.addCookie(cookie);
+    }
+
+    private Cookie buildCookie(YassosSession yassosSession) {
         final YassosCookieProps cookieProps = globalProps.getCookie();
 
         final Cookie cookie = new Cookie(cookieProps.getName(), yassosSession.getToken());
@@ -117,7 +122,7 @@ public class SsoController {
         cookie.setPath(cookieProps.getPath());
         cookie.setSecure(cookieProps.isSecure());
         cookie.setHttpOnly(cookieProps.isHttpOnly());
-        response.addCookie(cookie);
+        return cookie;
     }
 
     private YassosSession buildSession(HttpServletRequest request, HttpServletResponse response, UsernamePasswordToken usernamePasswordToken, UserDetails userDetails) {
@@ -167,7 +172,6 @@ public class SsoController {
         }
         sessionManager.removeSessionByToken(token);
         log.debug("logout.... token : {}", token);
-
         return true;
     }
 

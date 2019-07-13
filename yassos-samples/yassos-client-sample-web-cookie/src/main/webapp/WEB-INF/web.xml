@@ -6,7 +6,7 @@
     <display-name>Archetype Created Web Application</display-name>
     <filter>
         <filter-name>yassosSinOnFilter</filter-name>
-        <filter-class>io.github.hylexus.yassos.client.filter.DefaultYassosSinOnFilter</filter-class>
+        <filter-class>io.github.hylexus.yassos.web.filter.MyYassosSignOnFilter</filter-class>
 
         <init-param>
             <param-name>ssoServerLoginUrl</param-name>
@@ -18,7 +18,7 @@
         </init-param>
         <init-param>
             <param-name>clientSideLogoutUri</param-name>
-            <param-value>/yassos-client-sample-web/logout</param-value>
+            <param-value>/yassos-client-sample-web-cookie/logout</param-value>
         </init-param>
         <init-param>
             <param-name>encodeUrl</param-name>
@@ -38,7 +38,7 @@
         </init-param>
         <init-param>
             <param-name>ignoreUriPatterns</param-name>
-            <param-value>/*/index.jsp,/*/index.html</param-value>
+            <param-value>/yassos-client-sample-web-cookie/,/*/index.jsp,/*/index.html</param-value>
         </init-param>
         <init-param>
             <param-name>tokenName</param-name>

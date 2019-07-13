@@ -1,6 +1,8 @@
 package io.github.hylexus.yassos.client.filter;
 
 
+import io.github.hylexus.yassos.client.handler.BuiltinLogoutHandlerForDebugging;
+import io.github.hylexus.yassos.client.handler.LogoutHandler;
 import io.github.hylexus.yassos.client.redirect.DefaultRedirectStrategy;
 import io.github.hylexus.yassos.client.redirect.RedirectStrategy;
 import io.github.hylexus.yassos.client.session.HttpSessionInAccessor;
@@ -37,7 +39,7 @@ import static io.github.hylexus.yassos.core.config.ConfigurationKeys.*;
 @Setter
 @Getter
 @Accessors(chain = true)
-public abstract class AbstractYassosSingOnFilter implements Filter {
+public class YassosSingOnFilter implements Filter {
 
     protected PathMatcher pathMatcher = new AntPathMatcher();
     protected TokenResolver tokenResolver;
@@ -45,6 +47,8 @@ public abstract class AbstractYassosSingOnFilter implements Filter {
     protected RedirectStrategy redirectStrategy;
 
     protected SessionInAccessor sessionInAccessor;
+
+    protected LogoutHandler logoutHandler;
 
     protected List<String> ignoreUriPatterns;
 
@@ -79,6 +83,12 @@ public abstract class AbstractYassosSingOnFilter implements Filter {
             log.info("sessionInAccessor is null, use default implementation {} instead", HttpSessionInAccessor.class.getName());
             this.sessionInAccessor = new HttpSessionInAccessor();
         }
+
+        if (this.logoutHandler == null) {
+            log.warn("logoutHandler is null, use default implementation {} instead", BuiltinLogoutHandlerForDebugging.class.getName());
+            this.logoutHandler = new BuiltinLogoutHandlerForDebugging();
+        }
+
         if (this.ignoreUriPatterns == null) {
             this.ignoreUriPatterns = ServletUtils.initIgnoreUriPatternFromFilterConfig(filterConfig);
         }
@@ -130,10 +140,10 @@ public abstract class AbstractYassosSingOnFilter implements Filter {
             if (this.isLogoutUrl(req)) {
                 final String token = this.tokenResolver.resolveToken(req).orElse(null);
 
-                this.preLogout(req, resp, token);
+                this.logoutHandler.preLogout(req, resp, token);
                 if (StringUtils.isEmpty(token)) {
                     log.debug("tokenResolver returned a empty token, skipped");
-                    this.postLogout(req, resp, token, null);
+                    this.logoutHandler.postLogout(req, resp, token, null);
                     return;
                 }
 
@@ -144,7 +154,7 @@ public abstract class AbstractYassosSingOnFilter implements Filter {
                         log.debug("logout result = {}", tokenDestroyedSuccessfully);
                     }
                 } finally {
-                    this.postLogout(req, resp, token, tokenDestroyedSuccessfully);
+                    this.logoutHandler.postLogout(req, resp, token, tokenDestroyedSuccessfully);
                 }
                 log.debug("<<< logout.");
                 return;
@@ -195,12 +205,6 @@ public abstract class AbstractYassosSingOnFilter implements Filter {
         }
 
         return this.pathMatcher.match(this.clientSideLogoutUri, uri);
-    }
-
-    protected void preLogout(HttpServletRequest req, HttpServletResponse resp, String token) throws IOException {
-    }
-
-    protected void postLogout(HttpServletRequest req, HttpServletResponse resp, String token, Boolean tokenDestroyedSuccessfully) throws IOException {
     }
 
     protected void redirectToLoginUrl(HttpServletRequest req, HttpServletResponse resp) throws IOException {
