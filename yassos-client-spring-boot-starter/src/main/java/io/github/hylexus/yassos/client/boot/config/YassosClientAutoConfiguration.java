@@ -8,8 +8,8 @@ import io.github.hylexus.yassos.client.handler.BuiltinLogoutHandlerForDebugging;
 import io.github.hylexus.yassos.client.handler.LogoutHandler;
 import io.github.hylexus.yassos.client.redirect.DefaultRedirectStrategy;
 import io.github.hylexus.yassos.client.redirect.RedirectStrategy;
-import io.github.hylexus.yassos.client.session.HttpSessionInAccessor;
-import io.github.hylexus.yassos.client.session.SessionInAccessor;
+import io.github.hylexus.yassos.client.session.HttpSessionInfoAccessor;
+import io.github.hylexus.yassos.client.session.SessionInfoAccessor;
 import io.github.hylexus.yassos.client.token.resolver.DefaultTokenResolver;
 import io.github.hylexus.yassos.client.token.resolver.TokenResolver;
 import lombok.extern.slf4j.Slf4j;
@@ -47,14 +47,14 @@ public class YassosClientAutoConfiguration {
     @ConditionalOnProperty(prefix = "yassos.client", name = "enable", havingValue = "true")
     public FilterRegistrationBean<YassosSingOnFilter> yassosSingOnFilterFilterRegistrationBean(
             TokenResolver tokenResolver,
-            SessionInAccessor sessionInAccessor,
+            SessionInfoAccessor sessionInfoAccessor,
             RedirectStrategy redirectStrategy,
             LogoutHandler logoutHandler) {
 
         final YassosSingOnFilter filter = new YassosSingOnFilter();
 
         filter.setTokenResolver(tokenResolver);
-        filter.setSessionInAccessor(sessionInAccessor);
+        filter.setSessionInfoAccessor(sessionInfoAccessor);
         filter.setRedirectStrategy(redirectStrategy);
         filter.setLogoutHandler(logoutHandler);
 
@@ -78,6 +78,7 @@ public class YassosClientAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(LogoutHandler.class)
     public LogoutHandler logoutHandler() {
+        log.warn("|:-- use BuiltinLogoutHandlerForDebugging, please consider to provide your own implementation of LogoutHandler");
         return new BuiltinLogoutHandlerForDebugging();
     }
 
@@ -96,9 +97,9 @@ public class YassosClientAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean(SessionInAccessor.class)
-    public SessionInAccessor sessionInfoFetcher() {
-        log.info("|:-- use HttpSessionInAccessor");
-        return new HttpSessionInAccessor();
+    @ConditionalOnMissingBean(SessionInfoAccessor.class)
+    public SessionInfoAccessor sessionInfoFetcher() {
+        log.info("|:-- use HttpSessionInfoAccessor");
+        return new HttpSessionInfoAccessor();
     }
 }

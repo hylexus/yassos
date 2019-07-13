@@ -7,7 +7,7 @@ import io.github.hylexus.yassos.core.session.YassosSession;
  * @author hylexus
  * Created At 2019-06-10 21:57
  */
-public interface SessionInAccessor {
+public interface SessionInfoAccessor {
     /**
      * @param token ticket
      * @param url   the target url to <b>fetch</b> information about this {@code token} (ticket) .

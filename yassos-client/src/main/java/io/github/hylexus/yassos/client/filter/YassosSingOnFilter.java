@@ -5,8 +5,8 @@ import io.github.hylexus.yassos.client.handler.BuiltinLogoutHandlerForDebugging;
 import io.github.hylexus.yassos.client.handler.LogoutHandler;
 import io.github.hylexus.yassos.client.redirect.DefaultRedirectStrategy;
 import io.github.hylexus.yassos.client.redirect.RedirectStrategy;
-import io.github.hylexus.yassos.client.session.HttpSessionInAccessor;
-import io.github.hylexus.yassos.client.session.SessionInAccessor;
+import io.github.hylexus.yassos.client.session.HttpSessionInfoAccessor;
+import io.github.hylexus.yassos.client.session.SessionInfoAccessor;
 import io.github.hylexus.yassos.client.token.resolver.DefaultTokenResolver;
 import io.github.hylexus.yassos.client.token.resolver.TokenResolver;
 import io.github.hylexus.yassos.client.util.ServletUtils;
@@ -46,7 +46,7 @@ public class YassosSingOnFilter implements Filter {
 
     protected RedirectStrategy redirectStrategy;
 
-    protected SessionInAccessor sessionInAccessor;
+    protected SessionInfoAccessor sessionInfoAccessor;
 
     protected LogoutHandler logoutHandler;
 
@@ -79,9 +79,9 @@ public class YassosSingOnFilter implements Filter {
             this.tokenResolver = new DefaultTokenResolver();
         }
 
-        if (this.sessionInAccessor == null) {
-            log.info("sessionInAccessor is null, use default implementation {} instead", HttpSessionInAccessor.class.getName());
-            this.sessionInAccessor = new HttpSessionInAccessor();
+        if (this.sessionInfoAccessor == null) {
+            log.info("sessionInfoAccessor is null, use default implementation {} instead", HttpSessionInfoAccessor.class.getName());
+            this.sessionInfoAccessor = new HttpSessionInfoAccessor();
         }
 
         if (this.logoutHandler == null) {
@@ -150,7 +150,7 @@ public class YassosSingOnFilter implements Filter {
                 boolean tokenDestroyedSuccessfully = false;
                 try {
                     if (StringUtils.isNotEmpty(token)) {
-                        tokenDestroyedSuccessfully = this.sessionInAccessor.destroyToken(token, generateTokenDestroyUrl(token));
+                        tokenDestroyedSuccessfully = this.sessionInfoAccessor.destroyToken(token, generateTokenDestroyUrl(token));
                         log.debug("logout result = {}", tokenDestroyedSuccessfully);
                     }
                 } finally {
@@ -175,7 +175,7 @@ public class YassosSingOnFilter implements Filter {
             }
 
             // 4. validate token from sso-server
-            final YassosSession yassosSession = this.sessionInAccessor.fetchSessionInfo(token, generateTokenValidationUrl(token));
+            final YassosSession yassosSession = this.sessionInfoAccessor.fetchSessionInfo(token, generateTokenValidationUrl(token));
             if (yassosSession == null || !yassosSession.isValid()) {
                 log.debug("redirect to login page (session invalid : {})", yassosSession);
                 this.redirectToLoginUrl(req, resp);

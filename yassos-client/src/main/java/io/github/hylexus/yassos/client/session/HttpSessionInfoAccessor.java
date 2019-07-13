@@ -18,7 +18,7 @@ import static io.github.hylexus.yassos.core.session.YassosSession.INVALID_SESSIO
  * Created At 2019-06-11 21:35
  */
 @Slf4j
-public class HttpSessionInAccessor implements SessionInAccessor {
+public class HttpSessionInfoAccessor implements SessionInfoAccessor {
 
     final private OkHttpClient client = new OkHttpClient();
 
