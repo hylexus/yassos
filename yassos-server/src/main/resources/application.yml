@@ -3,8 +3,6 @@ server:
   servlet:
     context-path: /
 spring:
-  thymeleaf:
-    prefix: classpath:/templates/
   redis:
     host: localhost
     port: 6379
@@ -12,6 +10,7 @@ spring:
     database: 0
 yassos:
   session:
+    type: redis
     idle-time: 30m
     redis:
       key-prefix: 'yassos_session:'

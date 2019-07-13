@@ -6,11 +6,14 @@ import io.github.hylexus.yassos.support.auth.CredentialsMatcher;
 import io.github.hylexus.yassos.support.session.YassosSessionAttrConverter;
 import io.github.hylexus.yassos.support.session.manager.SessionManager;
 import io.github.hylexus.yassos.support.session.manager.SimpleMemorySessionManager;
+import io.github.hylexus.yassos.support.session.manager.SimpleRedisSessionManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ansi.AnsiColor;
 import org.springframework.boot.ansi.AnsiOutput;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
@@ -25,9 +28,16 @@ public class BuiltinYassosServerConfig implements ApplicationContextAware {
     protected ApplicationContext applicationContext;
 
     @Bean
-    public SessionManager sessionManager() {
+    @ConditionalOnProperty(prefix = "yassos.session", name = "type", havingValue = "memory")
+    public SessionManager simpleMemorySessionManager() {
         log.warn("<<Using default SimpleMemorySessionManager, please consider to provide your own implementation of SessionManager>>");
         return new SimpleMemorySessionManager();
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "yassos.session", name = "type", havingValue = "redis")
+    public SessionManager simpleRedisSessionManager() {
+        return new SimpleRedisSessionManager();
     }
 
     @Bean
@@ -36,6 +46,7 @@ public class BuiltinYassosServerConfig implements ApplicationContextAware {
     }
 
     @Bean
+    @ConditionalOnMissingBean(CredentialsMatcher.class)
     public CredentialsMatcher credentialsMatcher() {
         log.warn("<<Using default PlainTextCredentialsMatcher, please consider to provide your own implementation of CredentialsMatcher>>");
         return new CredentialsMatcher.PlainTextCredentialsMatcher();
@@ -51,6 +62,7 @@ public class BuiltinYassosServerConfig implements ApplicationContextAware {
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
+
 
     @Bean
     public CommandLineRunner commandLineRunner() {

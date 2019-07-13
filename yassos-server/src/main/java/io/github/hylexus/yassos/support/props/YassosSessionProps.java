@@ -15,6 +15,12 @@ import java.time.Duration;
 @ConfigurationProperties(prefix = "yassos.session")
 public class YassosSessionProps {
 
+    private SessionStoreType type = SessionStoreType.MEMORY;
     private Duration idleTime = Duration.ofMinutes(30);
     private YassosRedisSessionStoreProps redis = new YassosRedisSessionStoreProps();
+
+    public enum SessionStoreType {
+        MEMORY,
+        REDIS
+    }
 }
