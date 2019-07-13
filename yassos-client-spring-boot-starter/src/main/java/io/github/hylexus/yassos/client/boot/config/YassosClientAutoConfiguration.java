@@ -63,7 +63,6 @@ public class YassosClientAutoConfiguration {
         filter.setSessionKey(clientProps.getSessionKey());
 
         filter.setSsoServerLoginUrl(serverProps.getSignOnUrl());
-        filter.setSsoServerLogoutUrl(serverProps.getSignOutUrl());
         filter.setSsoServerUrlPrefix(serverProps.getServerUrlPrefix());
 
         final FilterRegistrationBean<AbstractYassosSingOnFilter> registrationBean = new FilterRegistrationBean<>(filter);

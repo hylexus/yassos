@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
-import static io.github.hylexus.yassos.core.config.ConfigurationKeys.CALLBACK_ADDRESS_NAME;
+import static io.github.hylexus.yassos.core.config.ConfigurationKeys.*;
 
 /**
  * @author hylexus
@@ -159,7 +159,7 @@ public class SsoController {
     }
 
     @ResponseBody
-    @GetMapping("/sign-out")
+    @GetMapping(SSO_SERVER_TOKEN_DESTROY_URI)
     public Boolean signOut(
             @RequestParam(required = false, name = "token", defaultValue = "") String token) {
         if (StringUtils.isEmpty(token)) {
@@ -172,7 +172,7 @@ public class SsoController {
     }
 
     @ResponseBody
-    @GetMapping("/validate")
+    @GetMapping(SSO_SERVER_TOKEN_VALIDATE_URI)
     public YassosSession userInfo(@RequestParam("token") String token) {
         final Optional<YassosSession> sessionInfo = sessionManager.getSessionByToken(token, true);
         if (sessionInfo.isPresent()) {

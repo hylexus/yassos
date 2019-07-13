@@ -1,7 +1,6 @@
 package io.github.hylexus.yassos.client.filter;
 
 
-import com.sun.istack.internal.Nullable;
 import io.github.hylexus.yassos.client.redirect.DefaultRedirectStrategy;
 import io.github.hylexus.yassos.client.redirect.RedirectStrategy;
 import io.github.hylexus.yassos.client.session.HttpSessionInAccessor;
@@ -26,8 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-import static io.github.hylexus.yassos.client.util.ServletUtils.initBoolean;
-import static io.github.hylexus.yassos.client.util.ServletUtils.initString;
+import static io.github.hylexus.yassos.client.util.ServletUtils.initBooleanFromFilterConfig;
+import static io.github.hylexus.yassos.client.util.ServletUtils.initStringFromFilterConfig;
 import static io.github.hylexus.yassos.core.config.ConfigurationKeys.*;
 
 /**
@@ -50,8 +49,6 @@ public abstract class AbstractYassosSingOnFilter implements Filter {
     protected List<String> ignoreUriPatterns;
 
     protected String ssoServerLoginUrl;
-
-    protected String ssoServerLogoutUrl;
 
     protected String ssoServerUrlPrefix;
 
@@ -83,27 +80,27 @@ public abstract class AbstractYassosSingOnFilter implements Filter {
             this.sessionInAccessor = new HttpSessionInAccessor();
         }
         if (this.ignoreUriPatterns == null) {
-            this.ignoreUriPatterns = ServletUtils.initIgnoreUriPattern(filterConfig);
+            this.ignoreUriPatterns = ServletUtils.initIgnoreUriPatternFromFilterConfig(filterConfig);
         }
         log.info("|:-- ignoredAntPatterns:");
         for (String pattern : this.ignoreUriPatterns) {
             log.info("\t{}", pattern);
         }
         // sso-server-url-prefix
-        initString(filterConfig, () -> this.ssoServerUrlPrefix == null, this::setSsoServerUrlPrefix, CONFIG_SOO_SERVER_URL_PREFIX, true);
+        initStringFromFilterConfig(filterConfig, () -> this.ssoServerUrlPrefix == null, this::setSsoServerUrlPrefix, CONFIG_SOO_SERVER_URL_PREFIX, true);
         // sso-server login url
-        initString(filterConfig, () -> this.ssoServerLoginUrl == null, this::setSsoServerLoginUrl, CONFIG_SSO_SERVER_LOGIN_URL, true);
+        initStringFromFilterConfig(filterConfig, () -> this.ssoServerLoginUrl == null, this::setSsoServerLoginUrl, CONFIG_SSO_SERVER_LOGIN_URL, true);
         // client logout url
-        initString(filterConfig, () -> this.clientSideLogoutUri == null, this::setClientSideLogoutUri, CONFIG_CLIENT_LOGOUT_URI, true);
+        initStringFromFilterConfig(filterConfig, () -> this.clientSideLogoutUri == null, this::setClientSideLogoutUri, CONFIG_CLIENT_LOGOUT_URI, true);
 
         // throw-exception-if-validate-exception
-        initBoolean(filterConfig, () -> this.throwExceptionIfTokenValidateException == null, this::setThrowExceptionIfTokenValidateException, CONFIG_THROW_EXCEPTION_IF_VALIDATE_EXCEPTION);
+        initBooleanFromFilterConfig(filterConfig, () -> this.throwExceptionIfTokenValidateException == null, this::setThrowExceptionIfTokenValidateException, CONFIG_THROW_EXCEPTION_IF_VALIDATE_EXCEPTION);
         // encode url
-        initBoolean(filterConfig, () -> this.encodeUrl == null, this::setEncodeUrl, CONFIG_ENCODE_URL);
+        initBooleanFromFilterConfig(filterConfig, () -> this.encodeUrl == null, this::setEncodeUrl, CONFIG_ENCODE_URL);
 
         // use session ?
-        initBoolean(filterConfig, () -> this.useSession == null, this::setUseSession, CONFIG_USE_SESSION);
-        initString(filterConfig, () -> this.sessionKey == null, this::setSessionKey, CONFIG_SESSION_KEY, true);
+        initBooleanFromFilterConfig(filterConfig, () -> this.useSession == null, this::setUseSession, CONFIG_USE_SESSION);
+        initStringFromFilterConfig(filterConfig, () -> this.sessionKey == null, this::setSessionKey, CONFIG_SESSION_KEY, true);
         if (this.useSession && this.sessionKey == null) {
             throw new IllegalArgumentException(CONFIG_USE_SESSION.getName() + " was set to TRUE, but no " + CONFIG_SESSION_KEY.getName() + " specified");
         }
@@ -136,17 +133,18 @@ public abstract class AbstractYassosSingOnFilter implements Filter {
                 this.preLogout(req, resp, token);
                 if (StringUtils.isEmpty(token)) {
                     log.debug("tokenResolver returned a empty token, skipped");
-                    this.postLogout(req, resp, token);
+                    this.postLogout(req, resp, token, null);
                     return;
                 }
 
+                boolean tokenDestroyedSuccessfully = false;
                 try {
                     if (StringUtils.isNotEmpty(token)) {
-                        boolean success = this.sessionInAccessor.destroyToken(token);
-                        log.debug("logout result = {}", success);
+                        tokenDestroyedSuccessfully = this.sessionInAccessor.destroyToken(token, generateTokenDestroyUrl(token));
+                        log.debug("logout result = {}", tokenDestroyedSuccessfully);
                     }
                 } finally {
-                    this.postLogout(req, resp, token);
+                    this.postLogout(req, resp, token, tokenDestroyedSuccessfully);
                 }
                 log.debug("<<< logout.");
                 return;
@@ -199,10 +197,10 @@ public abstract class AbstractYassosSingOnFilter implements Filter {
         return this.pathMatcher.match(this.clientSideLogoutUri, uri);
     }
 
-    protected void preLogout(HttpServletRequest req, HttpServletResponse resp, @Nullable String token) throws IOException {
+    protected void preLogout(HttpServletRequest req, HttpServletResponse resp, String token) throws IOException {
     }
 
-    protected void postLogout(HttpServletRequest req, HttpServletResponse resp, @Nullable String token) throws IOException {
+    protected void postLogout(HttpServletRequest req, HttpServletResponse resp, String token, Boolean tokenDestroyedSuccessfully) throws IOException {
     }
 
     protected void redirectToLoginUrl(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -220,6 +218,17 @@ public abstract class AbstractYassosSingOnFilter implements Filter {
             return String.format("%s?%s=%s", ssoServerLoginUrl, ConfigurationKeys.CALLBACK_ADDRESS_NAME, this.encodeUrl(request.getRequestURL().toString()));
         }
         return String.format("%s?%s=%s", ssoServerLoginUrl, ConfigurationKeys.CALLBACK_ADDRESS_NAME, request.getRequestURL().toString());
+    }
+
+    protected String generateTokenDestroyUrl(String token) {
+        final String signOutUri = ConfigurationKeys.CONFIG_TOKEN_DESTROY_URI.getDefaultValue();
+        // eg. http://localhost:8080/sign-out?token=${token}
+        return String.format("%s?token=%s",
+                this.ssoServerUrlPrefix.endsWith("/") ?
+                        this.ssoServerUrlPrefix + signOutUri :
+                        this.ssoServerUrlPrefix + "/" + signOutUri,
+                token
+        );
     }
 
     protected String generateTokenValidationUrl(String token) {

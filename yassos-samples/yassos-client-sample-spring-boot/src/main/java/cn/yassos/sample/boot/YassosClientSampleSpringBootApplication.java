@@ -8,10 +8,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Created At 2019-06-07 20:23
  */
 @SpringBootApplication
-public class TokenSpringBootApplication {
+public class YassosClientSampleSpringBootApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(TokenSpringBootApplication.class, args);
+        SpringApplication.run(YassosClientSampleSpringBootApplication.class, args);
     }
 
 }

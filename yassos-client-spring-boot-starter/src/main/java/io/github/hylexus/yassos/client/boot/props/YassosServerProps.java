@@ -16,5 +16,4 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class YassosServerProps {
     private String serverUrlPrefix;
     private String signOnUrl = serverUrlPrefix + "/login";
-    private String signOutUrl = serverUrlPrefix + "/logout";
 }

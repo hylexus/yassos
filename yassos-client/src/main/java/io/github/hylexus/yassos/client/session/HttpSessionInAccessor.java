@@ -7,9 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import static io.github.hylexus.yassos.core.session.YassosSession.INVALID_SESSION;
 
@@ -24,6 +24,27 @@ public class HttpSessionInAccessor implements SessionInAccessor {
 
     @Override
     public YassosSession fetchSessionInfo(String token, String url) {
+        final String resp = this.doGet(url);
+        final YassosSession sessionInfo;
+        try {
+            sessionInfo = JSON.parseObject(resp, DefaultSessionImpl.class);
+        } catch (Exception e) {
+            log.error("token validation parse error, token :{}, body : {}", token, resp);
+            return INVALID_SESSION;
+        }
+        log.debug("token validation response : {}", sessionInfo);
+        return sessionInfo;
+    }
+
+    @Override
+    public boolean destroyToken(String token, String url) throws TokenValidateException {
+        final String resp = this.doGet(url);
+        return Objects.equals("true", resp);
+    }
+
+    private static final String EMPTY_RESP = "";
+
+    private String doGet(String url) {
         final Request request = new Request.Builder()
                 .url(url)
                 .get()
@@ -33,41 +54,21 @@ public class HttpSessionInAccessor implements SessionInAccessor {
         try {
             response = this.client.newCall(request).execute();
         } catch (IOException e) {
-            log.error("token validation request error", e);
-            return INVALID_SESSION;
-        }
-        if (response.body() == null) {
-            log.error("token validation error, response body is empty!!!");
-            return INVALID_SESSION;
+            throw new TokenValidateException(e);
         }
 
-        final String body;
+        if (response.body() == null) {
+            log.error("yassos server response is empty. url : {}", url);
+            return EMPTY_RESP;
+        }
+
         try {
-            body = response.body().string();
+            return response.body().string();
         } catch (IOException e) {
             log.error("token validation request error", e);
-            return INVALID_SESSION;
-        }
-        if (StringUtils.isEmpty(body)) {
-            log.debug("token validation response is empty.");
-            return INVALID_SESSION;
+            throw new TokenValidateException("an error occurred while read response from yassos server", e);
         }
 
-        final YassosSession sessionInfo;
-        try {
-            sessionInfo = JSON.parseObject(body, DefaultSessionImpl.class);
-        } catch (Exception e) {
-            log.error("token validation parse error, body : {}", body);
-            return INVALID_SESSION;
-        }
-        log.debug("token validation response : {}", sessionInfo);
-        return sessionInfo;
-    }
-
-    @Override
-    public boolean destroyToken(String token, String url) throws TokenValidateException {
-        // TODO destroy token
-        return false;
     }
 
 }

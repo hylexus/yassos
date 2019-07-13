@@ -9,12 +9,32 @@
         <filter-class>io.github.hylexus.yassos.client.filter.DefaultYassosSinOnFilter</filter-class>
 
         <init-param>
-            <param-name>loginUrl</param-name>
+            <param-name>ssoServerLoginUrl</param-name>
             <param-value>http://sso.mine.com:9000/login</param-value>
         </init-param>
         <init-param>
-            <param-name>serverUrlPrefix</param-name>
+            <param-name>ssoServerUrlPrefix</param-name>
             <param-value>http://sso.mine.com:9000/</param-value>
+        </init-param>
+        <init-param>
+            <param-name>clientSideLogoutUri</param-name>
+            <param-value>/yassos-client-sample-web/logout</param-value>
+        </init-param>
+        <init-param>
+            <param-name>encodeUrl</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <param-name>throwExceptionIfTokenValidateException</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>useSession</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>sessionKey</param-name>
+            <param-value>yassos_current_session</param-value>
         </init-param>
         <init-param>
             <param-name>ignoreUriPatterns</param-name>

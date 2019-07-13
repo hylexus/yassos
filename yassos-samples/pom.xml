@@ -13,8 +13,8 @@
 
     <packaging>pom</packaging>
     <modules>
-        <module>yassos-sample-spring-boot</module>
-        <module>yassos-sample-web</module>
+        <module>yassos-client-sample-spring-boot</module>
+        <module>yassos-client-sample-web-cookie</module>
     </modules>
 
 </project>

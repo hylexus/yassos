@@ -23,7 +23,7 @@ import static io.github.hylexus.yassos.core.config.ConfigurationKeys.URI_PATTERN
 public class ServletUtils {
 
 
-    public static void initString(FilterConfig filterConfig, BooleanSupplier supplier, Consumer<String> consumer, ConfigurationKey<String> configurationKey, boolean forceValidate) {
+    public static void initStringFromFilterConfig(FilterConfig filterConfig, BooleanSupplier supplier, Consumer<String> consumer, ConfigurationKey<String> configurationKey, boolean forceValidate) {
         if (!supplier.getAsBoolean())
             return;
         final String name = configurationKey.getName();
@@ -40,7 +40,7 @@ public class ServletUtils {
 
     }
 
-    public static void initBoolean(FilterConfig filterConfig, BooleanSupplier supplier, Consumer<Boolean> consumer, ConfigurationKey<Boolean> configKey) {
+    public static void initBooleanFromFilterConfig(FilterConfig filterConfig, BooleanSupplier supplier, Consumer<Boolean> consumer, ConfigurationKey<Boolean> configKey) {
         if (!supplier.getAsBoolean())
             return;
 
@@ -61,7 +61,7 @@ public class ServletUtils {
 
     }
 
-    public static List<String> initIgnoreUriPattern(FilterConfig filterConfig) {
+    public static List<String> initIgnoreUriPatternFromFilterConfig(FilterConfig filterConfig) {
         final String initParameter = filterConfig.getInitParameter(ConfigurationKeys.CONFIG_IGNORE_URI_PATTERNS.getName());
         if (StringUtils.isEmpty(initParameter)) {
             return new ArrayList<>();

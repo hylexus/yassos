@@ -20,7 +20,6 @@ yassos:
   server:
     server-url-prefix: http://sso.mine.com:9000/
     sign-on-url: http://sso.mine.com:9000/login
-    sign-out-url: http://sso.mine.com:9000/login
   filter-metadata:
     name: yassos-client-filter
     url-patterns: /*
