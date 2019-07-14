@@ -14,12 +14,17 @@ import io.github.hylexus.yassos.client.token.resolver.DefaultTokenResolver;
 import io.github.hylexus.yassos.client.token.resolver.TokenResolver;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ansi.AnsiColor;
+import org.springframework.boot.ansi.AnsiOutput;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import static io.github.hylexus.yassos.client.boot.config.YassosClientConfigStatistics.BUILTIN_COMPONENT;
+import static io.github.hylexus.yassos.client.boot.config.YassosClientConfigStatistics.DEPRECATED_COMPONENT;
 
 /**
  * @author hylexus
@@ -78,28 +83,38 @@ public class YassosClientAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(LogoutHandler.class)
     public LogoutHandler logoutHandler() {
-        log.warn("|:-- use BuiltinLogoutHandlerForDebugging, please consider to provide your own implementation of LogoutHandler");
+        log.warn(redLine(DEPRECATED_COMPONENT, "|:-- use BuiltinLogoutHandlerForDebugging, please consider to provide your own implementation of LogoutHandler"));
         return new BuiltinLogoutHandlerForDebugging();
     }
 
     @Bean
     @ConditionalOnMissingBean(TokenResolver.class)
     public TokenResolver tokenResolver() {
-        log.info("|:-- use DefaultTokenResolver");
+        log.info(redLine(BUILTIN_COMPONENT, "|:-- use DefaultTokenResolver"));
         return new DefaultTokenResolver();
     }
 
     @Bean
     @ConditionalOnMissingBean(RedirectStrategy.class)
     public RedirectStrategy redirectStrategy() {
-        log.info("|:-- use DefaultRedirectStrategy");
+        log.info(redLine(BUILTIN_COMPONENT, "|:-- use DefaultRedirectStrategy"));
         return new DefaultRedirectStrategy();
     }
 
     @Bean
     @ConditionalOnMissingBean(SessionInfoAccessor.class)
     public SessionInfoAccessor sessionInfoFetcher() {
-        log.info("|:-- use HttpSessionInfoAccessor");
+        log.info(redLine(BUILTIN_COMPONENT, "|:-- use HttpSessionInfoAccessor"));
         return new HttpSessionInfoAccessor();
     }
+
+    @Bean
+    public YassosClientConfigStatistics yassosClientConfigStatistics() {
+        return new YassosClientConfigStatistics();
+    }
+
+    private String redLine(AnsiColor color, String content) {
+        return AnsiOutput.toString(color, content, AnsiColor.DEFAULT);
+    }
+
 }
