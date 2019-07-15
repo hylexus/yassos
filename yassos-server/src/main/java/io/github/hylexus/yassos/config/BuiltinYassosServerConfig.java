@@ -1,9 +1,9 @@
 package io.github.hylexus.yassos.config;
 
-import io.github.hylexus.yassos.service.BuiltinUserServiceForDebugging;
 import io.github.hylexus.yassos.service.TokenGenerator;
-import io.github.hylexus.yassos.service.UserDetailService;
 import io.github.hylexus.yassos.support.auth.CredentialsMatcher;
+import io.github.hylexus.yassos.support.auth.user.BuiltinUserServiceForDebugging;
+import io.github.hylexus.yassos.support.auth.user.UserDetailService;
 import io.github.hylexus.yassos.support.session.YassosSessionAttrConverter;
 import io.github.hylexus.yassos.support.session.manager.SessionManager;
 import io.github.hylexus.yassos.support.session.manager.SimpleMemorySessionManager;
@@ -48,17 +48,17 @@ public class BuiltinYassosServerConfig implements ApplicationContextAware {
         return new TokenGenerator.SimpleUUIDTokenGenerator();
     }
 
-    @Bean
-    @ConditionalOnMissingBean(UserDetailService.class)
-    public UserDetailService builtinUserServiceForDebugging() {
-        log.warn(redLine("<<Using BuiltinUserServiceForDebugging, please consider to provide your own implementation of UserDetailService>>"));
-        return new BuiltinUserServiceForDebugging();
-    }
+//    @Bean
+//    @ConditionalOnMissingBean(UserDetailService.class)
+//    public UserDetailService builtinUserServiceForDebugging() {
+//        log.warn(line("<<Using BuiltinUserServiceForDebugging, please consider to provide your own implementation of UserDetailService>>"));
+//        return new BuiltinUserServiceForDebugging();
+//    }
 
     @Bean
     @ConditionalOnMissingBean(CredentialsMatcher.class)
     public CredentialsMatcher credentialsMatcher() {
-        log.warn(redLine("<<Using default PlainTextCredentialsMatcher, please consider to provide your own implementation of CredentialsMatcher>>"));
+        log.warn(line("<<Using default PlainTextCredentialsMatcher, please consider to provide your own implementation of CredentialsMatcher>>"));
         return new CredentialsMatcher.PlainTextCredentialsMatcher();
     }
 
@@ -73,42 +73,44 @@ public class BuiltinYassosServerConfig implements ApplicationContextAware {
         this.applicationContext = applicationContext;
     }
 
-
     @Bean
     public CommandLineRunner commandLineRunner() {
+
         return args -> {
             final AnsiColor builtinComponent = AnsiColor.BRIGHT_CYAN;
             final AnsiColor customComponent = AnsiColor.GREEN;
             final AnsiColor deprecatedComponent = AnsiColor.RED;
             final AnsiColor serverBanner = AnsiColor.BRIGHT_BLUE;
 
+            final String endOfLine = "\n";
             final StringBuilder sb = new StringBuilder()
                     .append("\n\n")
                     .append(AnsiOutput.toString(serverBanner, "[ <<< YASSOS-SERVER >>> ]", AnsiColor.DEFAULT))
-                    .append("\n")
+                    .append(endOfLine)
                     .append("the following configurable components are activated :")
-                    .append("\n")
+                    .append(endOfLine)
                     .append(AnsiOutput.toString(builtinComponent, "[Builtin-Component]"))
                     .append(AnsiOutput.toString(customComponent, " [Custom-Component] "))
                     .append(AnsiOutput.toString(deprecatedComponent, "[Deprecated-Component]"))
-                    .append("\n")
-                    .append(line(1, TokenGenerator.class, cls -> cls == TokenGenerator.SimpleUUIDTokenGenerator.class ? builtinComponent : customComponent))
-                    .append("\n")
+                    .append(endOfLine);
+
+            sb.append(line(1, TokenGenerator.class, cls -> cls == TokenGenerator.SimpleUUIDTokenGenerator.class ? builtinComponent : customComponent))
+                    .append(endOfLine)
                     .append(line(2, SessionManager.class, actualClass -> actualClass == SimpleMemorySessionManager.class ? deprecatedComponent : (actualClass == SimpleRedisSessionManager.class ? builtinComponent : customComponent)))
-                    .append("\n")
+                    .append(endOfLine)
                     .append(line(3, CredentialsMatcher.class, actualClass -> actualClass == CredentialsMatcher.PlainTextCredentialsMatcher.class ? deprecatedComponent : customComponent))
-                    .append("\n")
+                    .append(endOfLine)
                     .append(line(4, YassosSessionAttrConverter.class, actualClass -> actualClass == YassosSessionAttrConverter.SimpleYassosSessionAttrConverter.class ? builtinComponent : customComponent))
-                    .append("\n")
+                    .append(endOfLine)
                     .append(line(5, UserDetailService.class, actualClass -> actualClass == BuiltinUserServiceForDebugging.class ? deprecatedComponent : customComponent))
-                    .append("\n")
+                    .append(endOfLine)
                     .append(AnsiOutput.toString(serverBanner, "[ <<< YASSOS-SERVER >>> ]", AnsiColor.DEFAULT))
-                    .append("\n");
+                    .append(endOfLine);
             log.info(sb.toString());
         };
     }
 
-    private String redLine(String content) {
+    private String line(String content) {
         return AnsiOutput.toString(AnsiColor.RED, content, AnsiColor.DEFAULT);
     }
 

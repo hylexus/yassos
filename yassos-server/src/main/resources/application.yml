@@ -10,7 +10,12 @@ spring:
     database: 0
   output:
     ansi:
-      enabled: always
+      enabled: detect
+  datasource:
+    username: test
+    password: '!@#$%^^%$#@!'
+    url: jdbc:mysql://node1:3306/yassos_server?useUnicode=true&useSSL=true&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8
+    driver-class-name: com.mysql.cj.jdbc.Driver
 yassos:
   session:
     type: redis

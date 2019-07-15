@@ -83,28 +83,28 @@ public class YassosClientAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(LogoutHandler.class)
     public LogoutHandler logoutHandler() {
-        log.warn(redLine(DEPRECATED_COMPONENT, "|:-- Using BuiltinLogoutHandlerForDebugging, please consider to provide your own implementation of LogoutHandler"));
+        log.warn(line(DEPRECATED_COMPONENT, "|:-- Using BuiltinLogoutHandlerForDebugging, please consider to provide your own implementation of LogoutHandler"));
         return new BuiltinLogoutHandlerForDebugging();
     }
 
     @Bean
     @ConditionalOnMissingBean(TokenResolver.class)
     public TokenResolver tokenResolver() {
-        log.info(redLine(BUILTIN_COMPONENT, "|:-- Using DefaultTokenResolver"));
+        log.info(line(BUILTIN_COMPONENT, "|:-- Using DefaultTokenResolver"));
         return new DefaultTokenResolver();
     }
 
     @Bean
     @ConditionalOnMissingBean(RedirectStrategy.class)
     public RedirectStrategy redirectStrategy() {
-        log.info(redLine(BUILTIN_COMPONENT, "|:-- Using DefaultRedirectStrategy"));
+        log.info(line(BUILTIN_COMPONENT, "|:-- Using DefaultRedirectStrategy"));
         return new DefaultRedirectStrategy();
     }
 
     @Bean
     @ConditionalOnMissingBean(SessionInfoAccessor.class)
     public SessionInfoAccessor sessionInfoFetcher() {
-        log.info(redLine(BUILTIN_COMPONENT, "|:-- Using HttpSessionInfoAccessor"));
+        log.info(line(BUILTIN_COMPONENT, "|:-- Using HttpSessionInfoAccessor"));
         return new HttpSessionInfoAccessor();
     }
 
@@ -113,7 +113,7 @@ public class YassosClientAutoConfiguration {
         return new YassosClientConfigStatistics();
     }
 
-    private String redLine(AnsiColor color, String content) {
+    private String line(AnsiColor color, String content) {
         return AnsiOutput.toString(color, content, AnsiColor.DEFAULT);
     }
 

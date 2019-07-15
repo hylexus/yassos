@@ -45,8 +45,9 @@ public class YassosClientConfigStatistics implements CommandLineRunner, Applicat
                 .append(AnsiOutput.toString(BUILTIN_COMPONENT, "[Builtin-Component]"))
                 .append(AnsiOutput.toString(CUSTOM_COMPONENT, " [Custom-Component] "))
                 .append(AnsiOutput.toString(DEPRECATED_COMPONENT, "[Deprecated-Component]"))
-                .append(endOfLine)
-                .append(line(1, TokenResolver.class, actualClass -> actualClass == DefaultTokenResolver.class ? BUILTIN_COMPONENT : (actualClass == BearerTokenResolver.class ? BUILTIN_COMPONENT : CUSTOM_COMPONENT)))
+                .append(endOfLine);
+
+        sb.append(line(1, TokenResolver.class, actualClass -> actualClass == DefaultTokenResolver.class ? BUILTIN_COMPONENT : (actualClass == BearerTokenResolver.class ? BUILTIN_COMPONENT : CUSTOM_COMPONENT)))
                 .append(endOfLine)
                 .append(line(2, SessionInfoAccessor.class, actualClass -> actualClass == HttpSessionInfoAccessor.class ? BUILTIN_COMPONENT : CUSTOM_COMPONENT))
                 .append(endOfLine)

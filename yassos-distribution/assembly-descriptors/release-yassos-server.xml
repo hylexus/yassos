@@ -4,15 +4,15 @@
     <includeBaseDirectory>true</includeBaseDirectory>
     <formats>
         <format>dir</format>
-        <format>tar.gz</format>
-        <format>zip</format>
+        <!--        <format>tar.gz</format>-->
+        <!--        <format>zip</format>-->
     </formats>
     <fileSets>
-        <fileSet>
-            <includes>
-                <include>conf/**</include>
-            </includes>
-        </fileSet>
+        <!--        <fileSet>-->
+        <!--            <includes>-->
+        <!--                <include>conf/**</include>-->
+        <!--            </includes>-->
+        <!--        </fileSet>-->
 
         <fileSet>
             <includes>
@@ -25,6 +25,14 @@
         <file>
             <source>LICENSE-BIN</source>
             <destName>LICENSE</destName>
+        </file>
+        <file>
+            <source>../yassos-server/src/main/resources/application.yml</source>
+            <outputDirectory>./conf</outputDirectory>
+        </file>
+        <file>
+            <source>../yassos-server/src/main/resources/logback.xml</source>
+            <outputDirectory>./conf</outputDirectory>
         </file>
         <file>
             <source>../yassos-server/target/yassos-server.jar</source>

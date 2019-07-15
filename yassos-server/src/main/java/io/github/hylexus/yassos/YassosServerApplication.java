@@ -1,9 +1,12 @@
 package io.github.hylexus.yassos;
 
+import io.github.hylexus.yassos.support.auth.user.SimpleJdbcUserDetailService;
+import io.github.hylexus.yassos.support.auth.user.UserDetailService;
 import io.github.hylexus.yassos.support.props.YassosGlobalProps;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 
 /**
  * @author hylexus
@@ -17,4 +20,8 @@ public class YassosServerApplication {
         SpringApplication.run(YassosServerApplication.class, args);
     }
 
+    @Bean
+    public UserDetailService userDetailService(){
+        return new SimpleJdbcUserDetailService();
+    }
 }
