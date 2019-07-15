@@ -67,6 +67,7 @@ public class YassosSingOnFilter implements Filter {
     protected String sessionKey;
 
     @Override
+    @SuppressWarnings("deprecation")
     public void init(FilterConfig filterConfig) throws ServletException {
 
         if (this.redirectStrategy == null) {

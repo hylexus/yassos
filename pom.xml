@@ -12,6 +12,7 @@
         <module>yassos-server</module>
         <module>yassos-common</module>
         <module>yassos-client-spring-boot-starter</module>
+        <module>yassos-distribution</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -46,6 +47,12 @@
             <dependency>
                 <groupId>io.github.hylexus</groupId>
                 <artifactId>yassos-client-spring-boot-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.hylexus</groupId>
+                <artifactId>yassos-server</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

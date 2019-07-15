@@ -70,6 +70,7 @@
     </dependencies>
 
     <build>
+        <finalName>yassos-server</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -102,12 +103,6 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <artifactId>maven-install-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
