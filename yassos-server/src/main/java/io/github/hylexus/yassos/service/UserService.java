@@ -23,22 +23,22 @@ public class UserService {
     private CredentialsMatcher credentialsMatcher;
 
     public UserDetails login(@NonNull UsernamePasswordToken usernamePasswordToken) throws UserAuthException {
-        String username = usernamePasswordToken.getUsername();
-        UserDetails user = this.userDetailService.loadByUsername(username);
+        final String username = usernamePasswordToken.getUsername();
+        final UserDetails user = this.userDetailService.loadByUsername(username);
         if (user == null) {
-            throw new AccountNotFoundException(username);
+            throw new AccountNotFoundException("AccountNotFound", username);
         }
 
         if (user.isLocked()) {
-            throw new AccountLockedException(username);
+            throw new AccountLockedException("AccountLocked", username);
         }
 
         if (user.isCredentialExpired()) {
-            throw new AccountCredentialExpiredException(username);
+            throw new AccountCredentialExpiredException("CredentialExpired", username);
         }
 
         if (!this.credentialsMatcher.match(usernamePasswordToken, user)) {
-            throw new BadCredentialsException(username);
+            throw new BadCredentialsException("Bad Credentials", username);
         }
 
         return user;

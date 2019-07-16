@@ -1,5 +1,6 @@
 package io.github.hylexus.yassos.controller;
 
+import io.github.hylexus.yassos.config.YassosServerConstant;
 import io.github.hylexus.yassos.core.session.YassosSession;
 import io.github.hylexus.yassos.core.util.CommonUtils;
 import io.github.hylexus.yassos.exception.UserAuthException;
@@ -24,9 +25,11 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Optional;
 
+import static io.github.hylexus.yassos.config.YassosServerConstant.*;
 import static io.github.hylexus.yassos.core.config.ConfigurationKeys.*;
 
 /**
@@ -57,8 +60,8 @@ public class SsoController {
     public ModelAndView login(@RequestParam(required = false, defaultValue = DEFAULT_CALLBACK_URI, name = CALLBACK_ADDRESS_NAME) String callbackUrl) {
         log.info("to login page, redirect_url : {}", callbackUrl);
         ModelAndView mv = new ModelAndView("login");
-        mv.addObject("redirect_url_name", CALLBACK_ADDRESS_NAME);
-        mv.addObject("redirect_url_value", callbackUrl);
+        mv.addObject(PARAM_KEY_REDIRECT_URL_NAME, CALLBACK_ADDRESS_NAME);
+        mv.addObject(PARAM_KEY_REDIRECT_URL_VALUE, callbackUrl);
         return mv;
     }
 
@@ -70,18 +73,29 @@ public class SsoController {
     }
 
     @ExceptionHandler(UserAuthException.class)
-    public ModelAndView processUserAuthException(UserAuthException e) {
-        log.debug("error: {}", e.getMessage());
-        ModelAndView mv = new ModelAndView("redirect:/login");
-        mv.addObject("errMsg", e.getMessage());
-        return mv;
+    public ModelAndView processUserAuthException(
+            UserAuthException e,
+            HttpSession session,
+            HttpServletRequest request) {
+        log.debug("Auth error, username:{}, msg:{}", e.getUsername(), e.getMessage());
+        session.setAttribute(YassosServerConstant.PARAM_KEY_AUTH_ERR_MSG_KEY, e.getMessage());
+
+        String redirectUrlName = CommonUtils.getSessionAttr(session, PARAM_KEY_REDIRECT_URL_NAME, CALLBACK_ADDRESS_NAME);
+        String redirectUrlValue = CommonUtils.getSessionAttr(session, PARAM_KEY_REDIRECT_URL_VALUE, DEFAULT_CALLBACK_URI);
+        return new ModelAndView("redirect:/login?" + redirectUrlName + "=" + redirectUrlValue);
     }
 
     @RequestMapping("/sign-on")
     public void doLogin(
             UsernamePasswordToken usernamePasswordToken,
             @RequestParam(required = false, defaultValue = DEFAULT_CALLBACK_URI, name = CALLBACK_ADDRESS_NAME) String callbackUrl,
-            HttpServletRequest request, HttpServletResponse response) throws IOException {
+            HttpServletRequest request,
+            HttpServletResponse response,
+            HttpSession session) throws IOException {
+        this.paramCheck(usernamePasswordToken);
+
+        session.setAttribute(PARAM_KEY_REDIRECT_URL_NAME, CALLBACK_ADDRESS_NAME);
+        session.setAttribute(PARAM_KEY_REDIRECT_URL_VALUE, callbackUrl);
 
         final String username = usernamePasswordToken.getUsername();
 
@@ -99,9 +113,18 @@ public class SsoController {
         }
 
         doAfterLogin(request, response, yassosSession);
+        this.clearSession(session);
 
         response.sendRedirect(originalUrl);
         log.debug("redirect to <{}> after login", originalUrl);
+    }
+
+    private void paramCheck(UsernamePasswordToken usernamePasswordToken) {
+        final String username = usernamePasswordToken.getUsername();
+        if (StringUtils.isEmpty(username))
+            throw new UserAuthException("username is null or empty", username);
+        if (StringUtils.isEmpty(usernamePasswordToken.getPassword()))
+            throw new UserAuthException("password is null or empty", username);
     }
 
     private void doAfterLogin(HttpServletRequest request, HttpServletResponse response, YassosSession yassosSession) {
@@ -111,6 +134,12 @@ public class SsoController {
         }
         final Cookie cookie = buildCookie(yassosSession);
         response.addCookie(cookie);
+    }
+
+    private void clearSession(HttpSession session) {
+        session.removeAttribute(PARAM_KEY_REDIRECT_URL_NAME);
+        session.removeAttribute(PARAM_KEY_REDIRECT_URL_VALUE);
+        session.removeAttribute(PARAM_KEY_AUTH_ERR_MSG_KEY);
     }
 
     private Cookie buildCookie(YassosSession yassosSession) {

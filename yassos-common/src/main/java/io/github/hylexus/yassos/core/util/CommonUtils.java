@@ -1,6 +1,7 @@
 package io.github.hylexus.yassos.core.util;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Objects;
@@ -38,5 +39,14 @@ public class CommonUtils {
 
     public static boolean isAjaxRequest(HttpServletRequest request) {
         return Objects.equals(request.getHeader("X-Requested-With"), "XMLHttpRequest");
+    }
+
+    public static String getSessionAttr(HttpSession session, String key, String defaultValue) {
+        if (session == null)
+            return defaultValue;
+        Object attribute = session.getAttribute(key);
+        if (attribute == null)
+            return defaultValue;
+        return (String) attribute;
     }
 }

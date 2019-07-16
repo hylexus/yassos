@@ -16,6 +16,11 @@ spring:
     password: '!@#$%^^%$#@!'
     url: jdbc:mysql://node1:3306/yassos_server?useUnicode=true&useSSL=true&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8
     driver-class-name: com.mysql.cj.jdbc.Driver
+  thymeleaf:
+    cache: false
+    mode: HTML
+  messages:
+    basename: i18n.login,i18n.login-sucess
 yassos:
   session:
     type: redis
