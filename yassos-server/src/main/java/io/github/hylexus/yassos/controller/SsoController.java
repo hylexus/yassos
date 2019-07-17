@@ -55,7 +55,6 @@ public class SsoController {
     @Autowired
     private YassosGlobalProps globalProps;
 
-
     @GetMapping("/login")
     public ModelAndView login(@RequestParam(required = false, defaultValue = DEFAULT_CALLBACK_URI, name = CALLBACK_ADDRESS_NAME) String callbackUrl) {
         log.info("to login page, redirect_url : {}", callbackUrl);

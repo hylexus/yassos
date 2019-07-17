@@ -1,11 +1,17 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>login</title>
     <link href="https://cdn.bootcss.com/twitter-bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="container">
+
+<ul th:with="currentUrl=(${@currentUrlWithoutParam.apply('lang')})">
+    <li><a th:href="@{${currentUrl}(lang=zh-CN)}">zh-CN</a></li>
+    <li><a th:href="@{${currentUrl}(lang=en-US)}">en-US</a></li>
+    <li><a th:href="@{${currentUrl}(lang=zh-TW)}">zh-TW</a></li>
+</ul>
 <div class="col-sm-4 col-sm-offset-4" style="margin-top: 20px;">
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -24,7 +30,8 @@
                        value="123456">
             </div>
 
-            <div th:if="${session.auth_err_msg_key} != null" th:text="${session.auth_err_msg_key}"
+            <div th:if="${session.auth_err_msg_key} != null"
+                 th:text="${session.auth_err_msg_key}"
                  class="alert alert-danger" role="alert">
             </div>
 

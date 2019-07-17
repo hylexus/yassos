@@ -11,11 +11,12 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
-import org.springframework.web.servlet.i18n.SessionLocaleResolver;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
-import java.util.Locale;
+import java.util.function.Function;
 
 /**
  * @author hylexus
@@ -49,9 +50,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 
     @Bean
     public LocaleResolver localeResolver() {
-        SessionLocaleResolver slr = new SessionLocaleResolver();
-        slr.setDefaultLocale(Locale.US);
-        return slr;
+        return new CookieLocaleResolver();
     }
 
     @Bean
@@ -61,4 +60,13 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
         return lci;
     }
 
+    /**
+     * Copied from https://www.codesd.com/item/thymeleaf-adds-a-parameter-to-the-current-url.html
+     * <p>
+     * thymeleaf-adds-a-parameter-to-the-current-url.html
+     */
+    @Bean
+    public Function<String, String> currentUrlWithoutParam() {
+        return param -> ServletUriComponentsBuilder.fromCurrentRequest().replaceQueryParam(param).toUriString();
+    }
 }
