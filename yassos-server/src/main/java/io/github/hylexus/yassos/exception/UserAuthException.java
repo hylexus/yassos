@@ -1,5 +1,6 @@
 package io.github.hylexus.yassos.exception;
 
+import io.github.hylexus.yassos.model.I18nCodeSupport;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class UserAuthException extends RuntimeException {
+public class UserAuthException extends RuntimeException implements I18nCodeSupport {
     protected String username;
 
     public UserAuthException(String username) {
@@ -34,5 +35,10 @@ public class UserAuthException extends RuntimeException {
     public UserAuthException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, String username) {
         super(message, cause, enableSuppression, writableStackTrace);
         this.username = username;
+    }
+
+    @Override
+    public String getI18nCode() {
+        return null;
     }
 }

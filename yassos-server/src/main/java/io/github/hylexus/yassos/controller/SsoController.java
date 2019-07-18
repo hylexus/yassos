@@ -5,6 +5,7 @@ import io.github.hylexus.yassos.core.session.YassosSession;
 import io.github.hylexus.yassos.core.util.CommonUtils;
 import io.github.hylexus.yassos.exception.UserAuthException;
 import io.github.hylexus.yassos.model.UsernamePasswordToken;
+import io.github.hylexus.yassos.service.LocaleMessage;
 import io.github.hylexus.yassos.service.TokenGenerator;
 import io.github.hylexus.yassos.service.UserService;
 import io.github.hylexus.yassos.support.model.UserDetails;
@@ -55,12 +56,17 @@ public class SsoController {
     @Autowired
     private YassosGlobalProps globalProps;
 
+    @Autowired
+    private LocaleMessage localeMessage;
+
     @GetMapping("/login")
     public ModelAndView login(@RequestParam(required = false, defaultValue = DEFAULT_CALLBACK_URI, name = CALLBACK_ADDRESS_NAME) String callbackUrl) {
         log.info("to login page, redirect_url : {}", callbackUrl);
         ModelAndView mv = new ModelAndView("login");
         mv.addObject(PARAM_KEY_REDIRECT_URL_NAME, CALLBACK_ADDRESS_NAME);
         mv.addObject(PARAM_KEY_REDIRECT_URL_VALUE, callbackUrl);
+        // FIXME ...
+        mv.addObject("formParam", new UsernamePasswordToken().setUsername("").setPassword(""));
         return mv;
     }
 
@@ -77,7 +83,18 @@ public class SsoController {
             HttpSession session,
             HttpServletRequest request) {
         log.debug("Auth error, username:{}, msg:{}", e.getUsername(), e.getMessage());
-        session.setAttribute(YassosServerConstant.PARAM_KEY_AUTH_ERR_MSG_KEY, e.getMessage());
+
+        final String i18nCode = e.getI18nCode();
+        String errMsg = e.getMessage();
+        if (StringUtils.isNoneBlank(i18nCode)) {
+            String message = localeMessage.getMessage(i18nCode);
+            if (StringUtils.isNotEmpty(message)) {
+                errMsg = message;
+                session.setAttribute(PARAM_KEY_AUTH_ERR_MSG_KEY_118N, i18nCode);
+            }
+        }
+
+        session.setAttribute(YassosServerConstant.PARAM_KEY_AUTH_ERR_MSG_KEY, errMsg);
 
         String redirectUrlName = CommonUtils.getSessionAttr(session, PARAM_KEY_REDIRECT_URL_NAME, CALLBACK_ADDRESS_NAME);
         String redirectUrlValue = CommonUtils.getSessionAttr(session, PARAM_KEY_REDIRECT_URL_VALUE, DEFAULT_CALLBACK_URI);
@@ -91,10 +108,13 @@ public class SsoController {
             HttpServletRequest request,
             HttpServletResponse response,
             HttpSession session) throws IOException {
-        this.paramCheck(usernamePasswordToken);
 
+        // FIXME ...
+        session.setAttribute("formParam", usernamePasswordToken);
         session.setAttribute(PARAM_KEY_REDIRECT_URL_NAME, CALLBACK_ADDRESS_NAME);
         session.setAttribute(PARAM_KEY_REDIRECT_URL_VALUE, callbackUrl);
+
+        this.paramCheck(usernamePasswordToken);
 
         final String username = usernamePasswordToken.getUsername();
 
@@ -139,6 +159,8 @@ public class SsoController {
         session.removeAttribute(PARAM_KEY_REDIRECT_URL_NAME);
         session.removeAttribute(PARAM_KEY_REDIRECT_URL_VALUE);
         session.removeAttribute(PARAM_KEY_AUTH_ERR_MSG_KEY);
+        session.removeAttribute(PARAM_KEY_AUTH_ERR_MSG_KEY_118N);
+        session.removeAttribute("formParam");
     }
 
     private Cookie buildCookie(YassosSession yassosSession) {

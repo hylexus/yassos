@@ -3,6 +3,7 @@ package io.github.hylexus.yassos.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 
 /**
  * @author hylexus
@@ -11,6 +12,7 @@ import lombok.ToString;
 @Setter
 @Getter
 @ToString
+@Accessors(chain = true)
 public class UsernamePasswordToken {
 
     private String username;

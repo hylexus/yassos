@@ -4,6 +4,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.google.common.collect.Lists;
+import io.github.hylexus.yassos.model.LanguageSelectOption;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
 
 /**
@@ -50,7 +52,9 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 
     @Bean
     public LocaleResolver localeResolver() {
-        return new CookieLocaleResolver();
+        CookieLocaleResolver resolver = new CookieLocaleResolver();
+        resolver.setDefaultLocale(Locale.US);
+        return resolver;
     }
 
     @Bean
@@ -68,5 +72,14 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
     @Bean
     public Function<String, String> currentUrlWithoutParam() {
         return param -> ServletUriComponentsBuilder.fromCurrentRequest().replaceQueryParam(param).toUriString();
+    }
+
+    @Bean
+    public List<LanguageSelectOption> languageSelectOptionList() {
+        return Lists.newArrayList(
+                new LanguageSelectOption(Locale.CHINA.toLanguageTag(), "简体中文"),
+                new LanguageSelectOption(Locale.TRADITIONAL_CHINESE.toLanguageTag(), "繁體中文"),
+                new LanguageSelectOption(Locale.US.toLanguageTag(), "english")
+        );
     }
 }
