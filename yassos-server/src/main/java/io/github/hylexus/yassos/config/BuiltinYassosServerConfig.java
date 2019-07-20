@@ -83,6 +83,7 @@ public class BuiltinYassosServerConfig implements ApplicationContextAware {
             final AnsiColor serverBanner = AnsiColor.BRIGHT_BLUE;
 
             final String endOfLine = "\n";
+//            AnsiOutput.setEnabled(AnsiOutput.Enabled.ALWAYS);
             final StringBuilder sb = new StringBuilder()
                     .append("\n\n")
                     .append(AnsiOutput.toString(serverBanner, "[ <<< YASSOS-SERVER >>> ]", AnsiColor.DEFAULT))
@@ -107,6 +108,7 @@ public class BuiltinYassosServerConfig implements ApplicationContextAware {
                     .append(AnsiOutput.toString(serverBanner, "[ <<< YASSOS-SERVER >>> ]", AnsiColor.DEFAULT))
                     .append(endOfLine);
             log.info(sb.toString());
+//            AnsiOutput.setEnabled(AnsiOutput.Enabled.DETECT);
         };
     }
 

@@ -21,6 +21,10 @@ spring:
     mode: HTML
   messages:
     basename: i18n.login,i18n.login-sucess
+  banner:
+    location: yassos-banner.txt
+  main:
+    banner-mode: log
 yassos:
   session:
     type: redis
@@ -35,3 +39,6 @@ yassos:
     max-age: 40m
     name: x-yassos-token
     domain: .mine.com
+logging:
+  config: classpath:logback.xml
+

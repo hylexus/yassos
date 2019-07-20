@@ -40,25 +40,29 @@
             <input th:name="${redirect_url_name}" th:value="${redirect_url_value}" type="hidden"/>
             <div class="form-group">
                 <label for="username" th:text="#{login.username}">Username</label>
-                <input type="text" class="form-control"
-                       name="username" id="username" placeholder="username"
-                       th:value="${session.formParam != null ? session.formParam.username : formParam.username}"
-                >
-
+                <div class="input-group">
+                    <div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>
+                    <input type="text" class="form-control"
+                           name="username" id="username" placeholder="username"
+                           th:value="${session.formParam != null ? session.formParam.username : formParam.username}"
+                    >
+                </div>
             </div>
 
             <div class="form-group">
                 <label for="password" th:text="#{login.password}">Password</label>
-                <input type="password" class="form-control" name="password"
-                       id="password" placeholder="Password"
-                       th:value="${session.formParam != null ? session.formParam.password : formParam.password}"
-                >
-
+                <div class="input-group">
+                    <div class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></div>
+                    <input type="password" class="form-control" name="password"
+                           id="password" placeholder="Password"
+                           th:value="${session.formParam != null ? session.formParam.password : formParam.password}"
+                    >
+                </div>
             </div>
 
             <div th:if="${session.auth_err_msg_i18n_code} != null"
                  th:text="#{${session.auth_err_msg_i18n_code}}"
-                 class="alert alert-danger" role="alert"></div>
+                 class="alert alert-danger alert-sm" role="alert"></div>
 
             <div th:if="${#strings.isEmpty(session.auth_err_msg_i18n_code) and not #strings.isEmpty(session.auth_err_msg_key)}"
                  th:text="${session.auth_err_msg_key}"
