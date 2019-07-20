@@ -1,9 +1,13 @@
 package io.github.hylexus.yassos.token;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
+
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 /**
  * @author hylexus
@@ -12,13 +16,13 @@ import org.springframework.util.PathMatcher;
 @Slf4j
 public class PathTest {
     @Test
-    public void test2() {
+    public void antPathMatcherTest() {
         PathMatcher matcher = new AntPathMatcher();
 
-        System.out.println(matcher.match("/api", "/"));
-        System.out.println(matcher.match("/api", "/api/user"));
-        System.out.println(matcher.match("/api/*", "/api/user"));
-        System.out.println(matcher.match("/api/*", "/api/user/list"));
-        System.out.println(matcher.match("/api/**", "/api/user/list/all"));
+        assertFalse(matcher.match("/api", "/"));
+        assertFalse(matcher.match("/api", "/api/user"));
+        assertTrue(matcher.match("/api/*", "/api/user"));
+        assertFalse(matcher.match("/api/*", "/api/user/list"));
+        assertTrue(matcher.match("/api/**", "/api/user/list/all"));
     }
 }

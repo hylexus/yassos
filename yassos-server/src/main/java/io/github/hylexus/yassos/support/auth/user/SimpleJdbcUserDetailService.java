@@ -18,21 +18,18 @@ import java.util.List;
 @Slf4j
 public class SimpleJdbcUserDetailService implements UserDetailService {
 
-    @Autowired
     private JdbcTemplate jdbcTemplate;
+    private String sqlToLoadUserDetails;
+
+    public SimpleJdbcUserDetailService(JdbcTemplate jdbcTemplate, String sqlToLoadUserDetails) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.sqlToLoadUserDetails = sqlToLoadUserDetails;
+    }
 
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadByUsername(String username) {
-        String sql = "select id   as userId,\n" +
-                "       name as username,\n" +
-                "       password,\n" +
-                "       locked,\n" +
-                "       credential_expired,\n" +
-                "       avatarUrl\n" +
-                "from yassos_user\n" +
-                "where name = ?";
-        final List<DefaultUserDetails> list = jdbcTemplate.query(sql, new Object[]{username}, new BeanPropertyRowMapper<>(DefaultUserDetails.class));
+        final List<DefaultUserDetails> list = jdbcTemplate.query(sqlToLoadUserDetails, new Object[]{username}, new BeanPropertyRowMapper<>(DefaultUserDetails.class));
         if (CollectionUtils.isEmpty(list)) {
             log.info("can not load user named : {}", username);
             return null;

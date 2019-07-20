@@ -1,17 +1,16 @@
 package io.github.hylexus.yassos;
 
-import io.github.hylexus.yassos.support.auth.user.SimpleJdbcUserDetailService;
-import io.github.hylexus.yassos.support.auth.user.UserDetailService;
 import io.github.hylexus.yassos.support.props.YassosGlobalProps;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ImportResource;
 
 /**
  * @author hylexus
  * Created At 2019-06-07 16:38
  */
+@ImportResource("classpath:/yassos-config.xml")
 @SpringBootApplication
 @EnableConfigurationProperties({YassosGlobalProps.class})
 public class YassosServerApplication {
@@ -20,8 +19,4 @@ public class YassosServerApplication {
         SpringApplication.run(YassosServerApplication.class, args);
     }
 
-    @Bean
-    public UserDetailService userDetailService(){
-        return new SimpleJdbcUserDetailService();
-    }
 }

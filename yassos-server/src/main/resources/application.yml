@@ -1,5 +1,5 @@
 server:
-  port: 9000
+  port: 5201
   servlet:
     context-path: /
 spring:
@@ -27,7 +27,7 @@ spring:
     banner-mode: log
 yassos:
   session:
-    type: redis
+    type: memory
     idle-time: 30m
     redis:
       key-prefix: 'yassos_session:'

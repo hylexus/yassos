@@ -86,7 +86,7 @@ public class BuiltinYassosServerConfig implements ApplicationContextAware {
 //            AnsiOutput.setEnabled(AnsiOutput.Enabled.ALWAYS);
             final StringBuilder sb = new StringBuilder()
                     .append("\n\n")
-                    .append(AnsiOutput.toString(serverBanner, "[ <<< YASSOS-SERVER >>> ]", AnsiColor.DEFAULT))
+                    .append(AnsiOutput.toString(serverBanner, "[ ~_~ YASSOS-SERVER ~_~ ]", AnsiColor.DEFAULT))
                     .append(endOfLine)
                     .append("the following configurable components are activated :")
                     .append(endOfLine)
@@ -105,7 +105,7 @@ public class BuiltinYassosServerConfig implements ApplicationContextAware {
                     .append(endOfLine)
                     .append(line(5, UserDetailService.class, actualClass -> actualClass == BuiltinUserServiceForDebugging.class ? deprecatedComponent : customComponent))
                     .append(endOfLine)
-                    .append(AnsiOutput.toString(serverBanner, "[ <<< YASSOS-SERVER >>> ]", AnsiColor.DEFAULT))
+                    .append(AnsiOutput.toString(serverBanner, "[ ~_~ YASSOS-SERVER ~_~ ]", AnsiColor.DEFAULT))
                     .append(endOfLine);
             log.info(sb.toString());
 //            AnsiOutput.setEnabled(AnsiOutput.Enabled.DETECT);
