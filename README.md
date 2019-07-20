@@ -19,13 +19,13 @@ See the wiki for full documentation, examples, custom-configuration and other in
 └── yassos-server
 ```
 
-- **docs: ** Document
-- **yassos-client: ** API for single sign-on system clients.
-- **yassos-client-spring-boot-starter: ** A `spring-boot-starter`  provided to the 
-- **yassos-common: ** The common module used by YASSOS.
+- **docs:** Document
+- **yassos-client:** API for single sign-on system clients.
+- **yassos-client-spring-boot-starter:** A `spring-boot-starter`  provided to the 
+- **yassos-common:** The common module used by YASSOS.
 spring-boot based clients.
-- **yassos-distribution: ** **This module is under development.**
-- **yassos-server: ** Server side of YASSOS.
+- **yassos-distribution:** **This module is under development.**
+- **yassos-server:** Server side of YASSOS.
 
 ## Quick Start
 
@@ -33,7 +33,7 @@ spring-boot based clients.
 
 See the wiki for full documentation, examples, custom-configuration and other information.
 
-> In this example, we will have the following domain mapping in your `/etc/hosts` :
+> In this example, we will have the following domain mapping in file `/etc/hosts` :
 
 ```sh
 127.0.0.1	sso.mine.com
@@ -82,7 +82,7 @@ java -jar yassos-server/target/yassos-server.jar
 
 - Check the Result
 
-If all goes well, you'll see some output like this:
+If all goes well, you'll see something like this:
 
 ![yassos-server-output](docs/images/yassos-server-statistics.png)
 
