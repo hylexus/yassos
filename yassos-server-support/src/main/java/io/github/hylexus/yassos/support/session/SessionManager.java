@@ -1,4 +1,4 @@
-package io.github.hylexus.yassos.support.session.manager;
+package io.github.hylexus.yassos.support.session;
 
 import io.github.hylexus.yassos.core.session.YassosSession;
 import lombok.NonNull;

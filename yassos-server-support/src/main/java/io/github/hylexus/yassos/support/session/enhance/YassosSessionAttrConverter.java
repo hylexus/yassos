@@ -1,7 +1,8 @@
-package io.github.hylexus.yassos.support.session;
+package io.github.hylexus.yassos.support.session.enhance;
 
 import com.alibaba.fastjson.JSON;
 import io.github.hylexus.yassos.core.session.YassosSessionAttr;
+import io.github.hylexus.yassos.support.model.SimpleYassosSessionAttr;
 
 /**
  * @author hylexus

@@ -1,7 +1,8 @@
 package io.github.hylexus.yassos.support.session.manager;
 
 import io.github.hylexus.yassos.support.props.YassosGlobalProps;
-import io.github.hylexus.yassos.support.session.YassosSessionAttrConverter;
+import io.github.hylexus.yassos.support.session.SessionManager;
+import io.github.hylexus.yassos.support.session.enhance.YassosSessionAttrConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**

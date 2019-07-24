@@ -1,7 +1,6 @@
 package io.github.hylexus.yassos.token;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;

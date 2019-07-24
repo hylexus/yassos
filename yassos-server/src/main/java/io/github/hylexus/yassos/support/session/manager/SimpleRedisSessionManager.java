@@ -2,7 +2,7 @@ package io.github.hylexus.yassos.support.session.manager;
 
 import io.github.hylexus.yassos.core.session.YassosSession;
 import io.github.hylexus.yassos.core.session.YassosSessionAttr;
-import io.github.hylexus.yassos.support.session.SimpleYassosSession;
+import io.github.hylexus.yassos.support.model.SimpleYassosSession;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

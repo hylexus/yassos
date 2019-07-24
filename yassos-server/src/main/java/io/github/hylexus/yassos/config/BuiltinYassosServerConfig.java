@@ -1,13 +1,13 @@
 package io.github.hylexus.yassos.config;
 
-import io.github.hylexus.yassos.service.TokenGenerator;
 import io.github.hylexus.yassos.support.auth.CredentialsMatcher;
+import io.github.hylexus.yassos.support.auth.UserDetailService;
 import io.github.hylexus.yassos.support.auth.user.BuiltinUserServiceForDebugging;
-import io.github.hylexus.yassos.support.auth.user.UserDetailService;
-import io.github.hylexus.yassos.support.session.YassosSessionAttrConverter;
-import io.github.hylexus.yassos.support.session.manager.SessionManager;
+import io.github.hylexus.yassos.support.session.SessionManager;
+import io.github.hylexus.yassos.support.session.enhance.YassosSessionAttrConverter;
 import io.github.hylexus.yassos.support.session.manager.SimpleMemorySessionManager;
 import io.github.hylexus.yassos.support.session.manager.SimpleRedisSessionManager;
+import io.github.hylexus.yassos.support.token.TokenGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.CommandLineRunner;

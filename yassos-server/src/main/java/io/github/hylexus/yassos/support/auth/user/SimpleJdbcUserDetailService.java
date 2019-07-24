@@ -1,9 +1,9 @@
 package io.github.hylexus.yassos.support.auth.user;
 
+import io.github.hylexus.yassos.support.auth.UserDetailService;
 import io.github.hylexus.yassos.support.model.DefaultUserDetails;
 import io.github.hylexus.yassos.support.model.UserDetails;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;

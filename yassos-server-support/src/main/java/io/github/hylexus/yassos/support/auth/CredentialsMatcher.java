@@ -1,7 +1,7 @@
 package io.github.hylexus.yassos.support.auth;
 
-import io.github.hylexus.yassos.model.UsernamePasswordToken;
 import io.github.hylexus.yassos.support.model.UserDetails;
+import io.github.hylexus.yassos.support.model.UsernamePasswordToken;
 import lombok.NonNull;
 
 import java.util.Objects;

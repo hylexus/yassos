@@ -1,4 +1,4 @@
-package io.github.hylexus.yassos.support.auth.user;
+package io.github.hylexus.yassos.support.auth;
 
 import io.github.hylexus.yassos.support.model.UserDetails;
 

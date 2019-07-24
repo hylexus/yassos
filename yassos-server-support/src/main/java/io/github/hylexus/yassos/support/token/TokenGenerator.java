@@ -1,6 +1,6 @@
-package io.github.hylexus.yassos.service;
+package io.github.hylexus.yassos.support.token;
 
-import io.github.hylexus.yassos.model.UsernamePasswordToken;
+import io.github.hylexus.yassos.support.model.UsernamePasswordToken;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
