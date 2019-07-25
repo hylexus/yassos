@@ -44,6 +44,7 @@ public class BuiltinYassosServerConfig implements ApplicationContextAware {
     }
 
     @Bean
+    @ConditionalOnMissingBean(TokenGenerator.class)
     public TokenGenerator tokenGenerator() {
         return new TokenGenerator.SimpleUUIDTokenGenerator();
     }
@@ -63,6 +64,7 @@ public class BuiltinYassosServerConfig implements ApplicationContextAware {
     }
 
     @Bean
+    @ConditionalOnMissingBean(YassosSessionAttrConverter.class)
     public YassosSessionAttrConverter yassosSessionAttrConverter() {
         return new YassosSessionAttrConverter.SimpleYassosSessionAttrConverter();
     }

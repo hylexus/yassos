@@ -1,0 +1,2 @@
+org.springframework.context.ApplicationContextInitializer=\
+io.github.hylexus.yassos.config.YassosConfigApplicationInitializer
