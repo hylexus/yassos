@@ -23,8 +23,8 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static io.github.hylexus.yassos.client.boot.config.YassosClientConfigStatistics.BUILTIN_COMPONENT;
-import static io.github.hylexus.yassos.client.boot.config.YassosClientConfigStatistics.DEPRECATED_COMPONENT;
+import static io.github.hylexus.yassos.client.boot.config.YassosClientConfigStatistics.BUILTIN_COMPONENT_COLOR;
+import static io.github.hylexus.yassos.client.boot.config.YassosClientConfigStatistics.DEPRECATED_COMPONENT_COLOR;
 
 /**
  * @author hylexus
@@ -83,28 +83,28 @@ public class YassosClientAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(LogoutHandler.class)
     public LogoutHandler logoutHandler() {
-        log.warn(line(DEPRECATED_COMPONENT, "|:-- Using BuiltinLogoutHandlerForDebugging, please consider to provide your own implementation of LogoutHandler"));
+        log.warn(line(DEPRECATED_COMPONENT_COLOR, "|:-- Using BuiltinLogoutHandlerForDebugging, please consider to provide your own implementation of LogoutHandler"));
         return new BuiltinLogoutHandlerForDebugging();
     }
 
     @Bean
     @ConditionalOnMissingBean(TokenResolver.class)
     public TokenResolver tokenResolver() {
-        log.info(line(BUILTIN_COMPONENT, "|:-- Using DefaultTokenResolver"));
+        log.info(line(BUILTIN_COMPONENT_COLOR, "|:-- Using DefaultTokenResolver"));
         return new DefaultTokenResolver();
     }
 
     @Bean
     @ConditionalOnMissingBean(RedirectStrategy.class)
     public RedirectStrategy redirectStrategy() {
-        log.info(line(BUILTIN_COMPONENT, "|:-- Using DefaultRedirectStrategy"));
+        log.info(line(BUILTIN_COMPONENT_COLOR, "|:-- Using DefaultRedirectStrategy"));
         return new DefaultRedirectStrategy();
     }
 
     @Bean
     @ConditionalOnMissingBean(SessionInfoAccessor.class)
     public SessionInfoAccessor sessionInfoFetcher() {
-        log.info(line(BUILTIN_COMPONENT, "|:-- Using HttpSessionInfoAccessor"));
+        log.info(line(BUILTIN_COMPONENT_COLOR, "|:-- Using HttpSessionInfoAccessor"));
         return new HttpSessionInfoAccessor();
     }
 

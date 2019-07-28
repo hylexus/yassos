@@ -10,7 +10,7 @@
 
 Pid: ${pid}      Port: ${server.port}
 
-Yassos-Version: ${project.version}
 SpringBoot-Version: ${spring-boot.version}
+Yassos-Version: ${project.version}
 
-Github: https://github.com/debugger-maker/yassos
+Github: https://github.com/hylexus/yassos

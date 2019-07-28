@@ -1,6 +1,6 @@
-# YASSOS
+# YaSSOS
 
-**Y**et **A**nother **S**ingle **S**ign-**O**n **S**ystem.
+**Y**et **a**nother **S**ingle **S**ign-**O**n **S**ystem.
 
 A lightweight, simple single sign-on system based on spring-boot.
 
@@ -16,16 +16,17 @@ See the wiki for full documentation, examples, custom-configuration and other in
 ├── yassos-client-spring-boot-starter
 ├── yassos-common
 ├── yassos-distribution
-└── yassos-server
+├── yassos-server
+└── yassos-server-support
 ```
 
 - **docs:** Document
 - **yassos-client:** API for single sign-on system clients.
-- **yassos-client-spring-boot-starter:** A `spring-boot-starter`  provided to the 
-- **yassos-common:** The common module used by YASSOS.
-spring-boot based clients.
+- **yassos-client-spring-boot-starter:** A `spring-boot-starter`  provided to the spring-boot based clients.
+- **yassos-common:** The common module used by YaSSOS.
 - **yassos-distribution:** **This module is under development.**
-- **yassos-server:** Server side of YASSOS.
+- **yassos-server:** Server side of YaSSOS.
+- **yassos-server-support:** Yassos server plugin support
 
 ## Quick Start
 
@@ -68,7 +69,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 ```
 
-- Build and Start YASSOS server
+- Build and Start YaSSOS server
 
 ```sh
 cd yassos
@@ -94,7 +95,7 @@ Access http://sso.mine.com:5201/login in your browser.
 
 ```sh
 # download sources
-git clone https://github.com/hylexus/yassos.git
+git clone https://github.com/hylexus/yassos-samples.git
 
 cd yassos-samples
 # package

@@ -2,7 +2,6 @@ package io.github.hylexus.yassos.config;
 
 import io.github.hylexus.yassos.support.auth.CredentialsMatcher;
 import io.github.hylexus.yassos.support.auth.UserDetailService;
-import io.github.hylexus.yassos.support.auth.user.BuiltinUserServiceForDebugging;
 import io.github.hylexus.yassos.support.session.SessionManager;
 import io.github.hylexus.yassos.support.session.enhance.YassosSessionAttrConverter;
 import io.github.hylexus.yassos.support.session.manager.SimpleMemorySessionManager;
@@ -19,7 +18,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 
-import java.util.function.Function;
+import static io.github.hylexus.yassos.config.YassosServerConstant.*;
+import static io.github.hylexus.yassos.util.YassosClassUtils.detectClassType;
 
 /**
  * @author hylexus
@@ -33,7 +33,7 @@ public class BuiltinYassosServerConfig implements ApplicationContextAware {
     @Bean
     @ConditionalOnProperty(prefix = "yassos.session", name = "type", havingValue = "memory")
     public SessionManager simpleMemorySessionManager() {
-        log.warn("<<Using default SimpleMemorySessionManager, please consider to provide your own implementation of SessionManager>>");
+        log.warn(AnsiOutput.toString(DEPRECATED_COMPONENT_COLOR, "<<Using default SimpleMemorySessionManager, please consider to provide your own implementation of SessionManager>>"));
         return new SimpleMemorySessionManager();
     }
 
@@ -59,7 +59,7 @@ public class BuiltinYassosServerConfig implements ApplicationContextAware {
     @Bean
     @ConditionalOnMissingBean(CredentialsMatcher.class)
     public CredentialsMatcher credentialsMatcher() {
-        log.warn(line("<<Using default PlainTextCredentialsMatcher, please consider to provide your own implementation of CredentialsMatcher>>"));
+        log.warn(AnsiOutput.toString(DEPRECATED_COMPONENT_COLOR, "<<Using default PlainTextCredentialsMatcher, please consider to provide your own implementation of CredentialsMatcher>>"));
         return new CredentialsMatcher.PlainTextCredentialsMatcher();
     }
 
@@ -79,48 +79,38 @@ public class BuiltinYassosServerConfig implements ApplicationContextAware {
     public CommandLineRunner commandLineRunner() {
 
         return args -> {
-            final AnsiColor builtinComponent = AnsiColor.BRIGHT_CYAN;
-            final AnsiColor customComponent = AnsiColor.GREEN;
-            final AnsiColor deprecatedComponent = AnsiColor.RED;
-            final AnsiColor serverBanner = AnsiColor.BRIGHT_BLUE;
 
             final String endOfLine = "\n";
-//            AnsiOutput.setEnabled(AnsiOutput.Enabled.ALWAYS);
             final StringBuilder sb = new StringBuilder()
                     .append("\n\n")
-                    .append(AnsiOutput.toString(serverBanner, "[ ~_~ YASSOS-SERVER ~_~ ]", AnsiColor.DEFAULT))
+                    .append(AnsiOutput.toString(SERVER_BANNER_COLOR, "[ ~_~ YASSOS-SERVER ~_~ ]", AnsiColor.DEFAULT))
                     .append(endOfLine)
                     .append("the following configurable components are activated :")
                     .append(endOfLine)
-                    .append(AnsiOutput.toString(builtinComponent, "[Builtin-Component]"))
-                    .append(AnsiOutput.toString(customComponent, " [Custom-Component] "))
-                    .append(AnsiOutput.toString(deprecatedComponent, "[Deprecated-Component]"))
+                    .append(AnsiOutput.toString(BUILTIN_COMPONENT_COLOR, "[Builtin-Component]"))
+                    .append(AnsiOutput.toString(CUSTOM_COMPONENT_COLOR, " [Custom-Component] "))
+                    .append(AnsiOutput.toString(DEPRECATED_COMPONENT_COLOR, "[Deprecated-Component]"))
                     .append(endOfLine);
 
-            sb.append(line(1, TokenGenerator.class, cls -> cls == TokenGenerator.SimpleUUIDTokenGenerator.class ? builtinComponent : customComponent))
+            sb.append(line(1, TokenGenerator.class))
                     .append(endOfLine)
-                    .append(line(2, SessionManager.class, actualClass -> actualClass == SimpleMemorySessionManager.class ? deprecatedComponent : (actualClass == SimpleRedisSessionManager.class ? builtinComponent : customComponent)))
+                    .append(line(2, SessionManager.class))
                     .append(endOfLine)
-                    .append(line(3, CredentialsMatcher.class, actualClass -> actualClass == CredentialsMatcher.PlainTextCredentialsMatcher.class ? deprecatedComponent : customComponent))
+                    .append(line(3, CredentialsMatcher.class))
                     .append(endOfLine)
-                    .append(line(4, YassosSessionAttrConverter.class, actualClass -> actualClass == YassosSessionAttrConverter.SimpleYassosSessionAttrConverter.class ? builtinComponent : customComponent))
+                    .append(line(4, YassosSessionAttrConverter.class))
                     .append(endOfLine)
-                    .append(line(5, UserDetailService.class, actualClass -> actualClass == BuiltinUserServiceForDebugging.class ? deprecatedComponent : customComponent))
+                    .append(line(5, UserDetailService.class))
                     .append(endOfLine)
-                    .append(AnsiOutput.toString(serverBanner, "[ ~_~ YASSOS-SERVER ~_~ ]", AnsiColor.DEFAULT))
+                    .append(AnsiOutput.toString(SERVER_BANNER_COLOR, "[ ~_~ YASSOS-SERVER ~_~ ]", AnsiColor.DEFAULT))
                     .append(endOfLine);
             log.info(sb.toString());
-//            AnsiOutput.setEnabled(AnsiOutput.Enabled.DETECT);
         };
     }
 
-    private String line(String content) {
-        return AnsiOutput.toString(AnsiColor.RED, content, AnsiColor.DEFAULT);
-    }
-
-    private String line(int no, Class<?> superClass, Function<Class<?>, AnsiColor> colorSupplier) {
+    private String line(int no, Class<?> superClass) {
         final Object bean = applicationContext.getBean(superClass);
-        final AnsiColor color = colorSupplier.apply(bean.getClass());
+        final AnsiColor color = detectClassType(superClass, bean.getClass());
         final String number = AnsiOutput.toString(AnsiColor.BRIGHT_BLACK, no);
         final String beanName = AnsiOutput.toString(color, superClass.getSimpleName(), AnsiColor.DEFAULT);
         return String.format("%1$2s. %2$-41s : %3$10s", number, beanName, bean.getClass().getName());

@@ -3,7 +3,10 @@ package io.github.hylexus.yassos.config;
 import io.github.hylexus.oaks.utils.ClassUtils;
 import io.github.hylexus.yassos.support.annotation.YassosPlugin;
 import io.github.hylexus.yassos.support.auth.CredentialsMatcher;
+import io.github.hylexus.yassos.support.auth.UserDetailService;
 import io.github.hylexus.yassos.support.token.TokenGenerator;
+import io.github.hylexus.yassos.util.AnsiUtils;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -11,11 +14,14 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.util.CollectionUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.Set;
 
 import static io.github.hylexus.yassos.config.YassosServerConstant.CONFIG_KEY_YASSOS_HOME;
 import static io.github.hylexus.yassos.config.YassosServerConstant.CONFIG_KEY_YASSOS_LIB_EXT_DIR;
@@ -28,7 +34,21 @@ import static io.github.hylexus.yassos.util.AnsiUtils.configParsingTips;
 @Slf4j
 public class YassosConfigApplicationInitializer implements ApplicationContextInitializer {
 
-    private static final Predicate<Class<?>> CLASS_FILTER = cls -> {
+    private static final Set<Class<?>> configurableClasses;
+
+    static {
+        configurableClasses = Collections.unmodifiableSet(initConfigurableClasses());
+    }
+
+    private static HashSet<Class<?>> initConfigurableClasses() {
+        final HashSet<Class<?>> classes = new HashSet<>();
+        classes.add(TokenGenerator.class);
+        classes.add(CredentialsMatcher.class);
+        classes.add(UserDetailService.class);
+        return classes;
+    }
+
+    private boolean isConfigurableClass(@NonNull Class<?> cls) {
         if (cls == null || cls.isInterface()) {
             return false;
         }
@@ -36,42 +56,44 @@ public class YassosConfigApplicationInitializer implements ApplicationContextIni
         if (cls.isAnnotationPresent(YassosPlugin.class)) {
             YassosPlugin yassosPlugin = cls.getAnnotation(YassosPlugin.class);
             if (!yassosPlugin.enabled()) {
-                log.info(configParsingTips("[{}] @YassosPlugin is present, but disabled ==> skip."), cls);
+                log.info(configParsingTips("@YassosPlugin was found on class [{}] but disabled. ==> skip."), cls);
                 return false;
             }
         }
 
-        return TokenGenerator.class.isAssignableFrom(cls)
-                || CredentialsMatcher.class.isAssignableFrom(cls);
-    };
+        return configurableClasses.stream()
+                .anyMatch(configurableClass -> configurableClass.isAssignableFrom(cls));
+    }
 
-    private String yassosHome;
     private String yassosLibExtDir;
 
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
 
-        init(applicationContext);
+        if (!init(applicationContext)) {
+            return;
+        }
 
         List<Class<?>> classList;
         try {
             ClassLoader classLoader = this.getClassLoader();
-            // TODO delete classNameFilter of debugging
-            classList = ClassUtils.loadClass(yassosLibExtDir, clsName -> clsName.contains("yassos"), CLASS_FILTER, classLoader);
+            classList = ClassUtils.loadClass(yassosLibExtDir, this::isConfigurableClass, classLoader);
         } catch (IOException e) {
-            log.error("failed to load plugin", e);
+            log.error(configParsingTips(AnsiUtils.TipsType.WARN, "Failed to load plugin"), e);
             throw new RuntimeException(e.getMessage(), e);
         }
 
         DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) applicationContext.getBeanFactory();
-
-        // TODO multiple instance bean ???
-        // TODO Ordered ???
+        if (CollectionUtils.isEmpty(classList)) {
+            log.info(configParsingTips("No class to load."));
+            return;
+        }
         classList.forEach(cls -> {
             BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(cls);
             beanFactory.registerBeanDefinition(cls.getName(), builder.getRawBeanDefinition());
             log.info(configParsingTips("registered bean : {}"), cls);
         });
+        log.info(configParsingTips("Loading plugin finished"));
 
     }
 
@@ -81,14 +103,15 @@ public class YassosConfigApplicationInitializer implements ApplicationContextIni
                 : Thread.currentThread().getContextClassLoader();
     }
 
-    private void init(ConfigurableApplicationContext applicationContext) {
-        yassosHome = applicationContext.getEnvironment().getProperty(CONFIG_KEY_YASSOS_HOME);
+    private boolean init(ConfigurableApplicationContext applicationContext) {
+        String yassosHome = applicationContext.getEnvironment().getProperty(CONFIG_KEY_YASSOS_HOME);
         if (StringUtils.isEmpty(yassosHome)) {
             log.info(configParsingTips("{} is null or empty, skipping the plugin loading."), CONFIG_KEY_YASSOS_HOME);
-            return;
+            return false;
         }
         yassosLibExtDir = FilenameUtils.normalize(yassosHome + File.separator + CONFIG_KEY_YASSOS_LIB_EXT_DIR, true);
-        log.info("attempt to load class from ext dir : {}", yassosLibExtDir);
+        log.info(configParsingTips("Attempt to load class from lib ext dir : {}"), yassosLibExtDir);
+        return true;
     }
 
 }

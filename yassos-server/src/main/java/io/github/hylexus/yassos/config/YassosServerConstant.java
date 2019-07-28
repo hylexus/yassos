@@ -18,8 +18,16 @@ public interface YassosServerConstant {
     String I18N_AUTH_CREDENTIAL_EXPIRED = "login.auth.credential-expired";
     String I18N_AUTH_BAD_CREDENTIALS = "login.auth.bad-credentials";
 
-    AnsiColor COLOR_CONFIG_PARSE_TIPS = AnsiColor.BRIGHT_GREEN;
     String CONFIG_KEY_YASSOS_HOME = "yassos.home";
-    String CONFIG_KEY_YASSOS_LIB_EXT_DIR = "ext";
+    String CONFIG_KEY_YASSOS_LIB_EXT_DIR = "/lib/ext";
+
+    AnsiColor COLOR_CONFIG_PARSE_TIPS = AnsiColor.BRIGHT_GREEN;
+
+    AnsiColor BUILTIN_COMPONENT_COLOR = AnsiColor.BRIGHT_CYAN;
+    AnsiColor CUSTOM_COMPONENT_COLOR = AnsiColor.GREEN;
+    AnsiColor DEPRECATED_COMPONENT_COLOR = AnsiColor.RED;
+    AnsiColor UNKNOWN_COMPONENT_TYPE_COLOR = AnsiColor.BRIGHT_BLUE;
+
+    AnsiColor SERVER_BANNER_COLOR = AnsiColor.BRIGHT_BLUE;
 
 }
