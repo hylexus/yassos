@@ -85,15 +85,15 @@ public class YassosConfigApplicationInitializer implements ApplicationContextIni
 
         DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) applicationContext.getBeanFactory();
         if (CollectionUtils.isEmpty(classList)) {
-            log.info(configParsingTips("No class to load."));
+            log.info(configParsingTips("No class to load.\n"));
             return;
         }
         classList.forEach(cls -> {
             BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(cls);
             beanFactory.registerBeanDefinition(cls.getName(), builder.getRawBeanDefinition());
-            log.info(configParsingTips("registered bean : {}"), cls);
+            log.info(configParsingTips("Class registered as a spring's singleton bean : {}"), cls);
         });
-        log.info(configParsingTips("Loading plugin finished"));
+        log.info(configParsingTips("Loading plugin finished\n"));
 
     }
 
