@@ -14,6 +14,7 @@
         <module>yassos-server</module>
         <module>yassos-server-support</module>
         <module>yassos-distribution</module>
+        <module>yassos-server-plugin</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -60,6 +61,12 @@
             <dependency>
                 <groupId>io.github.hylexus</groupId>
                 <artifactId>yassos-server</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.hylexus</groupId>
+                <artifactId>user-details-mysql</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

@@ -1,11 +1,13 @@
-package io.github.hylexus.yassos.support.auth.user;
+package io.github.hylexus.ext.yassos.plugin;
 
+import io.github.hylexus.yassos.support.annotation.YassosPlugin;
 import io.github.hylexus.yassos.support.auth.UserDetailService;
 import io.github.hylexus.yassos.support.model.DefaultUserDetails;
 import io.github.hylexus.yassos.support.model.UserDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
@@ -16,6 +18,8 @@ import java.util.List;
  * Created At 2019-07-15 21:19
  */
 @Slf4j
+@YassosPlugin
+@Service
 public class SimpleJdbcUserDetailService implements UserDetailService {
 
     private JdbcTemplate jdbcTemplate;

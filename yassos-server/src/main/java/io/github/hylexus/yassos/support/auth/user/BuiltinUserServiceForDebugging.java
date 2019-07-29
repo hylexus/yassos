@@ -16,7 +16,7 @@ public class BuiltinUserServiceForDebugging implements UserDetailService {
     public UserDetails loadByUsername(String username) {
         return new DefaultUserDetails()
                 .setUsername(username)
-                .setPassword("123456")
+                .setPassword("1234561")
                 .setUserId(new Random().nextLong())
                 .setLocked(false)
                 .setCredentialExpired(false)

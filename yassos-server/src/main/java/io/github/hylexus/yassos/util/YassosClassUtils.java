@@ -1,9 +1,9 @@
 package io.github.hylexus.yassos.util;
 
+import io.github.hylexus.ext.yassos.plugin.SimpleJdbcUserDetailService;
 import io.github.hylexus.yassos.support.auth.CredentialsMatcher;
 import io.github.hylexus.yassos.support.auth.UserDetailService;
 import io.github.hylexus.yassos.support.auth.user.BuiltinUserServiceForDebugging;
-import io.github.hylexus.yassos.support.auth.user.SimpleJdbcUserDetailService;
 import io.github.hylexus.yassos.support.session.SessionManager;
 import io.github.hylexus.yassos.support.session.enhance.YassosSessionAttrConverter;
 import io.github.hylexus.yassos.support.session.manager.SimpleMemorySessionManager;

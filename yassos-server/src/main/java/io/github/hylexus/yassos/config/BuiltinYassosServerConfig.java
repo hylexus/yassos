@@ -2,6 +2,7 @@ package io.github.hylexus.yassos.config;
 
 import io.github.hylexus.yassos.support.auth.CredentialsMatcher;
 import io.github.hylexus.yassos.support.auth.UserDetailService;
+import io.github.hylexus.yassos.support.auth.user.BuiltinUserServiceForDebugging;
 import io.github.hylexus.yassos.support.session.SessionManager;
 import io.github.hylexus.yassos.support.session.enhance.YassosSessionAttrConverter;
 import io.github.hylexus.yassos.support.session.manager.SimpleMemorySessionManager;
@@ -49,12 +50,12 @@ public class BuiltinYassosServerConfig implements ApplicationContextAware {
         return new TokenGenerator.SimpleUUIDTokenGenerator();
     }
 
-//    @Bean
-//    @ConditionalOnMissingBean(UserDetailService.class)
-//    public UserDetailService builtinUserServiceForDebugging() {
-//        log.warn(line("<<Using BuiltinUserServiceForDebugging, please consider to provide your own implementation of UserDetailService>>"));
-//        return new BuiltinUserServiceForDebugging();
-//    }
+    @Bean
+    @ConditionalOnMissingBean(UserDetailService.class)
+    public UserDetailService builtinUserServiceForDebugging() {
+        log.warn(AnsiOutput.toString(DEPRECATED_COMPONENT_COLOR, ("<<Using default BuiltinUserServiceForDebugging, please consider to provide your own implementation of UserDetailService>>")));
+        return new BuiltinUserServiceForDebugging();
+    }
 
     @Bean
     @ConditionalOnMissingBean(CredentialsMatcher.class)
