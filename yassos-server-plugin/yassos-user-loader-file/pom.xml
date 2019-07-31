@@ -3,17 +3,18 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>yassos</artifactId>
+        <artifactId>yassos-server-plugin</artifactId>
         <groupId>io.github.hylexus</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>yassos-server-plugin</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>yassos-user-loader-file</module>
-        <module>yassos-user-loader-jdbc</module>
-    </modules>
+    <artifactId>yassos-user-loader-file</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>io.github.hylexus</groupId>
+            <artifactId>yassos-server-support</artifactId>
+        </dependency>
+    </dependencies>
 </project>

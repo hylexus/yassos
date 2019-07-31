@@ -23,11 +23,6 @@
         </dependency>
 
         <dependency>
-            <groupId>io.github.hylexus</groupId>
-            <artifactId>user-details-mysql</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
@@ -110,6 +105,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>  <!-- added -->
+                    <layout>ZIP</layout> <!-- to use PropertiesLauncher -->
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

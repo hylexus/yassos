@@ -1,4 +1,4 @@
-package io.github.hylexus.ext.yassos.plugin;
+package io.github.hylexus.ext.yassos.plugin.user.store;
 
 import io.github.hylexus.yassos.support.annotation.YassosPlugin;
 import io.github.hylexus.yassos.support.auth.UserDetailService;

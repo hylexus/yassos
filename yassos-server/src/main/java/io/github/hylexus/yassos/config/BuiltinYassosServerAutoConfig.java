@@ -13,11 +13,14 @@ import org.springframework.beans.BeansException;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ansi.AnsiColor;
 import org.springframework.boot.ansi.AnsiOutput;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 
 import static io.github.hylexus.yassos.config.YassosServerConstant.*;
 import static io.github.hylexus.yassos.util.YassosClassUtils.detectClassType;
@@ -27,7 +30,9 @@ import static io.github.hylexus.yassos.util.YassosClassUtils.detectClassType;
  * Created At 2019-07-03 22:00
  */
 @Slf4j
-public class BuiltinYassosServerConfig implements ApplicationContextAware {
+@Configuration
+@AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE - 10)
+public class BuiltinYassosServerAutoConfig implements ApplicationContextAware {
 
     protected ApplicationContext applicationContext;
 

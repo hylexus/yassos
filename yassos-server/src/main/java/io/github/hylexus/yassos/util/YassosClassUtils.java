@@ -1,6 +1,5 @@
 package io.github.hylexus.yassos.util;
 
-import io.github.hylexus.ext.yassos.plugin.SimpleJdbcUserDetailService;
 import io.github.hylexus.yassos.support.auth.CredentialsMatcher;
 import io.github.hylexus.yassos.support.auth.UserDetailService;
 import io.github.hylexus.yassos.support.auth.user.BuiltinUserServiceForDebugging;
@@ -32,7 +31,7 @@ public abstract class YassosClassUtils {
 
     static {
         final Map<Class<?>, Set<Class<?>>> map = new HashMap<>();
-        map.put(UserDetailService.class, Sets.newLinkedHashSet(SimpleJdbcUserDetailService.class, BuiltinUserServiceForDebugging.class));
+        map.put(UserDetailService.class, Sets.newLinkedHashSet(/*SimpleJdbcUserDetailService.class,*/ BuiltinUserServiceForDebugging.class));
         map.put(TokenGenerator.class, Sets.newLinkedHashSet(TokenGenerator.SimpleUUIDTokenGenerator.class));
         map.put(SessionManager.class, Sets.newLinkedHashSet(SimpleMemorySessionManager.class, SimpleRedisSessionManager.class));
         map.put(CredentialsMatcher.class, Sets.newLinkedHashSet(CredentialsMatcher.PlainTextCredentialsMatcher.class));

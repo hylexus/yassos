@@ -39,6 +39,9 @@ yassos:
     max-age: 40m
     name: x-yassos-token
     domain: .mine.com
+  user-store:
+    jdbc:
+      sql-to-load-user-details: 'select id as userId, name as username, password, locked, credential_expired, avatarUrl from yassos_user where name = ?'
 logging:
   config: classpath:logback.xml
 
