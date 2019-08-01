@@ -1,0 +1,18 @@
+[
+  {
+    "userId": 1,
+    "username": "yassos",
+    "password": "yassos",
+    "locked": false,
+    "credentialExpired": false,
+    "avatarUrl": "https://your-file-server/user/1.png"
+  },
+  {
+    "userId": 2,
+    "username": "admin",
+    "password": "yassos",
+    "locked": false,
+    "credentialExpired": false,
+    "avatarUrl": "https://your-file-server/user/2.png"
+  }
+]

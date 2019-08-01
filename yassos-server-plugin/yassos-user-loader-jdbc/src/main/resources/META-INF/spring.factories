@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  io.github.hylexus.ext.yassos.plugin.user.SimpleJdbcUserStoreAutoConfig
+  io.github.hylexus.ext.yassos.plugin.user.SimpleJdbcUserStoreAutoConfigure

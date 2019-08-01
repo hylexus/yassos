@@ -1,6 +1,5 @@
 package io.github.hylexus.yassos.controller;
 
-import io.github.hylexus.yassos.config.YassosServerConstant;
 import io.github.hylexus.yassos.core.session.YassosSession;
 import io.github.hylexus.yassos.core.util.CommonUtils;
 import io.github.hylexus.yassos.exception.UserAuthException;
@@ -30,8 +29,8 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Optional;
 
-import static io.github.hylexus.yassos.config.YassosServerConstant.*;
 import static io.github.hylexus.yassos.core.config.ConfigurationKeys.*;
+import static io.github.hylexus.yassos.support.YassosConfigureConstants.*;
 
 /**
  * @author hylexus
@@ -94,7 +93,7 @@ public class SsoController {
             }
         }
 
-        session.setAttribute(YassosServerConstant.PARAM_KEY_AUTH_ERR_MSG_KEY, errMsg);
+        session.setAttribute(PARAM_KEY_AUTH_ERR_MSG_KEY, errMsg);
 
         String redirectUrlName = CommonUtils.getSessionAttr(session, PARAM_KEY_REDIRECT_URL_NAME, CALLBACK_ADDRESS_NAME);
         String redirectUrlValue = CommonUtils.getSessionAttr(session, PARAM_KEY_REDIRECT_URL_VALUE, DEFAULT_CALLBACK_URI);

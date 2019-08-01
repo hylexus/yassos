@@ -1,13 +1,13 @@
 package io.github.hylexus.yassos.config;
 
 import io.github.hylexus.yassos.support.auth.CredentialsMatcher;
-import io.github.hylexus.yassos.support.auth.UserDetailService;
 import io.github.hylexus.yassos.support.auth.user.BuiltinUserServiceForDebugging;
 import io.github.hylexus.yassos.support.session.SessionManager;
 import io.github.hylexus.yassos.support.session.enhance.YassosSessionAttrConverter;
 import io.github.hylexus.yassos.support.session.manager.SimpleMemorySessionManager;
 import io.github.hylexus.yassos.support.session.manager.SimpleRedisSessionManager;
 import io.github.hylexus.yassos.support.token.TokenGenerator;
+import io.github.hylexus.yassos.support.user.store.UserStore;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.CommandLineRunner;
@@ -20,9 +20,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
 
-import static io.github.hylexus.yassos.config.YassosServerConstant.*;
+import static io.github.hylexus.yassos.support.YassosConfigureConstants.*;
 import static io.github.hylexus.yassos.util.YassosClassUtils.detectClassType;
 
 /**
@@ -31,7 +30,7 @@ import static io.github.hylexus.yassos.util.YassosClassUtils.detectClassType;
  */
 @Slf4j
 @Configuration
-@AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE - 10)
+@AutoConfigureOrder(BUILTIN_COMPONENT_ORDER)
 public class BuiltinYassosServerAutoConfig implements ApplicationContextAware {
 
     protected ApplicationContext applicationContext;
@@ -56,8 +55,8 @@ public class BuiltinYassosServerAutoConfig implements ApplicationContextAware {
     }
 
     @Bean
-    @ConditionalOnMissingBean(UserDetailService.class)
-    public UserDetailService builtinUserServiceForDebugging() {
+    @ConditionalOnMissingBean(UserStore.class)
+    public UserStore builtinUserServiceForDebugging() {
         log.warn(AnsiOutput.toString(DEPRECATED_COMPONENT_COLOR, ("<<Using default BuiltinUserServiceForDebugging, please consider to provide your own implementation of UserDetailService>>")));
         return new BuiltinUserServiceForDebugging();
     }
@@ -106,7 +105,7 @@ public class BuiltinYassosServerAutoConfig implements ApplicationContextAware {
                     .append(endOfLine)
                     .append(line(4, YassosSessionAttrConverter.class))
                     .append(endOfLine)
-                    .append(line(5, UserDetailService.class))
+                    .append(line(5, UserStore.class))
                     .append(endOfLine)
                     .append(AnsiOutput.toString(SERVER_BANNER_COLOR, "[ ~_~ YASSOS-SERVER ~_~ ]", AnsiColor.DEFAULT))
                     .append(endOfLine);

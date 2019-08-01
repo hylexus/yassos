@@ -3,9 +3,9 @@ package io.github.hylexus.yassos.config;
 import io.github.hylexus.oaks.utils.ClassUtils;
 import io.github.hylexus.yassos.support.annotation.YassosPlugin;
 import io.github.hylexus.yassos.support.auth.CredentialsMatcher;
-import io.github.hylexus.yassos.support.auth.UserDetailService;
 import io.github.hylexus.yassos.support.token.TokenGenerator;
-import io.github.hylexus.yassos.util.AnsiUtils;
+import io.github.hylexus.yassos.support.user.store.UserStore;
+import io.github.hylexus.yassos.support.utils.AnsiUtils;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -23,9 +23,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static io.github.hylexus.yassos.config.YassosServerConstant.CONFIG_KEY_YASSOS_HOME;
-import static io.github.hylexus.yassos.config.YassosServerConstant.CONFIG_KEY_YASSOS_LIB_EXT_DIR;
-import static io.github.hylexus.yassos.util.AnsiUtils.configParsingTips;
+import static io.github.hylexus.yassos.support.YassosConfigureConstants.CONFIG_KEY_YASSOS_HOME;
+import static io.github.hylexus.yassos.support.YassosConfigureConstants.CONFIG_KEY_YASSOS_LIB_EXT_DIR;
+import static io.github.hylexus.yassos.support.utils.AnsiUtils.configParsingTips;
 
 /**
  * @author hylexus
@@ -44,7 +44,7 @@ public class YassosConfigApplicationInitializer implements ApplicationContextIni
         final HashSet<Class<?>> classes = new HashSet<>();
         classes.add(TokenGenerator.class);
         classes.add(CredentialsMatcher.class);
-        classes.add(UserDetailService.class);
+        classes.add(UserStore.class);
         return classes;
     }
 

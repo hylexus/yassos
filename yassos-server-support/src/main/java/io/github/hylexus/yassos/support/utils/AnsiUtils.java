@@ -1,21 +1,22 @@
-package io.github.hylexus.yassos.util;
+package io.github.hylexus.yassos.support.utils;
 
 import lombok.Getter;
 import org.springframework.boot.ansi.AnsiColor;
 import org.springframework.boot.ansi.AnsiOutput;
 
-import static io.github.hylexus.yassos.config.YassosServerConstant.COLOR_CONFIG_PARSE_TIPS;
-import static io.github.hylexus.yassos.config.YassosServerConstant.DEPRECATED_COMPONENT_COLOR;
+import static io.github.hylexus.yassos.support.YassosConfigureConstants.COLOR_CONFIG_PARSE_TIPS;
+import static io.github.hylexus.yassos.support.YassosConfigureConstants.DEPRECATED_COMPONENT_COLOR;
 
 /**
  * @author hylexus
  * Created At 2019-07-25 23:50
  */
-public class AnsiUtils {
+public abstract class AnsiUtils {
     @Getter
     public enum TipsType {
         INFO(COLOR_CONFIG_PARSE_TIPS),
-        WARN(DEPRECATED_COMPONENT_COLOR);
+        WARN(DEPRECATED_COMPONENT_COLOR),
+        ERROR(DEPRECATED_COMPONENT_COLOR);
         private AnsiColor color;
 
         TipsType(AnsiColor color) {

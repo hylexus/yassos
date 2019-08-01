@@ -2,9 +2,9 @@ package io.github.hylexus.yassos.service;
 
 import io.github.hylexus.yassos.exception.*;
 import io.github.hylexus.yassos.support.auth.CredentialsMatcher;
-import io.github.hylexus.yassos.support.auth.UserDetailService;
 import io.github.hylexus.yassos.support.model.UserDetails;
 import io.github.hylexus.yassos.support.model.UsernamePasswordToken;
+import io.github.hylexus.yassos.support.user.store.UserStore;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class UserService {
 
     @Autowired
-    private UserDetailService userDetailService;
+    private UserStore userStore;
 
     @Autowired
     private CredentialsMatcher credentialsMatcher;
@@ -27,7 +27,7 @@ public class UserService {
 
     public UserDetails login(@NonNull UsernamePasswordToken usernamePasswordToken) throws UserAuthException {
         final String username = usernamePasswordToken.getUsername();
-        final UserDetails user = this.userDetailService.loadByUsername(username);
+        final UserDetails user = this.userStore.loadByUsername(username);
         if (user == null) {
             throw new AccountNotFoundException(localeMessage.getMessage("login.auth.account-not-found"), username);
         }

@@ -16,5 +16,11 @@
             <groupId>io.github.hylexus</groupId>
             <artifactId>yassos-server-support</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
+
     </dependencies>
 </project>

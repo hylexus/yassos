@@ -1,13 +1,12 @@
 package io.github.hylexus.ext.yassos.plugin.user.store;
 
 import io.github.hylexus.yassos.support.annotation.YassosPlugin;
-import io.github.hylexus.yassos.support.auth.UserDetailService;
 import io.github.hylexus.yassos.support.model.DefaultUserDetails;
 import io.github.hylexus.yassos.support.model.UserDetails;
+import io.github.hylexus.yassos.support.user.store.UserStore;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
@@ -19,13 +18,12 @@ import java.util.List;
  */
 @Slf4j
 @YassosPlugin
-@Service
-public class SimpleJdbcUserDetailService implements UserDetailService {
+public class SimpleJdbcUserStore implements UserStore {
 
     private JdbcTemplate jdbcTemplate;
     private String sqlToLoadUserDetails;
 
-    public SimpleJdbcUserDetailService(JdbcTemplate jdbcTemplate, String sqlToLoadUserDetails) {
+    public SimpleJdbcUserStore(JdbcTemplate jdbcTemplate, String sqlToLoadUserDetails) {
         this.jdbcTemplate = jdbcTemplate;
         this.sqlToLoadUserDetails = sqlToLoadUserDetails;
     }
@@ -35,7 +33,7 @@ public class SimpleJdbcUserDetailService implements UserDetailService {
     public UserDetails loadByUsername(String username) {
         final List<DefaultUserDetails> list = jdbcTemplate.query(sqlToLoadUserDetails, new Object[]{username}, new BeanPropertyRowMapper<>(DefaultUserDetails.class));
         if (CollectionUtils.isEmpty(list)) {
-            log.info("can not load user named : {}", username);
+            log.debug("can not load user named : {}", username);
             return null;
         }
 

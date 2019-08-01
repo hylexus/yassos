@@ -1,6 +1,6 @@
 package io.github.hylexus.yassos.exception;
 
-import static io.github.hylexus.yassos.config.YassosServerConstant.I18N_AUTH_ACCOUNT_NOT_FOUND;
+import static io.github.hylexus.yassos.support.YassosConfigureConstants.I18N_AUTH_ACCOUNT_NOT_FOUND;
 
 /**
  * @author hylexus

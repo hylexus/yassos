@@ -40,8 +40,12 @@ yassos:
     name: x-yassos-token
     domain: .mine.com
   user-store:
+    type: file
     jdbc:
       sql-to-load-user-details: 'select id as userId, name as username, password, locked, credential_expired, avatarUrl from yassos_user where name = ?'
+    file:
+      file-location: classpath:file-user-store.json
+
 logging:
   config: classpath:logback.xml
 

@@ -72,6 +72,12 @@
 
             <dependency>
                 <groupId>io.github.hylexus</groupId>
+                <artifactId>yassos-user-loader-file</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.hylexus</groupId>
                 <artifactId>oaks-common-utils</artifactId>
                 <version>1.0.2</version>
             </dependency>
@@ -97,7 +103,7 @@
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
-                <version>1.2.57</version>
+                <version>1.2.59</version>
             </dependency>
 
             <dependency>

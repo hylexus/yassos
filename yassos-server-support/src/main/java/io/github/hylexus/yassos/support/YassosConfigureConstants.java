@@ -1,12 +1,16 @@
-package io.github.hylexus.yassos.config;
+package io.github.hylexus.yassos.support;
 
 import org.springframework.boot.ansi.AnsiColor;
+import org.springframework.core.Ordered;
 
 /**
  * @author hylexus
- * Created At 2019-07-16 22:39
+ * Created At 2019-08-01 21:19
  */
-public interface YassosServerConstant {
+public interface YassosConfigureConstants {
+    String CONFIGURE_KEY_USER_STORE = "yassos.user-store";
+    int BUILTIN_COMPONENT_ORDER = Ordered.LOWEST_PRECEDENCE - 10;
+    int CUSTOM_COMPONENT_ORDER = Ordered.HIGHEST_PRECEDENCE + 10;
 
     String PARAM_KEY_AUTH_ERR_MSG_KEY = "auth_err_msg_key";
     String PARAM_KEY_AUTH_ERR_MSG_KEY_118N = "auth_err_msg_i18n_code";
@@ -29,5 +33,4 @@ public interface YassosServerConstant {
     AnsiColor UNKNOWN_COMPONENT_TYPE_COLOR = AnsiColor.BRIGHT_BLUE;
 
     AnsiColor SERVER_BANNER_COLOR = AnsiColor.BRIGHT_BLUE;
-
 }
