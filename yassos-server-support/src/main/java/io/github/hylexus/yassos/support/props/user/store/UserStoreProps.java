@@ -1,4 +1,4 @@
-package io.github.hylexus.yassos.support.props;
+package io.github.hylexus.yassos.support.props.user.store;
 
 import io.github.hylexus.yassos.support.user.store.UserStoreType;
 import lombok.Getter;

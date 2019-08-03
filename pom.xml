@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.hylexus</groupId>
+    <groupId>io.github.hylexus.yassos</groupId>
     <artifactId>yassos</artifactId>
     <version>1.0-SNAPSHOT</version>
     <modules>
@@ -35,44 +35,56 @@
             </dependency>
 
             <dependency>
-                <groupId>io.github.hylexus</groupId>
+                <groupId>io.github.hylexus.yassos</groupId>
                 <artifactId>yassos-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>io.github.hylexus</groupId>
+                <groupId>io.github.hylexus.yassos</groupId>
                 <artifactId>yassos-client</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>io.github.hylexus</groupId>
+                <groupId>io.github.hylexus.yassos</groupId>
                 <artifactId>yassos-client-spring-boot-starter</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>io.github.hylexus</groupId>
+                <groupId>io.github.hylexus.yassos</groupId>
                 <artifactId>yassos-server-support</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>io.github.hylexus</groupId>
+                <groupId>io.github.hylexus.yassos</groupId>
                 <artifactId>yassos-server</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>io.github.hylexus</groupId>
+                <groupId>io.github.hylexus.yassos</groupId>
                 <artifactId>yassos-user-loader-jdbc</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>io.github.hylexus</groupId>
+                <groupId>io.github.hylexus.yassos</groupId>
                 <artifactId>yassos-user-loader-file</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.hylexus.yassos</groupId>
+                <artifactId>yassos-session-manager-memory</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.hylexus.yassos</groupId>
+                <artifactId>yassos-session-manager-redis</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

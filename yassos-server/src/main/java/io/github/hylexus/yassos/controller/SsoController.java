@@ -200,7 +200,7 @@ public class SsoController {
     private YassosSession createNewSession(String sessionId, UserDetails user) {
 
         final LocalDateTime now = org.joda.time.LocalDateTime.now();
-        final LocalDateTime expiredAt = now.plusSeconds((int) globalProps.getSession().getIdleTime().getSeconds());
+        final LocalDateTime expiredAt = now.plusSeconds((int) globalProps.getSessionManager().getIdleTime().getSeconds());
         final SimpleYassosSessionAttr sessionAttr = new SimpleYassosSessionAttr()
                 .setAvatarUrl(user.getAvatarUrl());
 

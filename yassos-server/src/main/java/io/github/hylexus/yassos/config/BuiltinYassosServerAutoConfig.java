@@ -4,8 +4,6 @@ import io.github.hylexus.yassos.support.auth.CredentialsMatcher;
 import io.github.hylexus.yassos.support.auth.user.BuiltinUserServiceForDebugging;
 import io.github.hylexus.yassos.support.session.SessionManager;
 import io.github.hylexus.yassos.support.session.enhance.YassosSessionAttrConverter;
-import io.github.hylexus.yassos.support.session.manager.SimpleMemorySessionManager;
-import io.github.hylexus.yassos.support.session.manager.SimpleRedisSessionManager;
 import io.github.hylexus.yassos.support.token.TokenGenerator;
 import io.github.hylexus.yassos.support.user.store.UserStore;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +13,6 @@ import org.springframework.boot.ansi.AnsiColor;
 import org.springframework.boot.ansi.AnsiOutput;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
@@ -35,18 +32,18 @@ public class BuiltinYassosServerAutoConfig implements ApplicationContextAware {
 
     protected ApplicationContext applicationContext;
 
-    @Bean
-    @ConditionalOnProperty(prefix = "yassos.session", name = "type", havingValue = "memory")
-    public SessionManager simpleMemorySessionManager() {
-        log.warn(AnsiOutput.toString(DEPRECATED_COMPONENT_COLOR, "<<Using default SimpleMemorySessionManager, please consider to provide your own implementation of SessionManager>>"));
-        return new SimpleMemorySessionManager();
-    }
-
-    @Bean
-    @ConditionalOnProperty(prefix = "yassos.session", name = "type", havingValue = "redis")
-    public SessionManager simpleRedisSessionManager() {
-        return new SimpleRedisSessionManager();
-    }
+//    @Bean
+//    @ConditionalOnProperty(prefix = "yassos.session", name = "type", havingValue = "memory")
+//    public SessionManager simpleMemorySessionManager() {
+//        log.warn(AnsiOutput.toString(DEPRECATED_COMPONENT_COLOR, "<<Using default SimpleMemorySessionManager, please consider to provide your own implementation of SessionManager>>"));
+//        return new SimpleMemorySessionManager();
+//    }
+//
+//    @Bean
+//    @ConditionalOnProperty(prefix = "yassos.session", name = "type", havingValue = "redis")
+//    public SessionManager simpleRedisSessionManager() {
+//        return new SimpleRedisSessionManager();
+//    }
 
     @Bean
     @ConditionalOnMissingBean(TokenGenerator.class)

@@ -26,8 +26,8 @@ spring:
   main:
     banner-mode: log
 yassos:
-  session:
-    type: memory
+  session-manager:
+    type: redis
     idle-time: 30m
     redis:
       key-prefix: 'yassos_session:'

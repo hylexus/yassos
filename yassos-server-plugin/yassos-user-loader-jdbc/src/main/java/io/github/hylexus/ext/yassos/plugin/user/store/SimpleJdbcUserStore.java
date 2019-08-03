@@ -1,6 +1,5 @@
 package io.github.hylexus.ext.yassos.plugin.user.store;
 
-import io.github.hylexus.yassos.support.annotation.YassosPlugin;
 import io.github.hylexus.yassos.support.model.DefaultUserDetails;
 import io.github.hylexus.yassos.support.model.UserDetails;
 import io.github.hylexus.yassos.support.user.store.UserStore;
@@ -17,7 +16,6 @@ import java.util.List;
  * Created At 2019-07-15 21:19
  */
 @Slf4j
-@YassosPlugin
 public class SimpleJdbcUserStore implements UserStore {
 
     private JdbcTemplate jdbcTemplate;

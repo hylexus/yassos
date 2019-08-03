@@ -9,6 +9,9 @@ import org.springframework.core.Ordered;
  */
 public interface YassosConfigureConstants {
     String CONFIGURE_KEY_USER_STORE = "yassos.user-store";
+    String CONFIGURE_KEY_SESSION_MANAGER = "yassos.session-manager";
+    String CONFIG_KEY_SESSION_MANAGER_TYPE_MEMORY = "memory";
+    String CONFIG_KEY_SESSION_MANAGER_TYPE_REDIS = "redis";
     int BUILTIN_COMPONENT_ORDER = Ordered.LOWEST_PRECEDENCE - 10;
     int CUSTOM_COMPONENT_ORDER = Ordered.HIGHEST_PRECEDENCE + 10;
 

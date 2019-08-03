@@ -1,8 +1,8 @@
 package io.github.hylexus.ext.yassos.plugin.user;
 
 import io.github.hylexus.ext.yassos.plugin.user.store.SimpleFileUserStore;
-import io.github.hylexus.yassos.support.props.FileUserStoreProps;
-import io.github.hylexus.yassos.support.props.UserStoreProps;
+import io.github.hylexus.yassos.support.props.user.store.FileUserStoreProps;
+import io.github.hylexus.yassos.support.props.user.store.UserStoreProps;
 import io.github.hylexus.yassos.support.user.store.UserStore;
 import io.github.hylexus.yassos.support.utils.AnsiUtils;
 import lombok.extern.slf4j.Slf4j;

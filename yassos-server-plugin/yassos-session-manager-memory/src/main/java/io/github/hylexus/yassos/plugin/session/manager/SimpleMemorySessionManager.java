@@ -1,13 +1,14 @@
-package io.github.hylexus.yassos.support.session.manager;
+package io.github.hylexus.yassos.plugin.session.manager;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import io.github.hylexus.yassos.core.session.YassosSession;
-import io.github.hylexus.yassos.support.props.YassosGlobalProps;
+import io.github.hylexus.yassos.support.props.session.SessionManagerProps;
+import io.github.hylexus.yassos.support.session.AbstractSessionManager;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -16,13 +17,17 @@ import java.util.concurrent.TimeUnit;
  * @author hylexus
  * Created At 2019-06-09 18:46
  */
+@Slf4j
 public class SimpleMemorySessionManager extends AbstractSessionManager implements InitializingBean {
 
-    @Autowired
-    private YassosGlobalProps globalProps;
+    private SessionManagerProps sessionManagerProps;
 
     private Cache<String, YassosSession> sessionCache;
     private Cache<String, String> usernameCache;
+
+    public SimpleMemorySessionManager(SessionManagerProps sessionManagerProps) {
+        this.sessionManagerProps = sessionManagerProps;
+    }
 
     @Override
     public Optional<YassosSession> getSessionByToken(String token, boolean updateLastAccessTime) {
@@ -39,7 +44,7 @@ public class SimpleMemorySessionManager extends AbstractSessionManager implement
             final String usernameKey = generateUsernameKey(session.getUsername());
             usernameCache.put(usernameKey, session.getToken());
         }
-        session.setExpiredAt(session.getLastAccessTime() + globalProps.getSession().getIdleTime().getSeconds());
+        session.setExpiredAt(session.getLastAccessTime() + sessionManagerProps.getIdleTime().getSeconds());
         return Optional.of(session);
     }
 
@@ -72,7 +77,7 @@ public class SimpleMemorySessionManager extends AbstractSessionManager implement
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        final long ttlInSeconds = globalProps.getSession().getIdleTime().getSeconds();
+        final long ttlInSeconds = sessionManagerProps.getIdleTime().getSeconds();
 
         sessionCache = CacheBuilder.newBuilder()
                 .expireAfterAccess(ttlInSeconds, TimeUnit.SECONDS)

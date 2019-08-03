@@ -1,12 +1,13 @@
-package io.github.hylexus.yassos.support.session.manager;
+package io.github.hylexus.yassos.plugin.session.manager;
 
 import io.github.hylexus.yassos.core.session.YassosSession;
 import io.github.hylexus.yassos.core.session.YassosSessionAttr;
 import io.github.hylexus.yassos.support.model.SimpleYassosSession;
+import io.github.hylexus.yassos.support.props.session.SessionManagerProps;
+import io.github.hylexus.yassos.support.session.AbstractSessionManager;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.CollectionUtils;
 
@@ -28,8 +29,14 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class SimpleRedisSessionManager extends AbstractSessionManager {
 
-    @Autowired
     private RedisTemplate<String, String> redisTemplate;
+
+    private SessionManagerProps sessionManagerProps;
+
+    public SimpleRedisSessionManager(RedisTemplate<String, String> redisTemplate, SessionManagerProps sessionManagerProps) {
+        this.redisTemplate = redisTemplate;
+        this.sessionManagerProps = sessionManagerProps;
+    }
 
     private static final String HASH_KEY_USERNAME = "username";
     private static final String HASH_KEY_TOKEN = "token";
@@ -125,6 +132,14 @@ public class SimpleRedisSessionManager extends AbstractSessionManager {
     }
 
     private void ttl(String key) {
-        redisTemplate.expire(key, globalProps.getSession().getIdleTime().getSeconds(), TimeUnit.SECONDS);
+        redisTemplate.expire(key, sessionManagerProps.getIdleTime().getSeconds(), TimeUnit.SECONDS);
+    }
+
+    protected String generateTokenKey(String token) {
+        return sessionManagerProps.getRedis().getKeyPrefix() + token;
+    }
+
+    protected String generateUsernameKey(String username) {
+        return sessionManagerProps.getRedis().getKeyPrefix() + username;
     }
 }
