@@ -46,7 +46,7 @@ public abstract class YassosClassUtils {
 
         final Set<Class<?>> classes = mapping.get(superClass);
         if (CollectionUtils.isEmpty(classes)) {
-            return UNKNOWN_COMPONENT_TYPE_COLOR;
+            return CUSTOM_COMPONENT_COLOR;
         }
 
         for (Class<?> klass : classes) {

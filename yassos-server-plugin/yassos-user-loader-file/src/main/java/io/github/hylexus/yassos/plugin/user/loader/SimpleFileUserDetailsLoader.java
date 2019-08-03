@@ -40,7 +40,7 @@ public class SimpleFileUserDetailsLoader implements UserDetailsLoader, Initializ
     public UserDetails loadByUsername(String username) {
         UserDetails user = userMapping.get(username);
         if (user == null) {
-            log.debug("can not load user named : {}", username);
+            log.debug("Can not load user named : {}", username);
             return null;
         }
 
@@ -58,7 +58,7 @@ public class SimpleFileUserDetailsLoader implements UserDetailsLoader, Initializ
             String jsonString = FileCopyUtils.copyToString(new InputStreamReader(inputStream));
             List<DefaultUserDetails> userList = JSON.parseArray(jsonString, DefaultUserDetails.class);
             if (CollectionUtils.isEmpty(userList)) {
-                log.warn(configParsingTips(ERROR, "No user found from file : {}"), fileLocation);
+                log.warn(configParsingTips(ERROR, "No user found from : {}"), fileLocation);
                 return;
             }
 
@@ -71,7 +71,7 @@ public class SimpleFileUserDetailsLoader implements UserDetailsLoader, Initializ
             }
 
             this.userMapping = Collections.unmodifiableMap(map);
-            log.info(configParsingTips(INFO, ">>| UserStore initialized from file : '{}', size = {}"), fileLocation, map.size());
+            log.info(configParsingTips(INFO, ">>| UserStore initialized from : '{}', effective number of users = {}"), fileLocation, map.size());
         }
     }
 }

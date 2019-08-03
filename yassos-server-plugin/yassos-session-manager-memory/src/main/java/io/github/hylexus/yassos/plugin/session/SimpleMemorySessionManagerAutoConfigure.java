@@ -27,7 +27,7 @@ public class SimpleMemorySessionManagerAutoConfigure {
     @Bean
     @ConditionalOnMissingBean(SessionManager.class)
     private SessionManager sessionManager(SessionManagerProps sessionManagerProps) {
-        log.warn(configParsingTips(AnsiUtils.TipsType.WARN, "<<Using default SimpleMemorySessionManager, please consider to provide your own implementation of SessionManager>>"));
+        log.warn(configParsingTips(AnsiUtils.TipsType.WARN, "<<Using a component that used only during testing phase : [SimpleMemorySessionManager], please consider to provide your own implementation of SessionManager>>"));
         return new SimpleMemorySessionManager(sessionManagerProps);
     }
 }

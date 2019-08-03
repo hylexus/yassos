@@ -29,6 +29,6 @@ public abstract class AnsiUtils {
     }
 
     public static String configParsingTips(TipsType tipsType, String content) {
-        return AnsiOutput.toString(tipsType.color, content);
+        return AnsiOutput.toString(tipsType.color, content, AnsiColor.DEFAULT);
     }
 }

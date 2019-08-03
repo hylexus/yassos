@@ -56,7 +56,7 @@ public class BuiltinYassosServerAutoConfigure implements ApplicationContextAware
     @Bean
     @ConditionalOnMissingBean(CredentialsMatcher.class)
     public CredentialsMatcher credentialsMatcher() {
-        log.warn(AnsiOutput.toString(DEPRECATED_COMPONENT_COLOR, "<<Using default PlainTextCredentialsMatcher, please consider to provide your own implementation of CredentialsMatcher>>"));
+        log.warn(AnsiOutput.toString(DEPRECATED_COMPONENT_COLOR, "<<Using a component that used only during testing phase : [PlainTextCredentialsMatcher], please consider to provide your own implementation of CredentialsMatcher>>"));
         return new CredentialsMatcher.PlainTextCredentialsMatcher();
     }
 
