@@ -3,8 +3,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
+        <groupId>io.github.hylexus.yassos</groupId>
         <artifactId>yassos</artifactId>
-        <groupId>io.github.hylexus</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -12,24 +12,25 @@
     <artifactId>yassos-server</artifactId>
 
     <dependencies>
+
         <dependency>
-            <groupId>io.github.hylexus</groupId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.hylexus.yassos</groupId>
             <artifactId>yassos-common</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>io.github.hylexus</groupId>
+            <groupId>io.github.hylexus.yassos</groupId>
             <artifactId>yassos-server-support</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
         <dependency>
@@ -40,16 +41,6 @@
         <dependency>
             <groupId>io.github.hylexus</groupId>
             <artifactId>oaks-common-utils</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
         <dependency>
@@ -73,11 +64,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
         </dependency>
@@ -97,6 +83,31 @@
             <artifactId>spring-boot-devtools</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-loader</artifactId>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>io.github.hylexus.yassos</groupId>-->
+<!--            <artifactId>yassos-user-loader-jdbc</artifactId>-->
+<!--        </dependency>-->
+
+        <dependency>
+            <groupId>io.github.hylexus.yassos</groupId>
+            <artifactId>yassos-user-loader-file</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.hylexus.yassos</groupId>
+            <artifactId>yassos-session-manager-memory</artifactId>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>io.github.hylexus.yassos</groupId>-->
+<!--            <artifactId>yassos-session-manager-redis</artifactId>-->
+<!--        </dependency>-->
+
     </dependencies>
 
     <build>
@@ -105,6 +116,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>  <!-- added -->
+                    <layout>ZIP</layout> <!-- to use PropertiesLauncher -->
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

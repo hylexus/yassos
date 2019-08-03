@@ -4,8 +4,8 @@
     <includeBaseDirectory>true</includeBaseDirectory>
     <formats>
         <format>dir</format>
-        <!--        <format>tar.gz</format>-->
-        <!--        <format>zip</format>-->
+        <format>tar.gz</format>
+<!--        <format>zip</format>-->
     </formats>
     <fileSets>
         <!--        <fileSet>-->

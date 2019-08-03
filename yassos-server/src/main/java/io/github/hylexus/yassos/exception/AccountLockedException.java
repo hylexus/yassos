@@ -1,6 +1,7 @@
 package io.github.hylexus.yassos.exception;
 
-import static io.github.hylexus.yassos.config.YassosServerConstant.I18N_AUTH_ACCOUNT_LOCKED;
+
+import static io.github.hylexus.yassos.support.YassosConfigureConstants.I18N_AUTH_ACCOUNT_LOCKED;
 
 /**
  * @author hylexus

@@ -18,6 +18,6 @@ public class DefaultUserDetails implements UserDetails {
     private String username;
     private String password;
     private boolean locked;
-    private boolean CredentialExpired;
+    private boolean credentialExpired;
     private String avatarUrl;
 }

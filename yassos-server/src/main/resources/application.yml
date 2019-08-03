@@ -26,12 +26,18 @@ spring:
   main:
     banner-mode: log
 yassos:
-  session:
+  session-manager:
     type: memory
     idle-time: 30m
     redis:
       key-prefix: 'yassos_session:'
-  cookie:
+  user-store:
+    type: file
+    jdbc:
+      sql-to-load-user-details: 'select id as userId, name as username, password, locked, credential_expired, avatarUrl from yassos_user where name = ?'
+    file:
+      file-location: classpath:file-user-store.json
+  client-cookie:
     enabled: true
     http-only: false
     secure: false
@@ -39,6 +45,7 @@ yassos:
     max-age: 40m
     name: x-yassos-token
     domain: .mine.com
+
 logging:
   config: classpath:logback.xml
 
