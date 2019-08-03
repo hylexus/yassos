@@ -2,10 +2,8 @@ package io.github.hylexus.yassos.util;
 
 import io.github.hylexus.yassos.plugin.session.manager.SimpleMemorySessionManager;
 import io.github.hylexus.yassos.support.auth.CredentialsMatcher;
-import io.github.hylexus.yassos.support.auth.user.BuiltinUserServiceForDebugging;
 import io.github.hylexus.yassos.support.session.enhance.YassosSessionAttrConverter;
 import io.github.hylexus.yassos.support.token.TokenGenerator;
-import io.github.hylexus.yassos.support.user.store.UserStore;
 import lombok.NonNull;
 import org.assertj.core.util.Sets;
 import org.springframework.boot.ansi.AnsiColor;
@@ -29,7 +27,7 @@ public abstract class YassosClassUtils {
 
     static {
         final Map<Class<?>, Set<Class<?>>> map = new HashMap<>();
-        map.put(UserStore.class, Sets.newLinkedHashSet(/*SimpleJdbcUserDetailService.class,*/ BuiltinUserServiceForDebugging.class));
+//        map.put(UserStore.class, Sets.newLinkedHashSet(/*SimpleJdbcUserDetailService.class,*/ BuiltinUserServiceForDebugging.class));
         map.put(TokenGenerator.class, Sets.newLinkedHashSet(TokenGenerator.SimpleUUIDTokenGenerator.class));
 //        map.put(SessionManager.class, Sets.newLinkedHashSet(SimpleMemorySessionManager.class, SimpleRedisSessionManager.class));
         map.put(CredentialsMatcher.class, Sets.newLinkedHashSet(CredentialsMatcher.PlainTextCredentialsMatcher.class));

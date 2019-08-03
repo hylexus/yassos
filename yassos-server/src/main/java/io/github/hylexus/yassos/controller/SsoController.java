@@ -146,7 +146,7 @@ public class SsoController {
     }
 
     private void doAfterLogin(HttpServletRequest request, HttpServletResponse response, YassosSession yassosSession) {
-        if (!globalProps.getCookie().isEnabled()) {
+        if (!globalProps.getClientCookie().isEnabled()) {
             log.debug("yassos-cookie was disabled");
             return;
         }
@@ -163,7 +163,7 @@ public class SsoController {
     }
 
     private Cookie buildCookie(YassosSession yassosSession) {
-        final YassosCookieProps cookieProps = globalProps.getCookie();
+        final YassosCookieProps cookieProps = globalProps.getClientCookie();
 
         final Cookie cookie = new Cookie(cookieProps.getName(), yassosSession.getToken());
         cookie.setDomain(cookieProps.getDomain());

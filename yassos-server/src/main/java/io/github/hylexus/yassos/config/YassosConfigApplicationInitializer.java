@@ -4,7 +4,7 @@ import io.github.hylexus.oaks.utils.ClassUtils;
 import io.github.hylexus.yassos.support.annotation.YassosPlugin;
 import io.github.hylexus.yassos.support.auth.CredentialsMatcher;
 import io.github.hylexus.yassos.support.token.TokenGenerator;
-import io.github.hylexus.yassos.support.user.store.UserStore;
+import io.github.hylexus.yassos.support.user.loader.UserDetailsLoader;
 import io.github.hylexus.yassos.support.utils.AnsiUtils;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +44,7 @@ public class YassosConfigApplicationInitializer implements ApplicationContextIni
         final HashSet<Class<?>> classes = new HashSet<>();
         classes.add(TokenGenerator.class);
         classes.add(CredentialsMatcher.class);
-        classes.add(UserStore.class);
+        classes.add(UserDetailsLoader.class);
         return classes;
     }
 

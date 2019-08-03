@@ -1,11 +1,10 @@
 package io.github.hylexus.yassos.config;
 
 import io.github.hylexus.yassos.support.auth.CredentialsMatcher;
-import io.github.hylexus.yassos.support.auth.user.BuiltinUserServiceForDebugging;
 import io.github.hylexus.yassos.support.session.SessionManager;
 import io.github.hylexus.yassos.support.session.enhance.YassosSessionAttrConverter;
 import io.github.hylexus.yassos.support.token.TokenGenerator;
-import io.github.hylexus.yassos.support.user.store.UserStore;
+import io.github.hylexus.yassos.support.user.loader.UserDetailsLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.CommandLineRunner;
@@ -28,7 +27,7 @@ import static io.github.hylexus.yassos.util.YassosClassUtils.detectClassType;
 @Slf4j
 @Configuration
 @AutoConfigureOrder(BUILTIN_COMPONENT_ORDER)
-public class BuiltinYassosServerAutoConfig implements ApplicationContextAware {
+public class BuiltinYassosServerAutoConfigure implements ApplicationContextAware {
 
     protected ApplicationContext applicationContext;
 
@@ -51,12 +50,12 @@ public class BuiltinYassosServerAutoConfig implements ApplicationContextAware {
         return new TokenGenerator.SimpleUUIDTokenGenerator();
     }
 
-    @Bean
-    @ConditionalOnMissingBean(UserStore.class)
-    public UserStore builtinUserServiceForDebugging() {
-        log.warn(AnsiOutput.toString(DEPRECATED_COMPONENT_COLOR, ("<<Using default BuiltinUserServiceForDebugging, please consider to provide your own implementation of UserDetailService>>")));
-        return new BuiltinUserServiceForDebugging();
-    }
+//    @Bean
+//    @ConditionalOnMissingBean(UserStore.class)
+//    public UserStore builtinUserServiceForDebugging() {
+//        log.warn(AnsiOutput.toString(DEPRECATED_COMPONENT_COLOR, ("<<Using default BuiltinUserServiceForDebugging, please consider to provide your own implementation of UserDetailService>>")));
+//        return new BuiltinUserServiceForDebugging();
+//    }
 
     @Bean
     @ConditionalOnMissingBean(CredentialsMatcher.class)
@@ -102,7 +101,7 @@ public class BuiltinYassosServerAutoConfig implements ApplicationContextAware {
                     .append(endOfLine)
                     .append(line(4, YassosSessionAttrConverter.class))
                     .append(endOfLine)
-                    .append(line(5, UserStore.class))
+                    .append(line(5, UserDetailsLoader.class))
                     .append(endOfLine)
                     .append(AnsiOutput.toString(SERVER_BANNER_COLOR, "[ ~_~ YASSOS-SERVER ~_~ ]", AnsiColor.DEFAULT))
                     .append(endOfLine);

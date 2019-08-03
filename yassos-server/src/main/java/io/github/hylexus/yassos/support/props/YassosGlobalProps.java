@@ -15,5 +15,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class YassosGlobalProps {
     private SessionManagerProps sessionManager;
 //    private YassosSessionProps session = new YassosSessionProps();
-    private YassosCookieProps cookie = new YassosCookieProps();
+    private YassosCookieProps clientCookie = new YassosCookieProps();
 }

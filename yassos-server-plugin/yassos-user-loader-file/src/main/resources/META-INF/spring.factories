@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  io.github.hylexus.ext.yassos.plugin.user.SimpleFileUserStoreAutoConfigure
+  io.github.hylexus.yassos.plugin.user.SimpleFileUserStoreAutoConfigure

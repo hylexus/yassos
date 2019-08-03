@@ -1,8 +1,8 @@
-package io.github.hylexus.ext.yassos.plugin.user.store;
+package io.github.hylexus.yassos.plugin.user.loader;
 
 import io.github.hylexus.yassos.support.model.DefaultUserDetails;
 import io.github.hylexus.yassos.support.model.UserDetails;
-import io.github.hylexus.yassos.support.user.store.UserStore;
+import io.github.hylexus.yassos.support.user.loader.UserDetailsLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,12 +16,12 @@ import java.util.List;
  * Created At 2019-07-15 21:19
  */
 @Slf4j
-public class SimpleJdbcUserStore implements UserStore {
+public class SimpleJdbcUserDetailsLoader implements UserDetailsLoader {
 
     private JdbcTemplate jdbcTemplate;
     private String sqlToLoadUserDetails;
 
-    public SimpleJdbcUserStore(JdbcTemplate jdbcTemplate, String sqlToLoadUserDetails) {
+    public SimpleJdbcUserDetailsLoader(JdbcTemplate jdbcTemplate, String sqlToLoadUserDetails) {
         this.jdbcTemplate = jdbcTemplate;
         this.sqlToLoadUserDetails = sqlToLoadUserDetails;
     }

@@ -1,6 +1,6 @@
 package io.github.hylexus.yassos.support.props.user.store;
 
-import io.github.hylexus.yassos.support.user.store.UserStoreType;
+import io.github.hylexus.yassos.support.user.loader.UserDetailsLoaderType;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -16,7 +16,7 @@ import static io.github.hylexus.yassos.support.YassosConfigureConstants.CONFIGUR
 @ConfigurationProperties(prefix = CONFIGURE_KEY_USER_STORE)
 public class UserStoreProps {
 
-    private UserStoreType type = UserStoreType.FILE;
+    private UserDetailsLoaderType type = UserDetailsLoaderType.FILE;
 
     private JdbcUserStoreProps jdbc = new JdbcUserStoreProps();
     private FileUserStoreProps file = new FileUserStoreProps();

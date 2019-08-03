@@ -1,9 +1,9 @@
-package io.github.hylexus.ext.yassos.plugin.user;
+package io.github.hylexus.yassos.plugin.user;
 
-import io.github.hylexus.ext.yassos.plugin.user.store.SimpleJdbcUserStore;
+import io.github.hylexus.yassos.plugin.user.loader.SimpleJdbcUserDetailsLoader;
 import io.github.hylexus.yassos.support.props.user.store.JdbcUserStoreProps;
 import io.github.hylexus.yassos.support.props.user.store.UserStoreProps;
-import io.github.hylexus.yassos.support.user.store.UserStore;
+import io.github.hylexus.yassos.support.user.loader.UserDetailsLoader;
 import io.github.hylexus.yassos.support.utils.AnsiUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +32,10 @@ public class SimpleJdbcUserStoreAutoConfigure {
     private UserStoreProps userStoreProps;
 
     @Bean
-    @ConditionalOnMissingBean(UserStore.class)
-    public UserStore userDetailService(JdbcTemplate jdbcTemplate) {
+    @ConditionalOnMissingBean(UserDetailsLoader.class)
+    public UserDetailsLoader userDetailService(JdbcTemplate jdbcTemplate) {
         log.info(configParsingTips(AnsiUtils.TipsType.INFO, ">>| Loading UserStore [SimpleJdbcUserDetailService]."));
         JdbcUserStoreProps jdbcProps = userStoreProps.getJdbc();
-        return new SimpleJdbcUserStore(jdbcTemplate, jdbcProps.getSqlToLoadUserDetails());
+        return new SimpleJdbcUserDetailsLoader(jdbcTemplate, jdbcProps.getSqlToLoadUserDetails());
     }
 }

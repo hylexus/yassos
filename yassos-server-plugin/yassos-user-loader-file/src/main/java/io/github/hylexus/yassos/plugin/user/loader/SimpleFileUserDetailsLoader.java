@@ -1,10 +1,10 @@
-package io.github.hylexus.ext.yassos.plugin.user.store;
+package io.github.hylexus.yassos.plugin.user.loader;
 
 import com.alibaba.fastjson.JSON;
 import io.github.hylexus.yassos.support.exception.PluginLoadingException;
 import io.github.hylexus.yassos.support.model.DefaultUserDetails;
 import io.github.hylexus.yassos.support.model.UserDetails;
-import io.github.hylexus.yassos.support.user.store.UserStore;
+import io.github.hylexus.yassos.support.user.loader.UserDetailsLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.CollectionUtils;
@@ -27,12 +27,12 @@ import static io.github.hylexus.yassos.support.utils.AnsiUtils.configParsingTips
  * Created At 2019-08-01 23:40
  */
 @Slf4j
-public class SimpleFileUserStore implements UserStore, InitializingBean {
+public class SimpleFileUserDetailsLoader implements UserDetailsLoader, InitializingBean {
 
     private String fileLocation;
     private Map<String, UserDetails> userMapping = new HashMap<>();
 
-    public SimpleFileUserStore(String fileLocation) {
+    public SimpleFileUserDetailsLoader(String fileLocation) {
         this.fileLocation = fileLocation;
     }
 

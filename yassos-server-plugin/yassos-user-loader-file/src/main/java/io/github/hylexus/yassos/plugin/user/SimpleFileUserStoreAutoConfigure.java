@@ -1,9 +1,9 @@
-package io.github.hylexus.ext.yassos.plugin.user;
+package io.github.hylexus.yassos.plugin.user;
 
-import io.github.hylexus.ext.yassos.plugin.user.store.SimpleFileUserStore;
+import io.github.hylexus.yassos.plugin.user.loader.SimpleFileUserDetailsLoader;
 import io.github.hylexus.yassos.support.props.user.store.FileUserStoreProps;
 import io.github.hylexus.yassos.support.props.user.store.UserStoreProps;
-import io.github.hylexus.yassos.support.user.store.UserStore;
+import io.github.hylexus.yassos.support.user.loader.UserDetailsLoader;
 import io.github.hylexus.yassos.support.utils.AnsiUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +30,9 @@ public class SimpleFileUserStoreAutoConfigure {
     private UserStoreProps userStoreProps;
 
     @Bean
-    public UserStore userStore() {
+    public UserDetailsLoader userStore() {
         FileUserStoreProps fileProps = userStoreProps.getFile();
         log.info(configParsingTips(AnsiUtils.TipsType.INFO, ">>| Loading UserDetails [SimpleFileUserStore] from file : '{}'"), fileProps.getFileLocation());
-        return new SimpleFileUserStore(fileProps.getFileLocation());
+        return new SimpleFileUserDetailsLoader(fileProps.getFileLocation());
     }
 }
