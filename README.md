@@ -72,7 +72,7 @@ java -jar yassos-server/target/yassos-server.jar
 
 If all goes well, you'll see something like this:
 
-![yassos-server-output](docs/images/yassos-server-statistics.png)
+![yassos-server-output](docs/images/yassos-server-statistics.jpg)
 
 Access http://sso.mine.com:5201/login in your browser.
 
