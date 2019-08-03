@@ -8,9 +8,14 @@ import org.springframework.core.Ordered;
  * Created At 2019-08-01 21:19
  */
 public interface YassosConfigureConstants {
-    String CONFIGURE_KEY_USER_STORE = "yassos.user-store";
-    String CONFIGURE_KEY_SESSION_MANAGER = "yassos.session-manager";
+
     String CONFIGURE_KEY_CLIENT_COOKIE = "yassos.client-cookie";
+
+    String CONFIGURE_KEY_USER_STORE = "yassos.user-store";
+    String CONFIG_KEY_USER_STORE_TYPE_JDBC = "jdbc";
+    String CONFIG_KEY_USER_STORE_TYPE_FILE = "file";
+
+    String CONFIGURE_KEY_SESSION_MANAGER = "yassos.session-manager";
     String CONFIG_KEY_SESSION_MANAGER_TYPE_MEMORY = "memory";
     String CONFIG_KEY_SESSION_MANAGER_TYPE_REDIS = "redis";
 

@@ -84,9 +84,14 @@
         </dependency>
 
         <dependency>
-            <groupId>io.github.hylexus.yassos</groupId>
-            <artifactId>yassos-user-loader-jdbc</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-loader</artifactId>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>io.github.hylexus.yassos</groupId>-->
+<!--            <artifactId>yassos-user-loader-jdbc</artifactId>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>io.github.hylexus.yassos</groupId>
@@ -98,10 +103,10 @@
             <artifactId>yassos-session-manager-memory</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>io.github.hylexus.yassos</groupId>
-            <artifactId>yassos-session-manager-redis</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.github.hylexus.yassos</groupId>-->
+<!--            <artifactId>yassos-session-manager-redis</artifactId>-->
+<!--        </dependency>-->
 
     </dependencies>
 
