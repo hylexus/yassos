@@ -3,82 +3,298 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="#{login.title}">login</title>
-    <link href="https://cdn.bootcss.com/twitter-bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link href='http://cdn.repository.webfont.com/webfonts/nomal/132201/47031/5d459c87f629d81250318bca.css'
+          rel='stylesheet' type='text/css'/>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            font-size: 14px;
+            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
+            line-height: 1.5;
+            color: #24292e;
+        }
+
+        .icon {
+            width: 1em;
+            height: 1em;
+            vertical-align: -0.15em;
+            fill: currentColor;
+            overflow: hidden;
+        }
+
+        /* header start */
+        .header {
+            text-align: center;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 32px 0 0 24px;
+        }
+
+        .header a {
+            text-decoration: none;
+            font-size: 4rem;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            text-align: center;
+        }
+
+        .header a span {
+            font-size: 2.5rem;
+            font-family: 'COCOGOOSE'
+        }
+
+        /* header end */
+        /* main start */
+        .main {
+            text-align: center;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .main .login-form {
+            margin: 0 auto;
+            width: 340px;
+            padding: 0 16px;
+        }
+
+        .main .login-form .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .main .login-form .form-body {
+            border-radius: 5px;
+            background-color: #fff;
+            border: 1px solid #d8dee2;
+            font-size: 14px;
+            padding: 20px;
+        }
+
+        .main .login-form .form-body .alert-danger {
+            color: #FF4040;
+            background: antiquewhite;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        .main .login-form .form-body label {
+            display: block;
+            font-weight: 600;
+            text-align: left;
+            margin-bottom: 7px;
+        }
+
+        .main .login-form .form-body .form-control {
+            width: 100%;
+            display: block;
+            background-color: #fff;
+            background-position: right 8px center;
+            background-repeat: no-repeat;
+            border: 1px solid #d1d5da;
+            border-radius: 3px;
+            box-shadow: inset 0 1px 2px rgba(27, 31, 35, .075);
+            color: #24292e;
+            font-size: 16px;
+            line-height: 20px;
+            min-height: 34px;
+            outline: none;
+            padding: 6px 8px;
+            vertical-align: middle;
+            margin-bottom: 15px;
+            margin-top: 5px;
+        }
+
+        .main .login-form .form-body .form-control.input-text:hover {
+            border-color: #66afe9;
+            outline: 0;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6)
+        }
+
+        .main .login-form .form-body .form-control.submit-btn {
+            margin-top: 20px;
+            background-color: #28a745;
+            background-image: linear-gradient(-180deg, #34d058, #28a745 90%);
+            border: 1px solid #ff9000;
+            color: #fff;
+            background-position: -1px -1px;
+            background-repeat: repeat-x;
+            background-size: 110% 110%;
+            border-radius: .25em;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 20px;
+            padding: 6px 12px;
+            position: relative;
+            user-select: none;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .main .login-form .form-body .form-control.submit-btn:hover {
+            margin-top: 20px;
+            background-color: #ff9000;
+            background-image: -webkit-gradient(linear, left top, right top, from(#ff9000), to(#ff9000));
+            background-image: linear-gradient(90deg, #ff9000, #ff9000);
+        }
+
+        /* main end */
+        /* footer start */
+        .footer {
+            text-align: center;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            padding-bottom: 40px;
+            padding-top: 40px;
+            margin-top: 40px;
+        }
+
+        .footer ul {
+            display: flex;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .footer ul li {
+            list-style: none;
+            padding: 0 10px;
+            font-size: .6rem;
+
+        }
+
+        /* footer end */
+
+
+    </style>
 </head>
-<body class="container">
+<body class="container-fluid">
 
-<!--<select th:with="currentUrl=(${@currentUrlWithoutParam.apply('lang')})"-->
-<!--        th:onchange="changeLang(this[selectedIndex])">-->
-<!--    <option th:each="l : ${@languageSelectOptionList}"-->
-<!--            th:text="${l.label}"-->
-<!--            th:value="${l.code}"-->
-<!--            th:data-url="@{${currentUrl}(lang=${l.code})}"-->
-<!--            th:selected="${#locale.toLanguageTag() eq l.code}">-->
-<!--    </option>-->
-<!--</select>-->
-<!--<ul th:with="currentUrl=(${@currentUrlWithoutParam.apply('lang')})">-->
-<!--    <li><a th:href="@{${currentUrl}(lang=zh-CN)}">zh-CN</a></li>-->
-<!--    <li><a th:href="@{${currentUrl}(lang=en-US)}">en-US</a></li>-->
-<!--    <li><a th:href="@{${currentUrl}(lang=zh-TW)}">zh-TW</a></li>-->
-<!--</ul>-->
-<div class="col-sm-4 col-sm-offset-4" style="margin-top: 20px;">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            YASSOS - <span th:text="#{login.title}"></span>
-            <select class="pull-right"
-                    th:with="currentUrl=(${@currentUrlWithoutParam.apply('lang')})"
-                    th:onchange="changeLang(this[selectedIndex])">
-                <option th:each="l : ${@languageSelectOptionList}"
-                        th:text="${l.label}"
-                        th:value="${l.code}"
-                        th:data-url="@{${currentUrl}(lang=${l.code})}"
-                        th:selected="${#locale.toLanguageTag() eq l.code}">
-                </option>
-            </select>
-        </div>
-        <form class="panel-body" method="post" th:action="@{/sign-on}" action="/sign-on" th:object="${formParam}">
-            <input th:name="${redirect_url_name}" th:value="${redirect_url_value}" type="hidden"/>
-            <div class="form-group">
+<div class="header">
+    <a href="https://github.com/hylexus/yassos">
+        <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-Y4"></use>
+        </svg>
+        <span>Yassos</span>
+    </a>
+</div>
+<div class="main">
+    <div class="login-form">
+        <form class="" method="post" th:action="@{/sign-on}" action="/sign-on" th:object="${formParam}">
+            <div class="form-header">
+                <h2 th:text="#{login.title}" style="font-weight: normal">登录</h2>
+                <select
+                        th:with="currentUrl=(${@currentUrlWithoutParam.apply('lang')})"
+                        th:onchange="changeLang(this[selectedIndex])">
+                    <option th:each="l : ${@languageSelectOptionList}"
+                            th:text="${l.label}"
+                            th:value="${l.code}"
+                            th:data-url="@{${currentUrl}(lang=${l.code})}"
+                            th:selected="${#locale.toLanguageTag() eq l.code}">
+                    </option>
+                </select>
+
+            </div>
+            <div class="form-body">
+                <input th:name="${redirect_url_name}" th:value="${redirect_url_value}" type="hidden"/>
                 <label for="username" th:text="#{login.username}">Username</label>
-                <div class="input-group">
-                    <div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>
-                    <input type="text" class="form-control"
-                           name="username" id="username" placeholder="username"
-                           th:value="${session.formParam != null ? session.formParam.username : formParam.username}"
-                    >
-                </div>
-            </div>
+                <input type="text" class="form-control input-text"
+                       name="username" id="username" th:placeholder="#{login.username}"
+                       th:value="${session.formParam != null ? session.formParam.username : formParam.username}"
+                >
 
-            <div class="form-group">
                 <label for="password" th:text="#{login.password}">Password</label>
-                <div class="input-group">
-                    <div class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></div>
-                    <input type="password" class="form-control" name="password"
-                           id="password" placeholder="Password"
-                           th:value="${session.formParam != null ? session.formParam.password : formParam.password}"
-                    >
-                </div>
+                <input type="password" class="form-control input-text" name="password"
+                       id="password" th:placeholder="#{login.password}"
+                       th:value="${session.formParam != null ? session.formParam.password : formParam.password}"
+                >
+
+                <div th:if="${session.auth_err_msg_i18n_code} != null"
+                     th:text="#{${session.auth_err_msg_i18n_code}}"
+                     class="alert-danger"></div>
+
+                <div th:if="${#strings.isEmpty(session.auth_err_msg_i18n_code) and not #strings.isEmpty(session.auth_err_msg_key)}"
+                     th:text="${session.auth_err_msg_key}"
+                     class="alert-danger"></div>
+
+                <input type="submit" class="form-control submit-btn"
+                       th:value="#{login.button.sign-on.text}" value="Submit">
             </div>
 
-            <div th:if="${session.auth_err_msg_i18n_code} != null"
-                 th:text="#{${session.auth_err_msg_i18n_code}}"
-                 class="alert alert-danger alert-sm" role="alert"></div>
-
-            <div th:if="${#strings.isEmpty(session.auth_err_msg_i18n_code) and not #strings.isEmpty(session.auth_err_msg_key)}"
-                 th:text="${session.auth_err_msg_key}"
-                 class="alert alert-danger" role="alert"></div>
-
-            <button type="submit" class="form-control btn btn-default"
-                    th:text="#{login.button.sign-on.text}">Submit
-            </button>
         </form>
     </div>
 </div>
+<div class="footer">
+    <ul>
+        <li><a href="https://github.com/hylexus/yassos">Yassos-Github</a></li>
+        <li><a href="https://github.com/hylexus/yassos/wiki">Help</a></li>
+        <li><a href="https://hylexus.github.io/yassos/">Help</a></li>
+    </ul>
+</div>
+
 </body>
 <script>
-
     function changeLang(node) {
         window.location.href = node.attributes['data-url'].nodeValue;
     }
+
+    !function (a) {
+        var e,
+            n = '<svg><symbol id="icon-Y4" viewBox="0 0 1024 1024"><path d="M556.4399616 1012.33677653c-67.50426453 0-133.0774016-13.2513792-194.78828373-39.34344533-59.63994453-25.23572907-113.05833813-61.29363627-159.03184214-107.26495573-45.96913493-45.96913493-82.00301227-99.53389227-107.2627712-159.0296576-26.08769707-61.69340587-39.33907627-127.28183467-39.33907626-194.7860992s13.2513792-133.0774016 39.33907626-194.78828374c25.25975893-59.63994453 61.29363627-113.05833813 107.2627712-159.03184213 45.973504-45.96913493 99.3984512-82.13408427 159.03184214-107.2627712 61.70432853-26.08769707 127.2840192-39.33907627 194.78828373-39.33907627 57.42701227 0 113.6132096 9.6600064 167.313408 28.57588054 51.90669653 18.36100267 100.08439467 45.1411968 143.294464 79.37283413 4.4171264 3.58918827 5.24506453 10.07725227 1.65587627 14.49437867-3.61540267 4.4171264-10.10346667 5.24506453-14.52059307 1.65369173-85.2885504-67.63752107-188.31332693-103.52940373-297.62955947-103.52940373C292.061184 32.05802667 76.84532907 247.2738816 76.84532907 511.77280853c0 264.503296 215.21585493 479.71915093 479.7169664 479.71915094 5.6492032 0 10.3415808 4.6923776 10.3415808 10.35250346 0.0131072 5.66667947-4.8037888 10.4923136-10.46391467 10.4923136z"  ></path><path d="M560.234496 141.1186688c-204.12279467 0-369.59464107 165.4718464-369.59464107 369.59464107S356.11170133 880.31013547 560.234496 880.31013547c204.1249792 0 369.5968256-165.4718464 369.5968256-369.5968256S764.3529216 141.1186688 560.234496 141.1186688z m24.28327253 411.85225387v150.02282666H537.64642133v-150.02282666L401.15022507 348.8284672h57.0097664l69.8155008 106.77562027a1071.05047893 1071.05047893 0 0 1 35.9989248 59.91738026c10.6299392-18.5204736 23.50994773-39.37839787 38.6531328-62.57595733l68.6096384-104.11922773h54.59585706l-141.3152768 204.14464z"  ></path></symbol></svg>',
+            t = (e = document.getElementsByTagName("script"))[e.length - 1].getAttribute("data-injectcss");
+        if (t && !a.__iconfont__svg__cssinject__) {
+            a.__iconfont__svg__cssinject__ = !0;
+            try {
+                document.write("<style>.svgfont {display: inline-block;width: 1em;height: 1em;fill: currentColor;vertical-align: -0.1em;font-size:16px;}</style>")
+            } catch (e) {
+                console && console.log(e)
+            }
+        }
+        !function (e) {
+            if (document.addEventListener) if (~["complete", "loaded", "interactive"].indexOf(document.readyState)) setTimeout(e, 0); else {
+                var t = function () {
+                    document.removeEventListener("DOMContentLoaded", t, !1), e()
+                };
+                document.addEventListener("DOMContentLoaded", t, !1)
+            } else document.attachEvent && (o = e, i = a.document, c = !1, (d = function () {
+                try {
+                    i.documentElement.doScroll("left")
+                } catch (e) {
+                    return void setTimeout(d, 50)
+                }
+                n()
+            })(), i.onreadystatechange = function () {
+                "complete" == i.readyState && (i.onreadystatechange = null, n())
+            });
+
+            function n() {
+                c || (c = !0, o())
+            }
+
+            var o, i, c, d
+        }(function () {
+            var e, t;
+            (e = document.createElement("div")).innerHTML = n, n = null, (t = e.getElementsByTagName("svg")[0]) && (t.setAttribute("aria-hidden", "true"), t.style.position = "absolute", t.style.width = 0, t.style.height = 0, t.style.overflow = "hidden", function (e, t) {
+                t.firstChild ? function (e, t) {
+                    t.parentNode.insertBefore(e, t)
+                }(e, t.firstChild) : t.appendChild(e)
+            }(t, document.body))
+        })
+    }(window);
 </script>
 </html>
