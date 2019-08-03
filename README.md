@@ -4,7 +4,7 @@
 
 A lightweight, simple single sign-on system based on spring-boot.
 
-See the wiki for full documentation, examples, custom-configuration and other information.
+See the wiki (Writing…)  for full documentation, examples, custom-configuration and other information.
 
 ## Introduction
 
@@ -17,6 +17,11 @@ See the wiki for full documentation, examples, custom-configuration and other in
 ├── yassos-common
 ├── yassos-distribution
 ├── yassos-server
+├── yassos-server-plugin
+│   ├── yassos-session-manager-memory
+│   ├── yassos-session-manager-redis
+│   ├── yassos-user-loader-file
+│   └── yassos-user-loader-jdbc
 └── yassos-server-support
 ```
 
@@ -27,14 +32,17 @@ See the wiki for full documentation, examples, custom-configuration and other in
 - **yassos-distribution:** **This module is under development.**
 - **yassos-server:** Server side of YaSSOS.
 - **yassos-server-support:** Yassos server plugin support
+- **yassos-server-plugin:** Builtin YaSSOS Server-Side plugins
+  - **yassos-session-manager-memory:** A `memory-based` Session-Manager
+  - **yassos-session-manager-redis:** A `redis-based` Session-Manager
+  - **yassos-user-loader-file:** A `file-based` user details loader
+  - **yassos-user-loader-jdbc:** A `jdbc-based` user details loader, for example, if you want to load user data from MySQL, this plugin may be useful.
 
 ## Quick Start
 
-> Here is an example that loading user data from `MySQL`.
+See the wiki (Writing…)  for full documentation, examples, custom-configuration and other information.
 
-See the wiki for full documentation, examples, custom-configuration and other information.
-
-> In this example, we will have the following domain mapping in file `/etc/hosts` :
+> In this example, we will have the following domain mapping (due to `cookie restriction strategy` )  in file `/etc/hosts` :
 
 ```sh
 127.0.0.1	sso.mine.com
@@ -42,41 +50,20 @@ See the wiki for full documentation, examples, custom-configuration and other in
 127.0.0.1	web-02.mine.com
 ```
 
-### 1. Configure and start the server side
+### 1. Start the server-side
 
-- Download and build sources
+- Download & build  server-side
 
 ```sh
 git clone https://github.com/hylexus/yassos.git
+
+cd yassos
+mvn clean package -DskipTests
 ```
 
-- Create Database to load user details
-
-Script location : `yassos/docs/sql/quick-start.sql`
-
-- Modify the database configuration in the file `yassos-server/src/main/resources/application.yml`
-
-```yaml
-server:
-  port: 5201
-  servlet:
-    context-path: /
-spring:
-  datasource:
-    username: yourUserName
-    password: IDoNotknow
-    url: jdbc:mysql://localhost:3306/yassos_server?useUnicode=true&useSSL=true&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8
-    driver-class-name: com.mysql.cj.jdbc.Driver
-```
-
-- Build and Start YaSSOS server
+- Start the YaSSOS server-side
 
 ```sh
-cd yassos
-
-# package
-mvn clean package -DskipTests
-
 # start server(default port: 5201)
 java -jar yassos-server/target/yassos-server.jar
 ```
@@ -85,7 +72,7 @@ java -jar yassos-server/target/yassos-server.jar
 
 If all goes well, you'll see something like this:
 
-![yassos-server-output](docs/images/yassos-server-statistics.png)
+![yassos-server-output](docs/images/yassos-server-statistics.jpg)
 
 Access http://sso.mine.com:5201/login in your browser.
 
@@ -108,11 +95,9 @@ mvn clean package -DskipTests
 java -jar yassos-client-sample-spring-boot/target/yassos-client-sample-spring-boot-1.0-SNAPSHOT.jar
 ```
 
-Acess the protected resource http://web-01.mine.com:1010/client/user/me in your browser. 
+Acess the protected resource http://web-01.mine.com:1010/client/user/me in your browser. And then you will be redirected to login page.
 
-And then you will be redirected to login page.
-
-Type the username (`admin`)  and password (`1234561`) to sign-on.
+Type the username (`yassos`)  and password (`yassos`) to sign-on.
 
 #### Run the client project based on traditional Java-web-app
 
@@ -131,4 +116,4 @@ Congratulations, you can access protected resources without logging in this time
 
 
 
-See the wiki for full documentation, examples, custom-configuration and other information.
+See the wiki (Writing…)  for full documentation, examples, custom-configuration and other information.

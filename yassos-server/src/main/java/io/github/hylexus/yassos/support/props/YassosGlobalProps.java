@@ -1,5 +1,6 @@
 package io.github.hylexus.yassos.support.props;
 
+import io.github.hylexus.yassos.support.props.session.SessionManagerProps;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -12,6 +13,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Setter
 @ConfigurationProperties(prefix = "yassos")
 public class YassosGlobalProps {
-    private YassosSessionProps session = new YassosSessionProps();
-    private YassosCookieProps cookie = new YassosCookieProps();
+    private SessionManagerProps sessionManager;
+//    private YassosSessionProps session = new YassosSessionProps();
+    private YassosCookieProps clientCookie = new YassosCookieProps();
 }

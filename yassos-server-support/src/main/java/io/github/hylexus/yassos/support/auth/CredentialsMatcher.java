@@ -14,6 +14,7 @@ public interface CredentialsMatcher {
 
     boolean match(@NonNull UsernamePasswordToken usernamePasswordToken, @NonNull UserDetails userDetails);
 
+    @Deprecated
     class PlainTextCredentialsMatcher implements CredentialsMatcher {
         @Override
         public boolean match(UsernamePasswordToken usernamePasswordToken, UserDetails userDetails) {

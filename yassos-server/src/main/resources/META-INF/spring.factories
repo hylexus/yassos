@@ -1,2 +1,4 @@
 org.springframework.context.ApplicationContextInitializer=\
 io.github.hylexus.yassos.config.YassosConfigApplicationInitializer
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  io.github.hylexus.yassos.config.BuiltinYassosServerAutoConfigure
