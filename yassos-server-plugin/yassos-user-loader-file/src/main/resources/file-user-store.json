@@ -5,14 +5,22 @@
     "password": "yassos",
     "locked": false,
     "credentialExpired": false,
-    "avatarUrl": "https://your-file-server/user/1.png"
+    "avatarUrl": "https://avatars1.githubusercontent.com/u/13914832"
   },
   {
     "userId": 2,
-    "username": "admin",
+    "username": "hylexus",
     "password": "yassos",
     "locked": false,
     "credentialExpired": false,
-    "avatarUrl": "https://your-file-server/user/2.png"
+    "avatarUrl": "https://avatars1.githubusercontent.com/u/13914832"
+  },
+  {
+    "userId": 3,
+    "username": "dfEric",
+    "password": "yassos",
+    "locked": false,
+    "credentialExpired": false,
+    "avatarUrl": "https://avatars0.githubusercontent.com/u/12884239"
   }
 ]
