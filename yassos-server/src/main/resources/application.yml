@@ -26,6 +26,8 @@ spring:
   main:
     banner-mode: log
 yassos:
+  logs:
+    path: ${user.home}/yassos/logs
   session-manager:
     type: memory
     idle-time: 30m

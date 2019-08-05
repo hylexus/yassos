@@ -11,6 +11,9 @@ APP_JAVA_OPT='-XX:PermSize=512M -XX:MaxPermSize=512M -Xmx1024M -Xms1024M -Xss256
 APP_JAVA_OPT="${APP_JAVA_OPT} -jar ${ABS_JAR_PATH}"
 APP_JAVA_OPT="${APP_JAVA_OPT} --spring.config.location=${spring_config_locations}"
 APP_JAVA_OPT="${APP_JAVA_OPT} --logging.config=${base_dir}/conf/logback.xml"
+#APP_JAVA_OPT="${APP_JAVA_OPT} -Dyassos.home=${base_dir}"
+APP_JAVA_OPT="${APP_JAVA_OPT} --yassos.home=${base_dir}"
+APP_JAVA_OPT="${APP_JAVA_OPT} -Dloader.path=${base_dir}/lib/spring-boot-plugin/,${base_dir}/lib/ext/"
 
 reloadPid() { APP_PID=`ps -ef | grep java | grep ${jar_name} | awk '{print $2}'`;}
 # $1:PID
@@ -51,7 +54,7 @@ doStopGracefully() {
 
     count=0;
     while kill -0 ${APP_PID} 2>/dev/null && [ ${count} -le ${WAIT_TIME} ]; do
-      printf ".";
+      printf "...";
       sleep 1;
       (( count++ ));
     done;
@@ -83,11 +86,22 @@ stop() {
 start() {
     reloadPid
     isRunning ${APP_PID} && { echoYellow "Already running [${APP_PID}]"; return 0; }
-    java ${APP_JAVA_OPT} >> /dev/null 2>&1 &
+
+    yassos_log_dir=${base_dir}/logs
+    if [ ! -d ${yassos_log_dir} ] ; then
+      mkdir -p ${yassos_log_dir}
+      echoGreen "${yassos_log_dir} was auto created."
+    fi
+
+#    java ${APP_JAVA_OPT} >> /dev/null 2>&1 &
+    echoGreen "java-process-info: java ${APP_JAVA_OPT}" >> ${yassos_log_dir}/yassos.out 2>&1 &
+    nohup java ${APP_JAVA_OPT} >> ${yassos_log_dir}/yassos.out 2>&1 &
     APP_PID=$!
     disown ${APP_PID}
+
     [ -f ${ABS_JAR_PATH} ] || { echoRed "The Jar file path is invalid : ${ABS_JAR_PATH}";return 1; }
-    echoGreen "Started [${APP_PID}]"
+    echoGreen "Starting [${APP_PID}]"
+    echoGreen "YaSSOS is starting，you can check the output in file : ${yassos_log_dir}/yassos.out"
     return 0
 }
 

@@ -12,5 +12,6 @@ Pid: ${pid}      Port: ${server.port}
 
 SpringBoot-Version: ${spring-boot.version}
 Yassos-Version: ${project.version}
+yassos.home : ${yassos.home}
 
 Github: https://github.com/hylexus/yassos
