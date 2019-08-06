@@ -1,3 +1,4 @@
+# used by plugin : yassos-user-loader-jdbc
 create database if not exists yassos_server default charset 'utf8';
 use yassos_server;
 

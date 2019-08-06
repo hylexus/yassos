@@ -70,7 +70,7 @@ java -jar yassos-server/target/yassos-server.jar
 
 如果一切正常的话，你将看到类似于下图所示的输出：
 
-![yassos-server-output](docs/images/yassos-server-statistics.jpg)
+![yassos-server-output](docs/images/yassos-server-statistics.png)
 
 用浏览器访问 http://sso.mine.com:5201/login ，你将看到YaSSOS的默认登录页面。
 
