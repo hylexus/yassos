@@ -1,0 +1,17 @@
+server:
+  port: 5201
+  servlet:
+    context-path: /
+spring:
+  thymeleaf:
+    cache: false
+    mode: HTML
+  messages:
+    basename: i18n.login,i18n.login-sucess
+  banner:
+    location: yassos-banner.txt
+  main:
+    banner-mode: log
+
+logging:
+  config: classpath:logback.xml

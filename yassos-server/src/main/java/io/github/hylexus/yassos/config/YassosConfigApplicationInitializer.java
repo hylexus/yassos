@@ -3,6 +3,8 @@ package io.github.hylexus.yassos.config;
 import io.github.hylexus.oaks.utils.ClassUtils;
 import io.github.hylexus.yassos.support.annotation.YassosPlugin;
 import io.github.hylexus.yassos.support.auth.CredentialsMatcher;
+import io.github.hylexus.yassos.support.session.SessionManager;
+import io.github.hylexus.yassos.support.session.enhance.YassosSessionAttrConverter;
 import io.github.hylexus.yassos.support.token.TokenGenerator;
 import io.github.hylexus.yassos.support.user.loader.UserDetailsLoader;
 import io.github.hylexus.yassos.support.utils.AnsiUtils;
@@ -45,6 +47,8 @@ public class YassosConfigApplicationInitializer implements ApplicationContextIni
         classes.add(TokenGenerator.class);
         classes.add(CredentialsMatcher.class);
         classes.add(UserDetailsLoader.class);
+        classes.add(SessionManager.class);
+        classes.add(YassosSessionAttrConverter.class);
         return classes;
     }
 
@@ -53,12 +57,14 @@ public class YassosConfigApplicationInitializer implements ApplicationContextIni
             return false;
         }
 
-        if (cls.isAnnotationPresent(YassosPlugin.class)) {
-            YassosPlugin yassosPlugin = cls.getAnnotation(YassosPlugin.class);
-            if (!yassosPlugin.enabled()) {
-                log.info(configParsingTips("@YassosPlugin was found on class [{}] but disabled. ==> skip."), cls);
-                return false;
-            }
+        if (!cls.isAnnotationPresent(YassosPlugin.class)) {
+            return false;
+        }
+
+        YassosPlugin yassosPlugin = cls.getAnnotation(YassosPlugin.class);
+        if (!yassosPlugin.enabled()) {
+            log.info(configParsingTips("@YassosPlugin was found on class [{}] but disabled. ==> skip."), cls);
+            return false;
         }
 
         return configurableClasses.stream()

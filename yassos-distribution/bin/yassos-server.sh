@@ -8,12 +8,12 @@ export default_spring_config_locations="classpath:/,classpath:/config/,file:./,f
 export spring_config_locations=${default_spring_config_locations},file:${base_dir}/conf/
 
 APP_JAVA_OPT='-XX:PermSize=512M -XX:MaxPermSize=512M -Xmx1024M -Xms1024M -Xss256k -XX:ParallelGCThreads=10 -XX:+UseConcMarkSweepGC -XX:+UseParNewGC'
+APP_JAVA_OPT="${APP_JAVA_OPT} -Dyassos.home=${base_dir}"
+#APP_JAVA_OPT="${APP_JAVA_OPT} --yassos.home=${base_dir}"
+APP_JAVA_OPT="${APP_JAVA_OPT} -Dloader.path=${base_dir}/lib/spring-boot-plugin/,${base_dir}/lib/ext/"
 APP_JAVA_OPT="${APP_JAVA_OPT} -jar ${ABS_JAR_PATH}"
 APP_JAVA_OPT="${APP_JAVA_OPT} --spring.config.location=${spring_config_locations}"
 APP_JAVA_OPT="${APP_JAVA_OPT} --logging.config=${base_dir}/conf/logback.xml"
-#APP_JAVA_OPT="${APP_JAVA_OPT} -Dyassos.home=${base_dir}"
-APP_JAVA_OPT="${APP_JAVA_OPT} --yassos.home=${base_dir}"
-APP_JAVA_OPT="${APP_JAVA_OPT} -Dloader.path=${base_dir}/lib/spring-boot-plugin/,${base_dir}/lib/ext/"
 
 reloadPid() { APP_PID=`ps -ef | grep java | grep ${jar_name} | awk '{print $2}'`;}
 # $1:PID

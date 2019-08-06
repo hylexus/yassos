@@ -1,3 +1,17 @@
+# There is some available configurations in YaSSOS
+spring:
+  # required when 'yassos.session-manager.type=redis'
+  redis:
+    host: localhost
+    port: 6379
+    password:
+    database: 0
+  # required when 'yassos.user-store.type=jdbc'
+  datasource:
+    username: test
+    password: '!@#$%^^%$#@!'
+    url: jdbc:mysql://localhost:3306/yassos_server?useUnicode=true&useSSL=true&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8
+    driver-class-name: com.mysql.cj.jdbc.Driver
 yassos:
   session-manager:
     type: memory

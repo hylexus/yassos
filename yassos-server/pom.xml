@@ -88,15 +88,15 @@
             <artifactId>spring-boot-loader</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>io.github.hylexus.yassos</groupId>-->
-<!--            <artifactId>yassos-user-loader-jdbc</artifactId>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>io.github.hylexus.yassos</groupId>
             <artifactId>yassos-user-loader-file</artifactId>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>io.github.hylexus.yassos</groupId>-->
+<!--            <artifactId>yassos-user-loader-jdbc</artifactId>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>io.github.hylexus.yassos</groupId>

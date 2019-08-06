@@ -27,31 +27,11 @@ public class BuiltinYassosServerAutoConfigure implements ApplicationContextAware
 
     protected ApplicationContext applicationContext;
 
-//    @Bean
-//    @ConditionalOnProperty(prefix = "yassos.session", name = "type", havingValue = "memory")
-//    public SessionManager simpleMemorySessionManager() {
-//        log.warn(AnsiOutput.toString(DEPRECATED_COMPONENT_COLOR, "<<Using default SimpleMemorySessionManager, please consider to provide your own implementation of SessionManager>>"));
-//        return new SimpleMemorySessionManager();
-//    }
-//
-//    @Bean
-//    @ConditionalOnProperty(prefix = "yassos.session", name = "type", havingValue = "redis")
-//    public SessionManager simpleRedisSessionManager() {
-//        return new SimpleRedisSessionManager();
-//    }
-
     @Bean
     @ConditionalOnMissingBean(TokenGenerator.class)
     public TokenGenerator tokenGenerator() {
         return new TokenGenerator.SimpleUUIDTokenGenerator();
     }
-
-//    @Bean
-//    @ConditionalOnMissingBean(UserStore.class)
-//    public UserStore builtinUserServiceForDebugging() {
-//        log.warn(AnsiOutput.toString(DEPRECATED_COMPONENT_COLOR, ("<<Using default BuiltinUserServiceForDebugging, please consider to provide your own implementation of UserDetailService>>")));
-//        return new BuiltinUserServiceForDebugging();
-//    }
 
     @Bean
     @ConditionalOnMissingBean(CredentialsMatcher.class)
@@ -66,15 +46,14 @@ public class BuiltinYassosServerAutoConfigure implements ApplicationContextAware
         return new YassosSessionAttrConverter.SimpleYassosSessionAttrConverter();
     }
 
+    @Bean
+    public YassosServerConfigStatistics yassosServerConfigStatistics() {
+        return new YassosServerConfigStatistics();
+    }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
-    }
-
-    @Bean
-    public YassosServerConfigStatistics yassosServerConfigStatistics() {
-        return new YassosServerConfigStatistics();
     }
 
 }
