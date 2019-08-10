@@ -1,0 +1,13 @@
+dependencies {
+    implementation(project(":yassos-client"))
+
+    implementation "org.springframework.boot:spring-boot-starter"
+    compileOnly "org.springframework.boot:spring-boot-configuration-processor"
+
+    compileOnly("javax.servlet:javax.servlet-api")
+
+    implementation("com.google.guava:guava:$jar_version_guava")
+    implementation("commons-io:commons-io:$jar_version_commons_io")
+    implementation("com.squareup.okhttp3:okhttp:$jar_version_ok_http")
+    implementation("com.alibaba:fastjson:$jar_version_fast_json")
+}

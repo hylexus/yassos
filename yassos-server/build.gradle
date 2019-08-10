@@ -1,0 +1,29 @@
+apply plugin: 'org.springframework.boot'
+apply plugin: 'java'
+
+springBoot {
+    mainClassName = 'io.github.hylexus.yassos.YassosServerApplication'
+}
+
+dependencies {
+    implementation(project(":yassos-common"))
+    implementation(project(":yassos-server-support"))
+    implementation(project(":yassos-server-plugin:yassos-session-manager-memory"))
+    implementation(project(":yassos-server-plugin:yassos-user-loader-file"))
+
+    implementation "org.springframework.boot:spring-boot-starter"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    compileOnly "org.springframework.boot:spring-boot-configuration-processor"
+    implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
+    testCompile "org.springframework.boot:spring-boot-starter-test"
+    compileOnly "org.springframework.boot:spring-boot-devtools"
+    compileOnly "org.springframework.boot:spring-boot-loader"
+
+    implementation("com.google.guava:guava:$jar_version_guava")
+    implementation("commons-io:commons-io:$jar_version_commons_io")
+    implementation("org.apache.commons:commons-lang3")
+    implementation("io.github.hylexus:oaks-common-utils:$jar_version_oaks")
+    implementation("com.alibaba:fastjson:$jar_version_fast_json")
+    implementation("joda-time:joda-time")
+
+}

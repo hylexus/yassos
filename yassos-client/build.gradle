@@ -1,0 +1,14 @@
+dependencies {
+    implementation project(":yassos-common")
+
+    implementation "org.apache.commons:commons-lang3"
+    implementation "com.squareup.okhttp3:okhttp:3.14.2"
+    implementation "com.alibaba:fastjson:1.2.59"
+    implementation "joda-time:joda-time"
+
+    compileOnly "org.springframework.boot:spring-boot-starter-logging"
+    testCompile 'junit:junit'
+
+    compileOnly("javax.servlet:javax.servlet-api")
+
+}

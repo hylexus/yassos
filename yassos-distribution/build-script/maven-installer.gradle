@@ -1,0 +1,71 @@
+configure(subprojects.findAll {
+    (it.name != "yassos-server-plugin") && (it.name != "yassos-server") && (it.name != "docs") && (it.name != "yassos-distribution")
+}) { subProject ->
+    apply plugin: "propdeps-maven"
+
+    jar {
+        manifest.attributes["Implementation-Title"] = subProject.name
+        manifest.attributes["Implementation-Version"] = subProject.version
+        manifest.attributes["Automatic-Module-Name"] = subProject.name.replace('-', '.')
+        manifest.attributes["Created-By"] = "${System.getProperty("java.version")} (${System.getProperty("user.name")})"
+
+        from("${project(":yassos-distribution").projectDir}") {
+            include "LICENSE"
+            include "NOTICE"
+            into "META-INF"
+        }
+
+    }
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        classifier = "sources"
+        from sourceSets.main.allSource
+        // Don't include or exclude anything explicitly by default. See SPR-12085.
+    }
+
+    artifacts {
+        archives sourcesJar
+    }
+
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                repository(url: mavenLocal().getUrl())
+
+                pom.project {
+                    name = project.name
+                    packaging = 'jar'
+                    description = 'description'
+
+                    licenses {
+                        license {
+                            name = "Apache License, Version 2.0"
+                            url = "https://www.apache.org/licenses/LICENSE-2.0"
+                            distribution = "repo"
+                        }
+                    }
+                    scm {
+                        url = "https://github.com/hylexus/yassos"
+                        connection = "scm:git:git@github.com:hylexus/yassos.git"
+                        developerConnection = "scm:git:git@github.com:hylexus/yassos.git"
+                    }
+                    developers {
+                        developer {
+                            id = "hylexus"
+                            name = "hylexus"
+                            email = "hylexus@163.com"
+                        }
+                    }
+                    issueManagement {
+                        system = "GitHub"
+                        url = "https://github.com/hylexus/yassos/issues"
+                    }
+                }
+            }
+
+        }
+    }
+}
+
+

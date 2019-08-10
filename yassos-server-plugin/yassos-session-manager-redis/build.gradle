@@ -1,0 +1,10 @@
+dependencies {
+    implementation(project(":yassos-server-support"))
+    implementation(project(":yassos-common"))
+
+    implementation "org.springframework.boot:spring-boot-starter"
+    implementation "org.springframework.boot:spring-boot-starter-data-redis"
+
+    implementation("com.google.guava:guava:$jar_version_guava")
+    implementation("org.apache.commons:commons-lang3")
+}

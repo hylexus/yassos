@@ -1,0 +1,31 @@
+rootProject.name = "yassos"
+rootProject.children.each { project ->
+//    project.buildFileName = "${project.name}.gradle"
+}
+
+include 'docs'
+include 'yassos-distribution'
+
+include 'yassos-common'
+
+include 'yassos-client'
+include 'yassos-client-spring-boot-starter'
+
+include 'yassos-server-support'
+
+include 'yassos-server'
+
+include 'yassos-server-plugin'
+
+include 'yassos-server-plugin:yassos-user-loader-file'
+findProject(':yassos-server-plugin:yassos-user-loader-file')?.name = 'yassos-user-loader-file'
+
+include 'yassos-server-plugin:yassos-user-loader-jdbc'
+findProject(':yassos-server-plugin:yassos-user-loader-jdbc')?.name = 'yassos-user-loader-jdbc'
+
+include 'yassos-server-plugin:yassos-session-manager-memory'
+findProject(':yassos-server-plugin:yassos-session-manager-memory')?.name = 'yassos-session-manager-memory'
+
+include 'yassos-server-plugin:yassos-session-manager-redis'
+findProject(':yassos-server-plugin:yassos-session-manager-redis')?.name = 'yassos-session-manager-redis'
+

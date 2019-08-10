@@ -11,6 +11,10 @@ local.properties
 .settings/
 .loadpath
 
+/build
+/*/build
+/yassos-server-plugin/*/build
+
 # Eclipse Core
 .project
 
@@ -97,6 +101,8 @@ crashlytics-build.properties
 
 # Package Files #
 *.jar
+!/gradle/wrapper/gradle-wrapper.jar
+
 *.war
 *.ear
 
