@@ -5,6 +5,10 @@ springBoot {
     mainClassName = 'io.github.hylexus.yassos.YassosServerApplication'
 }
 
+bootJar {
+    archiveName("yassos-server.jar")
+}
+
 dependencies {
     implementation(project(":yassos-common"))
     implementation(project(":yassos-server-support"))

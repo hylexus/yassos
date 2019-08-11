@@ -1,0 +1,58 @@
+def targetDir = "${project(":yassos-distribution").buildDir}/dist"
+
+task copyYassosServerJar(type: Copy, dependsOn: 'build') {
+    outputs.upToDateWhen { false }
+    from("${project(":yassos-server").buildDir}/libs") {
+        include "yassos-server*.jar"
+    }
+    into "${targetDir}/lib"
+}
+
+task copyYassosConfigFile(type: Copy) {
+    outputs.upToDateWhen { false }
+    from("${project(":yassos-server").projectDir}/src/main/resources") {
+        include "application.yml"
+        include "logback.xml"
+    }
+    from("${project(":yassos-server").projectDir}/src/main/resources/META-INF") {
+        include "yassos-server-example-*.yml"
+    }
+
+    into "${targetDir}/conf"
+}
+
+task copyYassosScript(type: Copy) {
+    outputs.upToDateWhen { false }
+    from("${project(":yassos-distribution").projectDir}/bin")
+    into "${targetDir}/bin"
+    fileMode 0755
+}
+
+task copyYassosLicense(type: Copy) {
+    outputs.upToDateWhen { false }
+    from(rootProject.projectDir) {
+        include "LICENSE"
+        include "NOTICE"
+    }
+
+    into "${targetDir}"
+}
+
+task prepareYassosFiles(dependsOn: [copyYassosScript, copyYassosConfigFile, copyYassosServerJar, copyYassosLicense]) {}
+
+apply plugin: "distribution"
+distributions {
+    monitor {
+        baseName = 'yassos-server'
+        contents {
+            from { "${project(":yassos-distribution").buildDir}/dist" }
+        }
+    }
+}
+
+monitorDistZip.dependsOn 'prepareYassosFiles'
+monitorDistTar.dependsOn 'prepareYassosFiles'
+monitorDistTar.compression = Compression.GZIP
+monitorDistTar.extension = 'tar.gz'
+
+task releaseYassosServer(dependsOn: ['clean', 'build', 'monitorDistTar', 'monitorDistZip']) {}

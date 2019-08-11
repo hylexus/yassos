@@ -9,7 +9,7 @@ configure(subprojects.findAll {
         manifest.attributes["Automatic-Module-Name"] = subProject.name.replace('-', '.')
         manifest.attributes["Created-By"] = "${System.getProperty("java.version")} (${System.getProperty("user.name")})"
 
-        from("${project(":yassos-distribution").projectDir}") {
+        from(rootProject.projectDir) {
             include "LICENSE"
             include "NOTICE"
             into "META-INF"

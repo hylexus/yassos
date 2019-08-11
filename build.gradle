@@ -61,7 +61,8 @@ subprojects {}
 
 // java-env config
 configure(subprojects.findAll {
-    (it.name != "docs") && (it.name != "yassos-distribution") && (it.name != "yassos-server-plugin")
+//    (it.name != "docs") && (it.name != "yassos-distribution") && (it.name != "yassos-server-plugin")
+    (it.name != "docs") && (it.name != "yassos-server-plugin")
 }) { subProject ->
 
     apply plugin: 'java'
@@ -107,5 +108,5 @@ configure(subprojects.findAll {
 apply from: "${project(":yassos-distribution").projectDir}/build-script/maven-installer.gradle"
 
 
-
+apply from: "${project(":yassos-distribution").projectDir}/build-script/distribution.gradle"
 
