@@ -6,14 +6,12 @@ springBoot {
 }
 
 bootJar {
-    archiveName("yassos-server.jar")
+//    archiveName("yassos-server.jar")
 }
 
 dependencies {
     implementation(project(":yassos-common"))
     implementation(project(":yassos-server-support"))
-    implementation(project(":yassos-server-plugin:yassos-session-manager-memory"))
-    implementation(project(":yassos-server-plugin:yassos-user-loader-file"))
 
     implementation "org.springframework.boot:spring-boot-starter"
     implementation "org.springframework.boot:spring-boot-starter-web"
@@ -30,4 +28,9 @@ dependencies {
     implementation("com.alibaba:fastjson:$jar_version_fast_json")
     implementation("joda-time:joda-time")
 
+    // dynamic injected by "yassos-server-dynamic-module"
+    // implementation(project(":yassos-server-plugin:yassos-session-manager-memory"))
+    // implementation(project(":yassos-server-plugin:yassos-user-loader-file"))
 }
+//apply plugin: "yassos.dynamic-server-module"
+apply from: "${project(":yassos-distribution").projectDir}/build-script/dynamic-module.gradle"

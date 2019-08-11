@@ -1,5 +1,7 @@
 configure(subprojects.findAll {
-    (it.name != "yassos-server-plugin") && (it.name != "yassos-server") && (it.name != "docs") && (it.name != "yassos-distribution")
+//    (it.name != "yassos-server-plugin") && (it.name != "yassos-server") && (it.name != "docs") && (it.name != "yassos-distribution")
+//    (it.name != "yassos-server-plugin") && (it.name != "docs") && (it.name != "yassos-distribution")
+    (it.name != "yassos-server-plugin") && (it.name != "docs")
 }) { subProject ->
     apply plugin: "propdeps-maven"
 
@@ -66,6 +68,10 @@ configure(subprojects.findAll {
 
         }
     }
+}
+
+project(":yassos-distribution") {
+    configurations.archives.artifacts.clear()
 }
 
 

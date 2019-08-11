@@ -29,3 +29,5 @@ findProject(':yassos-server-plugin:yassos-session-manager-memory')?.name = 'yass
 include 'yassos-server-plugin:yassos-session-manager-redis'
 findProject(':yassos-server-plugin:yassos-session-manager-redis')?.name = 'yassos-session-manager-redis'
 
+include 'buildSrc'
+

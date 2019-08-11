@@ -1,7 +1,6 @@
 package io.github.hylexus.yassos.util;
 
 import com.google.common.collect.Sets;
-import io.github.hylexus.yassos.plugin.session.manager.SimpleMemorySessionManager;
 import io.github.hylexus.yassos.support.auth.CredentialsMatcher;
 import io.github.hylexus.yassos.support.session.enhance.YassosSessionAttrConverter;
 import io.github.hylexus.yassos.support.token.TokenGenerator;
@@ -80,8 +79,7 @@ public abstract class YassosClassUtils {
 
     private static boolean isDeprecated(Class<?> cls) {
         return cls.isAnnotationPresent(Deprecated.class)
-                || cls == CredentialsMatcher.PlainTextCredentialsMatcher.class
-                || SimpleMemorySessionManager.class == cls;
+                || cls == CredentialsMatcher.PlainTextCredentialsMatcher.class;
     }
 
 }
