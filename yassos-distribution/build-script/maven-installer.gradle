@@ -1,9 +1,37 @@
+ext {
+    gradleConfigHome = System.getProperty("user.home") + "/.gradle"
+    mavenRepoConfigLocation = gradleConfigHome + "/repo-config.gradle"
+
+}
+
+configure { rootProject } {
+    if (file(mavenRepoConfigLocation).exists()) {
+        apply from: file(mavenRepoConfigLocation)
+        logger.quiet("the maven repo credentials will be load from : {}", mavenRepoConfigLocation)
+    } else {
+        ext {
+            mavenRepoConfig = [
+                    "mySnapshotMavenRepo": [
+                            "url"     : "http:my-repo/repository/maven-snapshots",
+                            "username": "iDoNotKnow",
+                            "password": "iDoNotKnown"
+                    ],
+                    "myReleaseMavenRepo" : [
+                            "url"     : "http:my-repo/repository/maven-snapshots",
+                            "username": "iDoNotKnow",
+                            "password": "iDoNotKnown"
+                    ]
+            ]
+        }
+        logger.quiet("maven repo credentials file : {} not found , use default maven repo config for debugging.", mavenRepoConfigLocation)
+    }
+}
+
 configure(subprojects.findAll {
-//    (it.name != "yassos-server-plugin") && (it.name != "yassos-server") && (it.name != "docs") && (it.name != "yassos-distribution")
-//    (it.name != "yassos-server-plugin") && (it.name != "docs") && (it.name != "yassos-distribution")
-    (it.name != "yassos-server-plugin") && (it.name != "docs")
+    (it.name != "yassos-server-plugin") && (it.name != "yassos-server") && (it.name != "docs") && (it.name != "yassos-distribution")
 }) { subProject ->
-    apply plugin: "propdeps-maven"
+    apply plugin: 'maven-publish'
+    apply plugin: 'signing'
 
     jar {
         manifest.attributes["Implementation-Title"] = subProject.name
@@ -30,15 +58,29 @@ configure(subprojects.findAll {
         archives sourcesJar
     }
 
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                repository(url: mavenLocal().getUrl())
+    install {
+        repositories.mavenInstaller {
+            pom.version = "$project.version"
+            pom.artifactId = "$project.name"
+            pom.groupId = "$project.group"
+        }
+    }
 
-                pom.project {
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                groupId = "$project.group"
+                artifactId = "$project.name"
+                version = "$project.version"
+
+                from components.java
+                artifact sourcesJar
+
+                pom {
                     name = project.name
                     packaging = 'jar'
-                    description = 'description'
+                    description = "${project.description}"
 
                     licenses {
                         license {
@@ -65,12 +107,37 @@ configure(subprojects.findAll {
                     }
                 }
             }
-
+        }
+        repositories {
+            if (isSnapshot()) {
+                maven {
+                    url mavenRepoConfig.mySnapshotMavenRepo.url
+                    credentials {
+                        username mavenRepoConfig.mySnapshotMavenRepo.username
+                        password mavenRepoConfig.mySnapshotMavenRepo.password
+                    }
+                }
+            } else {
+                maven {
+                    url mavenRepoConfig.myReleaseMavenRepo.url
+                    credentials {
+                        username mavenRepoConfig.myReleaseMavenRepo.username
+                        password mavenRepoConfig.myReleaseMavenRepo.password
+                    }
+                }
+            }
         }
     }
 }
 
+def isSnapshot() {
+    rootProject.version.toString().toLowerCase().endsWith("snapshot")
+}
+
 project(":yassos-distribution") {
+    configurations.archives.artifacts.clear()
+}
+project(":yassos-server") {
     configurations.archives.artifacts.clear()
 }
 

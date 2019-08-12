@@ -9,10 +9,10 @@ create table yassos_user
     password           varchar(256) not null comment 'encoded password',
     locked             tinyint      not null default 0 comment '0:unlocked;1:locked',
     credential_expired tinyint      not null default 0 comment '0:expired;1:not expired',
-    avatarUrl          varchar(256) not null default ''
+    avatar_url          varchar(256) not null default ''
 ) comment 'userDetails for yassos';
 
-INSERT INTO yassos_user (name, password, locked, credential_expired, avatarUrl)
+INSERT INTO yassos_user (name, password, locked, credential_expired, avatar_url)
 VALUES ('yassos', 'yassos', 0, 0, 'https://avatars1.githubusercontent.com/u/13914832'),
        ('hylexus', 'yassos', 0, 0, 'https://avatars1.githubusercontent.com/u/13914832'),
        ('dfEric', 'yassos', 0, 0, 'https://avatars0.githubusercontent.com/u/12884239')

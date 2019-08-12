@@ -6,7 +6,7 @@ springBoot {
 }
 
 bootJar {
-//    archiveName("yassos-server.jar")
+    archiveName("yassos-server.jar")
 }
 
 dependencies {
@@ -32,5 +32,5 @@ dependencies {
     // implementation(project(":yassos-server-plugin:yassos-session-manager-memory"))
     // implementation(project(":yassos-server-plugin:yassos-user-loader-file"))
 }
-//apply plugin: "yassos.dynamic-server-module"
+
 apply from: "${project(":yassos-distribution").projectDir}/build-script/dynamic-module.gradle"

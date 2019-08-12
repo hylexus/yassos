@@ -56,57 +56,21 @@ configure(rootProject) {
     configurations.archives.artifacts.clear()
 }
 
-configure(allprojects) { project -> }
+configure(allprojects) { project ->
+    group = "io.github.hylexus.yassos"
+    version = "1.0-SNAPSHOT"
+}
 subprojects {}
 
 // java-env config
-configure(subprojects.findAll {
-//    (it.name != "docs") && (it.name != "yassos-distribution") && (it.name != "yassos-server-plugin")
-    (it.name != "docs") && (it.name != "yassos-server-plugin")
-}) { subProject ->
-
-    apply plugin: 'java'
-    apply plugin: 'maven'
-    apply plugin: "propdeps-maven"
-
-    group = "io.github.hylexus.yassos"
-    version = "1.0-SNAPSHOT"
-    sourceCompatibility = "${defaultJavaVersion}"
-    targetCompatibility = "${defaultJavaVersion}"
-
-    tasks.withType(JavaCompile) {
-        options.encoding = "${defaultCharset}"
-    }
-
-    dependencies {
-        annotationProcessor 'org.projectlombok:lombok'
-        compileOnly 'org.projectlombok:lombok'
-    }
-
-    apply plugin: "io.spring.dependency-management"
-    dependencyManagement {
-        resolutionStrategy {
-            cacheChangingModulesFor 0, "seconds"
-        }
-        applyMavenExclusions = false
-        generatedPomCustomization {
-            enabled = false
-        }
-        imports {
-            mavenBom "org.springframework.boot:spring-boot-dependencies:2.1.7.RELEASE"
-        }
-    }
-
-    compileJava {
-        sourceCompatibility = "${defaultJavaVersion}"
-        targetCompatibility = "${defaultJavaVersion}"
-        options.encoding = "${defaultCharset}"
-    }
-}
+apply from: "${project(":yassos-distribution").projectDir}/build-script/common-java-env-config.gradle"
 
 // maven config
 apply from: "${project(":yassos-distribution").projectDir}/build-script/maven-installer.gradle"
 
+// release yassos server to {tar.gz | zip} file
+apply from: "${project(":yassos-distribution").projectDir}/build-script/distribution-yassos-server.gradle"
 
-apply from: "${project(":yassos-distribution").projectDir}/build-script/distribution.gradle"
+// module settings for debug
+apply from: "${project(":yassos-distribution").projectDir}/build-script/debugging.gradle"
 

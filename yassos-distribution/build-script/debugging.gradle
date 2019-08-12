@@ -1,0 +1,11 @@
+setPropertyIfNotExists("user-loader", "file-user-loader")
+setPropertyIfNotExists("session-manager", "memory-session-manager")
+
+def setPropertyIfNotExists(String key, String value) {
+    if (System.getProperty(key) == null) {
+        System.setProperty(key, value)
+        logger.quiet("Set property [{} = {}] for debug", key, value)
+    } else {
+        logger.quiet("Not set property [{} = {}] for debug, because key [{}] already exists with value {}", key, value, key, System.getProperty(key))
+    }
+}
