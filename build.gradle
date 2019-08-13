@@ -62,15 +62,25 @@ configure(allprojects) { project ->
 }
 subprojects {}
 
-// java-env config
-apply from: "${project(":yassos-distribution").projectDir}/build-script/common-java-env-config.gradle"
+apply from: "${project(":yassos-distribution").projectDir}/build-script/repo-credentials.gradle"
 
-// maven config
-apply from: "${project(":yassos-distribution").projectDir}/build-script/maven-installer.gradle"
+// 1. java-env config
+configure(subprojects.findAll {
+    (it.name != "docs") && (it.name != "yassos-server-plugin")
+}) { subProject ->
+    apply from: "${project(":yassos-distribution").projectDir}/build-script/common-java-env-config.gradle"
+}
 
-// release yassos server to {tar.gz | zip} file
+// 2. maven config
+configure(subprojects.findAll {
+    (it.name != "yassos-server-plugin") && (it.name != "yassos-server") && (it.name != "docs") && (it.name != "yassos-distribution")
+}) { subProject ->
+    apply from: "${project(":yassos-distribution").projectDir}/build-script/common-maven-config.gradle"
+}
+
+// 3. release yassos server to {tar.gz | zip} file
 apply from: "${project(":yassos-distribution").projectDir}/build-script/distribution-yassos-server.gradle"
 
-// module settings for debug
+// 4. module settings for debug
 apply from: "${project(":yassos-distribution").projectDir}/build-script/debugging.gradle"
 

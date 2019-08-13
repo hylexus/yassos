@@ -1,40 +1,35 @@
-configure(subprojects.findAll {
-    (it.name != "docs") && (it.name != "yassos-server-plugin")
-}) { subProject ->
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: "propdeps-maven"
 
-    apply plugin: 'java'
-    apply plugin: 'maven'
-    apply plugin: "propdeps-maven"
+sourceCompatibility = "${defaultJavaVersion}"
+targetCompatibility = "${defaultJavaVersion}"
 
+tasks.withType(JavaCompile) {
+    options.encoding = "${defaultCharset}"
+}
+
+dependencies {
+    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok'
+}
+
+apply plugin: "io.spring.dependency-management"
+dependencyManagement {
+    resolutionStrategy {
+        cacheChangingModulesFor 0, "seconds"
+    }
+    applyMavenExclusions = false
+    generatedPomCustomization {
+        enabled = false
+    }
+    imports {
+        mavenBom "org.springframework.boot:spring-boot-dependencies:2.1.7.RELEASE"
+    }
+}
+
+compileJava {
     sourceCompatibility = "${defaultJavaVersion}"
     targetCompatibility = "${defaultJavaVersion}"
-
-    tasks.withType(JavaCompile) {
-        options.encoding = "${defaultCharset}"
-    }
-
-    dependencies {
-        annotationProcessor 'org.projectlombok:lombok'
-        compileOnly 'org.projectlombok:lombok'
-    }
-
-    apply plugin: "io.spring.dependency-management"
-    dependencyManagement {
-        resolutionStrategy {
-            cacheChangingModulesFor 0, "seconds"
-        }
-        applyMavenExclusions = false
-        generatedPomCustomization {
-            enabled = false
-        }
-        imports {
-            mavenBom "org.springframework.boot:spring-boot-dependencies:2.1.7.RELEASE"
-        }
-    }
-
-    compileJava {
-        sourceCompatibility = "${defaultJavaVersion}"
-        targetCompatibility = "${defaultJavaVersion}"
-        options.encoding = "${defaultCharset}"
-    }
+    options.encoding = "${defaultCharset}"
 }
