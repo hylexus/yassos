@@ -9,6 +9,14 @@ tasks.withType(JavaCompile) {
     options.encoding = "${defaultCharset}"
 }
 
+repositories {
+    mavenLocal()
+    maven {
+        url 'http://maven.aliyun.com/nexus/content/groups/public/'
+    }
+    mavenCentral()
+}
+
 dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     compileOnly 'org.projectlombok:lombok'
