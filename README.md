@@ -29,7 +29,7 @@ See the wiki (Writing…)  for full documentation, examples, custom-configuratio
 - **yassos-client:** API for single sign-on system clients.
 - **yassos-client-spring-boot-starter:** A `spring-boot-starter`  provided to the spring-boot based clients.
 - **yassos-common:** The common module used by YaSSOS.
-- **yassos-distribution:** **This module is under development.**
+- **yassos-distribution:** script for build package.
 - **yassos-server:** Server side of YaSSOS.
 - **yassos-server-support:** Yassos server plugin support
 - **yassos-server-plugin:** Builtin YaSSOS Server-Side plugins
@@ -58,14 +58,14 @@ See the wiki (Writing…)  for full documentation, examples, custom-configuratio
 git clone https://github.com/hylexus/yassos.git
 
 cd yassos
-mvn clean package -DskipTests
+./gradlew clean build
 ```
 
 - Start the YaSSOS server-side
 
 ```sh
 # start server(default port: 5201)
-java -jar yassos-server/target/yassos-server.jar
+java -jar yassos-server/build/libs/yassos-server.jar
 ```
 
 - Check the Result
@@ -113,6 +113,76 @@ cp yassos-client-sample-web-cookie/target/yassos-client-sample-web-cookie.war /p
 And then access the protected resource http://web-02.mine.com:8080/yassos-client-sample-web-cookie/protected-resources/resource.jsp .
 
 Congratulations, you can access protected resources without logging in this time.
+
+
+
+## distribution
+
+Currently supported parameters:
+
+| Key               | Value                    |
+| ----------------- | ------------------------ |
+| `user-loader`     | `file-user-loader`       |
+|                   | `jdbc-user-loader`       |
+| `session-manager` | `memory-session-manager` |
+|                   | `redis-session-manager`  |
+
+- `file-user-loader`
+  - A builtin `user-loader` that load user info from a file specified by `yassos.user-store.file.file-location` in `application.yml` 
+- `jdbc-user-loader`
+  - A `JDBC-Based` `UserLoader`
+  - You should specify the  configuration `spring.datasource.*` in `application.yml`，see `${installation_dir}/conf/yassos-server-example-full-config.yml` for full config samples
+- `memory-session-manager`
+  - A `Memory-Based SessionManager`
+- `redis-session-manager`
+  - A `Redis-Based SessionManager`
+  - You should specify the configuraion `spring.redis.*` in  `application.yml`，see `${installation_dir}/conf/yassos-server-example-full-config.yml` for full config samples
+
+```sh
+./gradlew clean build releaseYassosServer \
+-Duser-loader=file-user-loader \
+-Dsession-manager=memory-session-manager
+```
+
+> Note:
+>
+> `-Duser-loader=file-user-loader` means that you will use a builtin `UserLoader` to load user info from a file  specified by `yassos.user-store.file.file-location` in `application.yml` .
+>
+> `-Dsession-manager=memory-session-manager` means that you wil use a builtin SessionManager base on memory.
+
+
+
+And then, `yassos-server-1.0-SNAPSHOT.tar.gz` and `yassos-server-1.0-SNAPSHOT.tar.zip` was generated in `build/distributions`.
+
+
+
+You can copy `yassos-server-1.0-SNAPSHOT.tar.gz` to you installation directory. 
+
+```sh
+# copy tar.gz to you installation directory
+cp build/distributions/yassos-server-1.0-SNAPSHOT.tar.gz /usr/local/opt/yassos
+# Decompression
+cd /usr/local/opt/yassos/yassos-server-1.0-SNAPSHOT
+# start the yassos server
+bin/yassos-server.sh start
+```
+
+- distribution structure
+
+```sh
+~ tree  -L 2
+.
+├── LICENSE
+├── NOTICE
+├── bin
+│   └── yassos-server.sh
+├── conf
+│   ├── application.yml
+│   ├── logback.xml
+│   └── yassos-server-example-full-config.yml # full configuration samples
+└── lib
+    └── yassos-server.jar
+```
 
 
 

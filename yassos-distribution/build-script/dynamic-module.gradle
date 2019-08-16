@@ -1,0 +1,29 @@
+configure(project(":yassos-server")) { server ->
+    def builtinModuleMapping = [
+            'memory-session-manager': ':yassos-server-plugin:yassos-session-manager-memory',
+            'redis-session-manager' : ':yassos-server-plugin:yassos-session-manager-redis',
+            'file-user-loader'      : ':yassos-server-plugin:yassos-user-loader-file',
+            'jdbc-user-loader'      : ':yassos-server-plugin:yassos-user-loader-jdbc',
+    ]
+    def userLoaderModuleName = System.getProperty("user-loader") ?: "file-user-loader"
+    def sessionManagerModuleName = System.getProperty("session-manager") ?: "memory-session-manager"
+//    logger.quiet("user-loader : {}", userLoaderModuleName)
+//    logger.quiet("session-manager : {}", sessionManagerModuleName)
+
+    def userLoaderModule = builtinModuleMapping[userLoaderModuleName]
+    if (userLoaderModule == null) {
+        logger.quiet("No module found for [user-loader] with name : {}", userLoaderModuleName)
+    }
+
+    def sessionManagerModule = builtinModuleMapping[sessionManagerModuleName]
+    if (sessionManagerModule == null) {
+        logger.quiet("No module found for [session-manager] with name : {}", sessionManagerModule)
+    }
+
+    server.afterEvaluate {
+        server.dependencies.add("implementation", project(userLoaderModule))
+        logger.quiet("[yassos-server] add module  {}", userLoaderModule)
+        server.dependencies.add("implementation", project(sessionManagerModule))
+        logger.quiet("[yassos-server] add module  {}", sessionManagerModule)
+    }
+}

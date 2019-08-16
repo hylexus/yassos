@@ -1,0 +1,7 @@
+dependencies {
+    implementation(project(":yassos-server-support"))
+
+    implementation "org.springframework.boot:spring-boot-starter"
+
+    implementation("com.alibaba:fastjson:$jar_version_fast_json")
+}

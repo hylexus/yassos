@@ -1,0 +1,9 @@
+plugins {
+    id 'distribution'
+}
+
+repositories {
+    mavenCentral()
+}
+
+configurations.archives.artifacts.clear()

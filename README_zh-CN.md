@@ -27,7 +27,7 @@ YaSSOS：轻量级的、精简的基于spring-boot的单点登录系统。
 - **yassos-client:** 给客户端(接入方)用的API
 - **yassos-client-spring-boot-starter:** 提供给基于 spring-boot 的客户端(接入方)的  `spring-boot-starter`  
 - **yassos-common:** 用到的公共模块
-- **yassos-distribution:** **该模块正在开发中……**
+- **yassos-distribution:** 构建服务用到的脚本
 - **yassos-server:** 单点登录系统的服务端
 - **yassos-server-support:** 服务端插件API,所有的服务端插件都应该依赖该模块
 - **yassos-server-plugin:** 内置的服务端插件
@@ -56,14 +56,14 @@ YaSSOS：轻量级的、精简的基于spring-boot的单点登录系统。
 git clone https://github.com/hylexus/yassos.git
 
 cd yassos
-mvn clean package -DskipTests
+./gradlew clean build
 ```
 
 - 启动YaSSOS服务端
 
 ```sh
 # 启动服务端(默认端口: 5201)
-java -jar yassos-server/target/yassos-server.jar
+java -jar yassos-server/build/libs/yassos-server.jar
 ```
 
 - 查看结果
@@ -111,6 +111,76 @@ cp yassos-client-sample-web-cookie/target/yassos-client-sample-web-cookie.war /p
 然后访问受保护资源 http://web-02.mine.com:8080/yassos-client-sample-web-cookie/protected-resources/resource.jsp .
 
 这次你应该可以直接访问受保护资源（不用再次登录）。
+
+## 打包
+
+目前支持的打包参数：
+
+| Key               | Value                    |
+| ----------------- | ------------------------ |
+| `user-loader`     | `file-user-loader`       |
+|                   | `jdbc-user-loader`       |
+| `session-manager` | `memory-session-manager` |
+|                   | `redis-session-manager`  |
+
+- `file-user-loader`
+  - 从 `application.yml` 中 `yassos.user-store.file.file-location` 指定的文件中加载用户数据
+- `jdbc-user-loader`
+  - 基于`JDBC` 的 `UserLoader`
+  - 需要在 `application.yml` 中指定 `spring.datasource.*` 配置，完整示例配置文件位于 `安装目录/conf/yassos-server-example-full-config.yml`
+- `memory-session-manager`
+  - 基于内存的 `SessionManager`
+- `redis-session-manager`
+  - 基于 `Redis` 的 `SessionManager`
+  - 需要在 `application.yml` 中指定 `spring.redis.*` 配置，完整示例配置文件位于 `安装目录/conf/yassos-server-example-full-config.yml`
+
+```sh
+./gradlew clean build releaseYassosServer \
+-Duser-loader=file-user-loader \
+-Dsession-manager=memory-session-manager
+```
+
+> 备注
+>
+> `-Duser-loader=file-user-loader` 意味着将使用一个内置的 `UserLoader` 从 `application.yml` 中 `yassos.user-store.file.file-location` 指定的文件中加载用户数据。
+>
+> `-Dsession-manager=memory-session-manager` 意味着将使用基于内存的 `SessionManager`。
+
+
+
+命令执行结束后，会在 `build/distributions` 目录中生成  `yassos-server-1.0-SNAPSHOT.tar.gz` 和 `yassos-server-1.0-SNAPSHOT.tar.zip` 。
+
+
+
+根据你的需要，复制任意一个发行包到你的安装目录，例如：
+
+```sh
+# 复制tar.gz到安装目录
+cp build/distributions/yassos-server-1.0-SNAPSHOT.tar.gz /usr/local/opt/yassos
+# 解压
+cd /usr/local/opt/yassos/yassos-server-1.0-SNAPSHOT
+# 启动
+bin/yassos-server.sh start
+```
+
+
+
+目录结构：
+
+```sh
+~ tree  -L 2
+.
+├── LICENSE
+├── NOTICE
+├── bin
+│   └── yassos-server.sh
+├── conf
+│   ├── application.yml
+│   ├── logback.xml
+│   └── yassos-server-example-full-config.yml # 示例配置文件
+└── lib
+    └── yassos-server.jar
+```
 
 
 

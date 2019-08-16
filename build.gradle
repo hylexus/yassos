@@ -1,0 +1,78 @@
+import java.nio.charset.StandardCharsets
+
+buildscript {
+    repositories {
+        mavenLocal()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url "https://repo.spring.io/plugins-release" }
+        mavenCentral()
+    }
+    dependencies {
+        classpath("io.spring.gradle:propdeps-plugin:0.0.9.RELEASE")
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.8.RELEASE"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.1.7.RELEASE"
+    }
+}
+
+plugins {
+    id 'java'
+    id 'maven'
+    id "io.spring.dependency-management" version "1.0.7.RELEASE" apply false
+}
+
+ext {
+
+    jar_version_guava = "23.0"
+    jar_version_commons_io = "2.6"
+    jar_version_ok_http = "3.14.2"
+    jar_version_fast_json = "1.2.59"
+    jar_version_oaks = "1.0.2"
+
+    defaultCharset = StandardCharsets.UTF_8.name()
+    defaultJavaVersion = 1.8
+}
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+configure(rootProject) {
+    configurations.archives.artifacts.clear()
+}
+
+configure(allprojects) { project ->
+    group = "io.github.hylexus.yassos"
+    version = "1.0-SNAPSHOT"
+}
+subprojects {}
+
+apply from: "${project(":yassos-distribution").projectDir}/build-script/repo-credentials.gradle"
+
+// 1. java-env config
+configure(subprojects.findAll {
+    (it.name != "docs") && (it.name != "yassos-server-plugin")
+}) { subProject ->
+    apply from: "${project(":yassos-distribution").projectDir}/build-script/common-java-env-config.gradle"
+}
+
+// 2. maven config
+configure(subprojects.findAll {
+    (it.name != "yassos-server-plugin") && (it.name != "yassos-server") && (it.name != "docs") && (it.name != "yassos-distribution")
+}) { subProject ->
+    apply from: "${project(":yassos-distribution").projectDir}/build-script/common-maven-config.gradle"
+}
+
+// 3. release yassos server to {tar.gz | zip} file
+apply from: "${project(":yassos-distribution").projectDir}/build-script/distribution-yassos-server.gradle"
+
+// 4. module settings for debug
+apply from: "${project(":yassos-distribution").projectDir}/build-script/debugging.gradle"
+

@@ -60,7 +60,7 @@ public class YassosServerConfigStatistics implements CommandLineRunner, Applicat
         final AnsiColor color = detectClassType(superClass, bean.getClass());
         final String number = AnsiOutput.toString(AnsiColor.BRIGHT_BLACK, no);
         final String beanName = AnsiOutput.toString(color, getShortName(color), superClass.getSimpleName(), AnsiColor.DEFAULT);
-        return String.format("%1$2s. %2$-41s : %3$10s", number, beanName, bean.getClass().getName());
+        return String.format("%1$2s. %2$-45s : %3$10s", number, beanName, bean.getClass().getName());
     }
 
     private String getShortName(AnsiColor color) {
