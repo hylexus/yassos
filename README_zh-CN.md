@@ -173,6 +173,7 @@ bin/yassos-server.sh start
 ├── LICENSE
 ├── NOTICE
 ├── bin
+│   ├── yassos-server.bat
 │   └── yassos-server.sh
 ├── conf
 │   ├── application.yml
