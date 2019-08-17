@@ -1,8 +1,16 @@
 <p align="center">
   <img src="docs/images/logo.svg">
 </p>
+
 <p align="center" style="font-size: 2.5rem;color:#333">YaSSOS</p>
-[![Build Status](https://travis-ci.com/hylexus/yassos.svg?branch=master)](https://travis-ci.com/hylexus/yassos)  [![license](https://img.shields.io/badge/LICENSE-Apache%202-7AD6FD.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)  [![maven](https://img.shields.io/badge/maven%20central-3.4.6-brightgreen.svg)](https://search.maven.org/search?q=g:io.github.hylexus.yassos)
+
+<p align="center">
+
+[![Build Status](https://travis-ci.com/hylexus/yassos.svg?branch=master)](https://travis-ci.com/hylexus/yassos)
+[![license](https://img.shields.io/badge/LICENSE-Apache%202-7AD6FD.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![maven](https://img.shields.io/badge/maven%20central-3.4.6-brightgreen.svg)](https://search.maven.org/search?q=g:io.github.hylexus.yassos)
+
+</p>
 
 **Y**et **a**nother **S**ingle **S**ign-**O**n **S**ystem.
 
