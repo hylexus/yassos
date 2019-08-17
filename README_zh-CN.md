@@ -1,5 +1,7 @@
-# YaSSOS
-
+<p align="center">
+  <img src="docs/images/logo.svg">
+</p>
+<p align="center" style="font-size: 2.5rem;color:#333">YaSSOS</p>
 [![Build Status](https://travis-ci.com/hylexus/yassos.svg?branch=master)](https://travis-ci.com/hylexus/yassos)  [![license](https://img.shields.io/badge/LICENSE-Apache%202-7AD6FD.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)  [![maven](https://img.shields.io/badge/maven%20central-3.4.6-brightgreen.svg)](https://search.maven.org/search?q=g:io.github.hylexus.yassos)
 
 YaSSOS：轻量级的、精简的基于spring-boot的单点登录系统。
@@ -175,6 +177,7 @@ bin/yassos-server.sh start
 ├── LICENSE
 ├── NOTICE
 ├── bin
+│   ├── yassos-server.bat
 │   └── yassos-server.sh
 ├── conf
 │   ├── application.yml
