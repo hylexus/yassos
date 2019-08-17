@@ -56,7 +56,7 @@ YaSSOS：轻量级的、精简的基于spring-boot的单点登录系统。
 git clone https://github.com/hylexus/yassos.git
 
 cd yassos
-./gradlew clean build
+./gradlew clean build install
 ```
 
 - 启动YaSSOS服务端

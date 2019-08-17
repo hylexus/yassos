@@ -31,8 +31,12 @@ public class SimpleFileUserStoreAutoConfigure {
     @Bean
     public UserDetailsLoader userStore() {
         FileUserStoreProps fileProps = userStoreProps.getFile();
-        log.warn(configParsingTips(AnsiUtils.TipsType.WARN, "<<Using a component that used only during testing phase : [SimpleFileUserDetailsLoader], please consider to provide your own implementation of UserDetailsLoader>>"), fileProps.getFileLocation());
-        log.info(configParsingTips(AnsiUtils.TipsType.WARN, ">>| Loading UserDetails [SimpleFileUserStore] from : '{}'"), fileProps.getFileLocation());
+        String logMsg = "<<Using a component that used only during testing phase : [SimpleFileUserDetailsLoader], "
+                + "please consider to provide your own implementation of UserDetailsLoader>>";
+        log.warn(configParsingTips(AnsiUtils.TipsType.WARN, logMsg), fileProps.getFileLocation());
+
+        logMsg = ">>| Loading UserDetails [SimpleFileUserStore] from : '{}'";
+        log.info(configParsingTips(AnsiUtils.TipsType.WARN, logMsg), fileProps.getFileLocation());
         return new SimpleFileUserDetailsLoader(fileProps.getFileLocation());
     }
 }

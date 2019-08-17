@@ -71,7 +71,8 @@ public class SimpleFileUserDetailsLoader implements UserDetailsLoader, Initializ
             }
 
             this.userMapping = Collections.unmodifiableMap(map);
-            log.info(configParsingTips(INFO, ">>| UserStore initialized from : '{}', effective number of users = {}"), fileLocation, map.size());
+            log.info(configParsingTips(INFO,
+                    ">>| UserStore initialized from : '{}', effective number of users = {}"), fileLocation, map.size());
         }
     }
 }

@@ -12,6 +12,13 @@ import java.util.Optional;
 @FunctionalInterface
 public interface TokenResolver {
 
+    /**
+     * Resolve token from HttpServletRequest
+     *
+     * @param request HttpServletRequest
+     * @return a token parsed from {@code request}
+     * @throws TokenValidateException TokenValidateException
+     */
     Optional<String> resolveToken(HttpServletRequest request) throws TokenValidateException;
 
 }

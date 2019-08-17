@@ -59,7 +59,9 @@ public class SsoController {
     private LocaleMessage localeMessage;
 
     @GetMapping("/login")
-    public ModelAndView login(@RequestParam(required = false, defaultValue = DEFAULT_CALLBACK_URI, name = CALLBACK_ADDRESS_NAME) String callbackUrl) {
+    public ModelAndView login(
+            @RequestParam(required = false, defaultValue = DEFAULT_CALLBACK_URI, name = CALLBACK_ADDRESS_NAME) String callbackUrl) {
+
         log.info("to login page, redirect_url : {}", callbackUrl);
         ModelAndView mv = new ModelAndView("login");
         mv.addObject(PARAM_KEY_REDIRECT_URL_NAME, CALLBACK_ADDRESS_NAME);
@@ -139,10 +141,12 @@ public class SsoController {
 
     private void paramCheck(UsernamePasswordToken usernamePasswordToken) {
         final String username = usernamePasswordToken.getUsername();
-        if (StringUtils.isEmpty(username))
+        if (StringUtils.isEmpty(username)) {
             throw new UserAuthException("username is null or empty", username);
-        if (StringUtils.isEmpty(usernamePasswordToken.getPassword()))
+        }
+        if (StringUtils.isEmpty(usernamePasswordToken.getPassword())) {
             throw new UserAuthException("password is null or empty", username);
+        }
     }
 
     private void doAfterLogin(HttpServletRequest request, HttpServletResponse response, YassosSession yassosSession) {
@@ -174,8 +178,12 @@ public class SsoController {
         return cookie;
     }
 
-    private YassosSession buildSession(HttpServletRequest request, HttpServletResponse response, UsernamePasswordToken usernamePasswordToken, UserDetails userDetails) {
-        final Optional<YassosSession> existingSession = this.sessionManager.getSessionByUsername(usernamePasswordToken.getUsername(), true);
+    private YassosSession buildSession(
+            HttpServletRequest request, HttpServletResponse response,
+            UsernamePasswordToken usernamePasswordToken, UserDetails userDetails) {
+
+        final Optional<YassosSession> existingSession
+                = this.sessionManager.getSessionByUsername(usernamePasswordToken.getUsername(), true);
         if (existingSession.isPresent()) {
             log.debug("return a existing session");
             return existingSession.get();

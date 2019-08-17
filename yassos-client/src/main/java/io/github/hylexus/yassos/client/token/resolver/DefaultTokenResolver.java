@@ -10,6 +10,9 @@ import java.util.Optional;
 
 import static io.github.hylexus.yassos.core.config.ConfigurationKeys.CONFIG_TOKEN;
 
+/**
+ * @author hylexus
+ */
 @Slf4j
 public class DefaultTokenResolver implements TokenResolver {
 

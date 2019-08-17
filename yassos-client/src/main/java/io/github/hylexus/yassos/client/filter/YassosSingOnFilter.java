@@ -98,14 +98,21 @@ public class YassosSingOnFilter implements Filter {
             log.info("\t{}", pattern);
         }
         // sso-server-url-prefix
-        initStringFromFilterConfig(filterConfig, () -> this.ssoServerUrlPrefix == null, this::setSsoServerUrlPrefix, CONFIG_SOO_SERVER_URL_PREFIX, true);
+        initStringFromFilterConfig(filterConfig, () -> this.ssoServerUrlPrefix == null,
+                this::setSsoServerUrlPrefix, CONFIG_SOO_SERVER_URL_PREFIX, true);
+
         // sso-server login url
-        initStringFromFilterConfig(filterConfig, () -> this.ssoServerLoginUrl == null, this::setSsoServerLoginUrl, CONFIG_SSO_SERVER_LOGIN_URL, true);
+        initStringFromFilterConfig(filterConfig, () -> this.ssoServerLoginUrl == null,
+                this::setSsoServerLoginUrl, CONFIG_SSO_SERVER_LOGIN_URL, true);
+
         // client logout url
-        initStringFromFilterConfig(filterConfig, () -> this.clientSideLogoutUri == null, this::setClientSideLogoutUri, CONFIG_CLIENT_LOGOUT_URI, true);
+        initStringFromFilterConfig(filterConfig, () -> this.clientSideLogoutUri == null,
+                this::setClientSideLogoutUri, CONFIG_CLIENT_LOGOUT_URI, true);
 
         // throw-exception-if-validate-exception
-        initBooleanFromFilterConfig(filterConfig, () -> this.throwExceptionIfTokenValidateException == null, this::setThrowExceptionIfTokenValidateException, CONFIG_THROW_EXCEPTION_IF_VALIDATE_EXCEPTION);
+        initBooleanFromFilterConfig(filterConfig, () -> this.throwExceptionIfTokenValidateException == null,
+                this::setThrowExceptionIfTokenValidateException, CONFIG_THROW_EXCEPTION_IF_VALIDATE_EXCEPTION);
+
         // encode url
         initBooleanFromFilterConfig(filterConfig, () -> this.encodeUrl == null, this::setEncodeUrl, CONFIG_ENCODE_URL);
 
@@ -113,7 +120,8 @@ public class YassosSingOnFilter implements Filter {
         initBooleanFromFilterConfig(filterConfig, () -> this.useSession == null, this::setUseSession, CONFIG_USE_SESSION);
         initStringFromFilterConfig(filterConfig, () -> this.sessionKey == null, this::setSessionKey, CONFIG_SESSION_KEY, true);
         if (this.useSession && this.sessionKey == null) {
-            throw new IllegalArgumentException(CONFIG_USE_SESSION.getName() + " was set to TRUE, but no " + CONFIG_SESSION_KEY.getName() + " specified");
+            throw new IllegalArgumentException(CONFIG_USE_SESSION.getName() + " was set to TRUE, but no "
+                    + CONFIG_SESSION_KEY.getName() + " specified");
         }
 
     }
@@ -134,8 +142,8 @@ public class YassosSingOnFilter implements Filter {
         final HttpServletResponse resp = (HttpServletResponse) response;
 
         try {
-            final String requestURI = req.getRequestURI();
-            log.debug(">>> requestURI = {}", requestURI);
+            final String requesturi = req.getRequestURI();
+            log.debug(">>> requesturi = {}", requesturi);
 
             // 1. logout url ?
             if (this.isLogoutUrl(req)) {
@@ -162,7 +170,7 @@ public class YassosSingOnFilter implements Filter {
             }
 
             // 2. ignored ?
-            if (this.shouldBeIgnored(requestURI)) {
+            if (this.shouldBeIgnored(requesturi)) {
                 chain.doFilter(request, response);
                 return;
             }
@@ -220,7 +228,8 @@ public class YassosSingOnFilter implements Filter {
     protected String generateRedirectToLoginUrl(HttpServletRequest request) {
         // eg. http://localhost:8080/yassos/login?cb=${originalUrl}
         if (this.encodeUrl) {
-            return String.format("%s?%s=%s", ssoServerLoginUrl, ConfigurationKeys.CALLBACK_ADDRESS_NAME, this.encodeUrl(request.getRequestURL().toString()));
+            return String.format("%s?%s=%s", ssoServerLoginUrl, ConfigurationKeys.CALLBACK_ADDRESS_NAME,
+                    this.encodeUrl(request.getRequestURL().toString()));
         }
         return String.format("%s?%s=%s", ssoServerLoginUrl, ConfigurationKeys.CALLBACK_ADDRESS_NAME, request.getRequestURL().toString());
     }
@@ -229,9 +238,9 @@ public class YassosSingOnFilter implements Filter {
         final String signOutUri = ConfigurationKeys.CONFIG_TOKEN_DESTROY_URI.getDefaultValue();
         // eg. http://localhost:8080/sign-out?token=${token}
         return String.format("%s?token=%s",
-                this.ssoServerUrlPrefix.endsWith("/") ?
-                        this.ssoServerUrlPrefix + signOutUri :
-                        this.ssoServerUrlPrefix + "/" + signOutUri,
+                this.ssoServerUrlPrefix.endsWith("/")
+                        ? this.ssoServerUrlPrefix + signOutUri
+                        : this.ssoServerUrlPrefix + "/" + signOutUri,
                 token
         );
     }
@@ -240,9 +249,9 @@ public class YassosSingOnFilter implements Filter {
         final String validateUriName = ConfigurationKeys.CONFIG_TOKEN_VALIDATION_URI.getDefaultValue();
         // eg. http://localhost:8080/validate?token=${token}
         return String.format("%s?token=%s",
-                this.ssoServerUrlPrefix.endsWith("/") ?
-                        this.ssoServerUrlPrefix + validateUriName :
-                        this.ssoServerUrlPrefix + "/" + validateUriName,
+                this.ssoServerUrlPrefix.endsWith("/")
+                        ? this.ssoServerUrlPrefix + validateUriName
+                        : this.ssoServerUrlPrefix + "/" + validateUriName,
                 token
         );
     }

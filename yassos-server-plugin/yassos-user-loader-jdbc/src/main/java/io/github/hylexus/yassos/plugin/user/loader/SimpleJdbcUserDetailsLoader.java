@@ -29,7 +29,11 @@ public class SimpleJdbcUserDetailsLoader implements UserDetailsLoader {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadByUsername(String username) {
-        final List<DefaultUserDetails> list = jdbcTemplate.query(sqlToLoadUserDetails, new Object[]{username}, new BeanPropertyRowMapper<>(DefaultUserDetails.class));
+        final List<DefaultUserDetails> list = jdbcTemplate.query(
+                sqlToLoadUserDetails,
+                new Object[]{username},
+                new BeanPropertyRowMapper<>(DefaultUserDetails.class)
+        );
         if (CollectionUtils.isEmpty(list)) {
             log.debug("can not load user named : {}", username);
             return null;

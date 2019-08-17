@@ -24,7 +24,9 @@ public class AccountNotFoundException extends UserAuthException {
         super(cause, username);
     }
 
-    public AccountNotFoundException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, String username) {
+    public AccountNotFoundException(
+            String message, Throwable cause, boolean enableSuppression,
+            boolean writableStackTrace, String username) {
         super(message, cause, enableSuppression, writableStackTrace, username);
     }
 

@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package io.github.hylexus.yassos.core.config;
 
 
@@ -70,9 +71,12 @@ public final class ConfigurationKey<E> {
         void validate(String name, E value);
 
         ConfigurationKeyValidator<String> NOT_EMPTY = (name, value) -> {
-            if (value == null) throw new NullPointerException();
-            if (StringUtils.isEmpty(value))
+            if (value == null) {
+                throw new NullPointerException();
+            }
+            if (StringUtils.isEmpty(value)) {
                 throw new IllegalArgumentException(name + " must be not null");
+            }
         };
     }
 }

@@ -9,6 +9,8 @@ import io.github.hylexus.yassos.core.session.YassosSession;
  */
 public interface SessionInfoAccessor {
     /**
+     * Fetch session info from yassos-server
+     *
      * @param token ticket
      * @param url   the target url to <b>fetch</b> information about this {@code token} (ticket) .
      * @return current session information
@@ -17,6 +19,8 @@ public interface SessionInfoAccessor {
     YassosSession fetchSessionInfo(String token, String url) throws TokenValidateException;
 
     /**
+     * DESTROY a token (logout)
+     *
      * @param token ticket
      * @param url   the target url to <b>destroy</b> this {@code token} (ticket)
      * @return true if the token was destroyed successfully

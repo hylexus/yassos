@@ -58,7 +58,7 @@ See the wiki (Writing…)  for full documentation, examples, custom-configuratio
 git clone https://github.com/hylexus/yassos.git
 
 cd yassos
-./gradlew clean build
+./gradlew clean build install
 ```
 
 - Start the YaSSOS server-side

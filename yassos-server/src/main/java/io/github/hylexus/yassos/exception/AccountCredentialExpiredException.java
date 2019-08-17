@@ -24,7 +24,8 @@ public class AccountCredentialExpiredException extends UserAuthException {
         super(cause, username);
     }
 
-    public AccountCredentialExpiredException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, String username) {
+    public AccountCredentialExpiredException(
+            String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, String username) {
         super(message, cause, enableSuppression, writableStackTrace, username);
     }
 

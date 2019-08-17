@@ -23,9 +23,12 @@ import static io.github.hylexus.yassos.core.config.ConfigurationKeys.URI_PATTERN
 public class ServletUtils {
 
 
-    public static void initStringFromFilterConfig(FilterConfig filterConfig, BooleanSupplier supplier, Consumer<String> consumer, ConfigurationKey<String> configurationKey, boolean forceValidate) {
-        if (!supplier.getAsBoolean())
+    public static void initStringFromFilterConfig(
+            FilterConfig filterConfig, BooleanSupplier supplier,
+            Consumer<String> consumer, ConfigurationKey<String> configurationKey, boolean forceValidate) {
+        if (!supplier.getAsBoolean()) {
             return;
+        }
         final String name = configurationKey.getName();
         final String defaultValue = configurationKey.getDefaultValue();
         final String initParameter = filterConfig.getInitParameter(name);
@@ -40,9 +43,11 @@ public class ServletUtils {
 
     }
 
-    public static void initBooleanFromFilterConfig(FilterConfig filterConfig, BooleanSupplier supplier, Consumer<Boolean> consumer, ConfigurationKey<Boolean> configKey) {
-        if (!supplier.getAsBoolean())
+    public static void initBooleanFromFilterConfig(
+            FilterConfig filterConfig, BooleanSupplier supplier, Consumer<Boolean> consumer, ConfigurationKey<Boolean> configKey) {
+        if (!supplier.getAsBoolean()) {
             return;
+        }
 
         final String name = configKey.getName();
         final Boolean defaultValue = configKey.getDefaultValue();
