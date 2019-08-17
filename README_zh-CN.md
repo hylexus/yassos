@@ -1,5 +1,7 @@
-# YaSSOS
-
+<p align="center">
+  <img src="docs/images/logo.svg">
+</p>
+<p align="center" style="font-size: 2.5rem;color:#333">YaSSOS</p>
 YaSSOS：轻量级的、精简的基于spring-boot的单点登录系统。
 
 完整的文档（文档正在编写……）、示例、定制化配置等，请看wiki。

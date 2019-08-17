@@ -10,7 +10,7 @@ goto okJava
 :noJavaHome
 echo The JAVA_HOME environment variable is not defined correctly.
 echo Please configure the JAVA_HOME environment variable, you won't lose anything
-goto end
+goto exit0
 
 :okJava
 cd ..
@@ -33,57 +33,77 @@ if ""%1"" == ""stop"" goto doStop
 if ""%1"" == ""start"" goto doStart
 if ""%1"" == ""restart"" goto doRestart
 echo Usage: yassos-server.bat {start^|stop^|force-stop^|restart^|status}
-goto end
+goto exit0
+
+:reloadPid
+for /f "usebackq tokens=1" %%i in (`jps -l ^| find "yassos-server.jar"`) do set APP_PID=%%i
+goto exit0
 
 :isRunning
 
 rem ANSI Colors
 :echoRed
 echo [31m%~1[0m
-EXIT /B 0
+goto exit0
 :echoGreen
 echo [32m%~1[0m
-EXIT /B 0
+goto exit0
 :echoYellow
 echo [33m%~1[0m
-EXIT /B 0
+goto exit0
 
 :doStatus
 call :reloadPid
-if %PID% == ""(
+if "%APP_PID%" == "" (
 call :echoRed "Not running"
-EXIT /B 3
-go end
+goto exit2
+) else (
+call :echoGreen "Running %APP_PID%"
+goto exit0
 )
 
 :doForceStop
 call :reloadPid
-if %PID% == ""(
-call :echoYellow "Not running (pid not found)"
-go end
+if "%APP_PID%" == "" (
+call :echoRed "Not running"
+goto exit0
 )
-taskkill /F /pid %PID%
-goto end
+taskkill /F /pid %APP_PID%
+goto exit0
 
 :doStop
 call :reloadPid
-taskkill /F /pid %PID%
-goto end
+if "%APP_PID%" == "" (
+call :echoRed "Not running"
+goto exit2
+)
+taskkill /F /pid %APP_PID%
+goto exit0
 
 :doStart
 call :reloadPid
-call :echoRed "s   tart"
+if not "%APP_PID%" == "" (
+call :echoYellow "Already running [%APP_PID%]"
+goto exit0
+)
+if not exist %ABS_JAR_PATH% (
+call :echoRed "The Jar file path is invalid : %ABS_JAR_PATH%"
+goto exit0
+)
+call :echoGreen "Start..."
 call "%JAVA_HOME%\bin\java.exe" %APP_JAVA_OPT%
-goto end
+goto exit0
 
 :doRestart
 call :reloadPid
-goto end
+call :doStop
+call :echoGreen "Start..."
+call "%JAVA_HOME%\bin\java.exe" %APP_JAVA_OPT%
+goto exit0
 
-:reloadPid
-for /f "usebackq tokens=1" %%i in (`jps -l ^| find "yassos-server.jar"`) do set PID=%%i
+:exit0
 EXIT /B 0
-
-goto end
-:end
-EXIT /B 0
+:exit1
+EXIT /B 1
+:exit2
+EXIT /B 2
