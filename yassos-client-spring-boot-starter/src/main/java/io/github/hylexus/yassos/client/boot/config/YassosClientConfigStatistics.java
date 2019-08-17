@@ -62,9 +62,9 @@ public class YassosClientConfigStatistics implements CommandLineRunner, Applicat
                 .append(endOfLine)
                 .append("the following configurable components are activated :")
                 .append(endOfLine)
-                .append(AnsiOutput.toString(BUILTIN_COMPONENT_COLOR, "[Builtin-Component]"))
-                .append(AnsiOutput.toString(CUSTOM_COMPONENT_COLOR, " [Custom-Component] "))
-                .append(AnsiOutput.toString(DEPRECATED_COMPONENT_COLOR, "[Deprecated-Component]"))
+                .append(AnsiOutput.toString(BUILTIN_COMPONENT_COLOR, "[(B)uiltin-Component]"))
+                .append(AnsiOutput.toString(CUSTOM_COMPONENT_COLOR, " [(C)ustom-Component] "))
+                .append(AnsiOutput.toString(DEPRECATED_COMPONENT_COLOR, "[(D)eprecated-Component]"))
                 .append(endOfLine);
 
         sb.append(line(1, TokenResolver.class))
@@ -85,8 +85,22 @@ public class YassosClientConfigStatistics implements CommandLineRunner, Applicat
         final Object bean = context.getBean(superClass);
         final AnsiColor color = detectClassType(superClass, bean.getClass());
         final String number = AnsiOutput.toString(AnsiColor.BRIGHT_BLACK, no);
-        final String beanName = AnsiOutput.toString(color, superClass.getSimpleName(), AnsiColor.DEFAULT);
-        return String.format("%1$2s. %2$-41s : %3$10s", number, beanName, bean.getClass().getName());
+        final String beanName = AnsiOutput.toString(color, getShortName(color), superClass.getSimpleName(), AnsiColor.DEFAULT);
+        return String.format("%1$2s. %2$-45s : %3$10s", number, beanName, bean.getClass().getName());
+    }
+
+    private String getShortName(AnsiColor color) {
+        if (color == BUILTIN_COMPONENT_COLOR) {
+            return "(B) ";
+        }
+        if (color == CUSTOM_COMPONENT_COLOR) {
+            return "(C) ";
+        }
+        if (color == DEPRECATED_COMPONENT_COLOR) {
+            return "(D) ";
+        }
+
+        return "";
     }
 
     @Override

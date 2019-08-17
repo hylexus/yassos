@@ -1,5 +1,8 @@
 # YaSSOS
 
+[![license](https://img.shields.io/badge/LICENSE-Apache%202-7AD6FD.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)  [![maven
+](https://img.shields.io/badge/maven%20central-3.4.6-brightgreen.svg)](https://search.maven.org/search?q=g:io.github.hylexus.yassos)
+
 **Y**et **a**nother **S**ingle **S**ign-**O**n **S**ystem.
 
 A lightweight, simple single sign-on system based on spring-boot.
