@@ -41,3 +41,9 @@ compileJava {
     targetCompatibility = "${defaultJavaVersion}"
     options.encoding = "${defaultCharset}"
 }
+
+apply plugin: "checkstyle"
+checkstyle {
+    toolVersion = "8.23"
+    configDir = project(":yassos-distribution").file("checkstyle")
+}

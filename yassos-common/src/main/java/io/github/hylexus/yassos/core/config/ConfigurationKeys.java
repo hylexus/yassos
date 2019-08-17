@@ -19,10 +19,16 @@ public interface ConfigurationKeys {
     ConfigurationKey<String> CONFIG_CLIENT_LOGOUT_URI = new ConfigurationKey<>("clientSideLogoutUri", "/logout", NOT_EMPTY);
     ConfigurationKey<Boolean> CONFIG_USE_SESSION = new ConfigurationKey<>("useSession", true, null);
     ConfigurationKey<String> CONFIG_SESSION_KEY = new ConfigurationKey<>("sessionKey", "x-current-session", NOT_EMPTY);
-    ConfigurationKey<String> CONFIG_TOKEN_VALIDATION_URI = new ConfigurationKey<>("tokenValidationUri", SSO_SERVER_TOKEN_VALIDATE_URI, NOT_EMPTY);
+    ConfigurationKey<String> CONFIG_TOKEN_VALIDATION_URI = new ConfigurationKey<>("tokenValidationUri",
+            SSO_SERVER_TOKEN_VALIDATE_URI, NOT_EMPTY);
+
     ConfigurationKey<String> CONFIG_TOKEN_DESTROY_URI = new ConfigurationKey<>("tokenDestroyUri", SSO_SERVER_TOKEN_DESTROY_URI, NOT_EMPTY);
     ConfigurationKey<String> CONFIG_TOKEN = new ConfigurationKey<>("tokenName", "x-yassos-token", null);
     ConfigurationKey<Boolean> CONFIG_ENCODE_URL = new ConfigurationKey<>("encodeUrl", false, null);
-    ConfigurationKey<Boolean> CONFIG_THROW_EXCEPTION_IF_VALIDATE_EXCEPTION = new ConfigurationKey<>("throwExceptionIfTokenValidateException", false, null);
+    ConfigurationKey<Boolean> CONFIG_THROW_EXCEPTION_IF_VALIDATE_EXCEPTION = new ConfigurationKey<>(
+            "throwExceptionIfTokenValidateException",
+            false, null
+    );
+
     ConfigurationKey<String> CONFIG_IGNORE_URI_PATTERNS = new ConfigurationKey<>("ignoreUriPatterns", null, null);
 }

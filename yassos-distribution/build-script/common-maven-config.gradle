@@ -5,7 +5,8 @@ jar {
     manifest.attributes["Implementation-Title"] = project.name
     manifest.attributes["Implementation-Version"] = project.version
     manifest.attributes["Automatic-Module-Name"] = project.name.replace('-', '.')
-    manifest.attributes["Created-By"] = "${System.getProperty("java.version")} (${System.getProperty("user.name")})"
+    manifest.attributes["JDK-Version"] = "${System.getProperty("java.version")}"
+    manifest.attributes["Created-By"] = "${System.getProperty("user.name")}"
 
     from(rootProject.projectDir) {
         include "LICENSE"
@@ -49,26 +50,26 @@ publishing {
 
                 licenses {
                     license {
-                        name = "Apache License, Version 2.0"
-                        url = "https://www.apache.org/licenses/LICENSE-2.0"
-                        distribution = "repo"
+                        name = "${projectLicenseName}"
+                        url = "${projectLicenseUrl}"
+                        distribution = "${projectLicenseDistribution}"
                     }
                 }
                 scm {
-                    url = "https://github.com/hylexus/yassos"
-                    connection = "scm:git:git@github.com:hylexus/yassos.git"
-                    developerConnection = "scm:git:git@github.com:hylexus/yassos.git"
+                    url = "${projectScmUrl}"
+                    connection = "${projectScmConnection}"
+                    developerConnection = "${projectScmDeveloperConnection}"
                 }
                 developers {
                     developer {
-                        id = "hylexus"
-                        name = "hylexus"
-                        email = "hylexus@163.com"
+                        id = "${projectDeveloperId}"
+                        name = "${projectDeveloperName}"
+                        email = "${projectDeveloperEmail}"
                     }
                 }
                 issueManagement {
-                    system = "GitHub"
-                    url = "https://github.com/hylexus/yassos/issues"
+                    system = "${projectIssueManagementSystem}"
+                    url = "${projectIssueManagementUrl}"
                 }
             }
 
@@ -84,6 +85,7 @@ publishing {
     }
     repositories {
         if (isSnapshot()) {
+            logger.quiet("publish to my aliyun repo [snapshot]")
             maven {
                 url rootProject.ext.mavenRepoConfig.snapshotMavenRepo.url
                 credentials {
@@ -92,11 +94,34 @@ publishing {
                 }
             }
         } else {
+            logger.quiet("publish to my aliyun repo ")
             maven {
                 url rootProject.ext.mavenRepoConfig.releaseMavenRepo.url
                 credentials {
                     username rootProject.ext.mavenRepoConfig.releaseMavenRepo.username
                     password rootProject.ext.mavenRepoConfig.releaseMavenRepo.password
+                }
+            }
+        }
+
+        if (publishToMavenCentralRepo()) {
+            if (isSnapshot()) {
+                logger.quiet("publish to maven central repo [snapshot]")
+                maven {
+                    url rootProject.ext.mavenRepoConfig.sonatypeSnapshotRepo.url
+                    credentials {
+                        username rootProject.ext.mavenRepoConfig.sonatypeSnapshotRepo.username
+                        password rootProject.ext.mavenRepoConfig.sonatypeSnapshotRepo.password
+                    }
+                }
+            } else {
+                logger.quiet("publish to maven central repo [release]")
+                maven {
+                    url rootProject.ext.mavenRepoConfig.sonatypeStagingRepo.url
+                    credentials {
+                        username rootProject.ext.mavenRepoConfig.sonatypeStagingRepo.username
+                        password rootProject.ext.mavenRepoConfig.sonatypeStagingRepo.password
+                    }
                 }
             }
         }
@@ -107,13 +132,16 @@ def isSnapshot() {
     rootProject.version.toString().toLowerCase().endsWith("snapshot")
 }
 
+def publishToMavenCentralRepo() {
+    System.getProperty("publish2MavenCentralRepo") ?: "false" == "true"
+}
+
 project(":yassos-distribution") {
     configurations.archives.artifacts.clear()
 }
 project(":yassos-server") {
     configurations.archives.artifacts.clear()
 }
-
 
 def customizePom(pom, gradleProject) {
     pom.whenConfigured { generatedPom ->
@@ -131,26 +159,26 @@ def customizePom(pom, gradleProject) {
             description = gradleProject.description
             licenses {
                 license {
-                    name = "Apache License, Version 2.0"
-                    url = "https://www.apache.org/licenses/LICENSE-2.0"
-                    distribution = "repo"
+                    name = "${projectLicenseName}"
+                    url = "${projectLicenseUrl}"
+                    distribution = "${projectLicenseDistribution}"
                 }
             }
             scm {
-                url = "https://github.com/hylexus/yassos"
-                connection = "scm:git:git@github.com:hylexus/yassos.git"
-                developerConnection = "scm:git:git@github.com:hylexus/yassos.git"
+                url = "${projectScmUrl}"
+                connection = "${projectScmConnection}"
+                developerConnection = "${projectScmDeveloperConnection}"
             }
             developers {
                 developer {
-                    id = "hylexus"
-                    name = "hylexus"
-                    email = "hylexus@163.com"
+                    id = "${projectDeveloperId}"
+                    name = "${projectDeveloperName}"
+                    email = "${projectDeveloperEmail}"
                 }
             }
             issueManagement {
-                system = "GitHub"
-                url = "https://github.com/hylexus/yassos/issues"
+                system = "${projectIssueManagementSystem}"
+                url = "${projectIssueManagementUrl}"
             }
         }
     }

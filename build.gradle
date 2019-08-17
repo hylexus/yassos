@@ -64,8 +64,9 @@ configure(subprojects.findAll {
 }
 
 // 2. maven config
+def modulesToPublishToMavenRepo = ["yassos-client", "yassos-common", "yassos-client-spring-boot-starter", "yassos-server-support"]
 configure(subprojects.findAll {
-    (it.name != "yassos-server-plugin") && (it.name != "yassos-server") && (it.name != "docs") && (it.name != "yassos-distribution")
+    modulesToPublishToMavenRepo.contains(it.name)
 }) { subProject ->
     apply from: "${project(":yassos-distribution").projectDir}/build-script/common-maven-config.gradle"
 }

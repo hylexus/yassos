@@ -20,7 +20,7 @@ import static io.github.hylexus.yassos.core.session.YassosSession.INVALID_SESSIO
 @Slf4j
 public class HttpSessionInfoAccessor implements SessionInfoAccessor {
 
-    final private OkHttpClient client = new OkHttpClient();
+    private final OkHttpClient client = new OkHttpClient();
 
     @Override
     public YassosSession fetchSessionInfo(String token, String url) {

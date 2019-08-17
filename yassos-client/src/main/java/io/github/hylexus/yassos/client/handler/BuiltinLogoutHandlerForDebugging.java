@@ -14,7 +14,6 @@ import java.io.IOException;
  * Created At 2019-07-13 17:26
  */
 @Slf4j
-@Deprecated
 public class BuiltinLogoutHandlerForDebugging implements LogoutHandler {
     @Override
     public void preLogout(HttpServletRequest req, HttpServletResponse resp, String token) throws IOException {
@@ -22,7 +21,8 @@ public class BuiltinLogoutHandlerForDebugging implements LogoutHandler {
     }
 
     @Override
-    public void postLogout(HttpServletRequest req, HttpServletResponse resp, String token, Boolean tokenDestroyedSuccessfully) throws IOException {
+    public void postLogout(HttpServletRequest req, HttpServletResponse resp, String token, Boolean tokenDestroyedSuccessfully)
+            throws IOException {
         log.debug("postLogout>> token:{}, tokenDestroyedSuccessfully:{}", token, tokenDestroyedSuccessfully);
         if (CommonUtils.isAjaxRequest(req)) {
             final Resp<Object> respMsg = Resp.success().setMsg("logout successfully");

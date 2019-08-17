@@ -83,7 +83,8 @@ public class YassosClientAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(LogoutHandler.class)
     public LogoutHandler logoutHandler() {
-        log.warn(line(DEPRECATED_COMPONENT_COLOR, "|:-- Using BuiltinLogoutHandlerForDebugging, please consider to provide your own implementation of LogoutHandler"));
+        log.warn(line(DEPRECATED_COMPONENT_COLOR,
+                "|:-- Using BuiltinLogoutHandlerForDebugging, please consider to provide your own implementation of LogoutHandler"));
         return new BuiltinLogoutHandlerForDebugging();
     }
 

@@ -42,11 +42,13 @@ public class CommonUtils {
     }
 
     public static String getSessionAttr(HttpSession session, String key, String defaultValue) {
-        if (session == null)
+        if (session == null) {
             return defaultValue;
+        }
         Object attribute = session.getAttribute(key);
-        if (attribute == null)
+        if (attribute == null) {
             return defaultValue;
+        }
         return (String) attribute;
     }
 }

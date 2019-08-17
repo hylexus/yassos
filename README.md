@@ -2,6 +2,8 @@
   <img src="docs/images/logo.svg">
 </p>
 <p align="center" style="font-size: 2.5rem;color:#333">YaSSOS</p>
+[![Build Status](https://travis-ci.com/hylexus/yassos.svg?branch=master)](https://travis-ci.com/hylexus/yassos)  [![license](https://img.shields.io/badge/LICENSE-Apache%202-7AD6FD.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)  [![maven](https://img.shields.io/badge/maven%20central-3.4.6-brightgreen.svg)](https://search.maven.org/search?q=g:io.github.hylexus.yassos)
+
 **Y**et **a**nother **S**ingle **S**ign-**O**n **S**ystem.
 
 A lightweight, simple single sign-on system based on spring-boot.
@@ -60,7 +62,7 @@ See the wiki (Writing…)  for full documentation, examples, custom-configuratio
 git clone https://github.com/hylexus/yassos.git
 
 cd yassos
-./gradlew clean build
+./gradlew clean build install
 ```
 
 - Start the YaSSOS server-side

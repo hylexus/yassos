@@ -24,7 +24,9 @@ public class BadCredentialsException extends UserAuthException {
         super(cause, username);
     }
 
-    public BadCredentialsException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, String username) {
+    public BadCredentialsException(
+            String message, Throwable cause, boolean enableSuppression,
+            boolean writableStackTrace, String username) {
         super(message, cause, enableSuppression, writableStackTrace, username);
     }
 

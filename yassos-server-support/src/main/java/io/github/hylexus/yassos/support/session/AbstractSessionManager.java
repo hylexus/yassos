@@ -13,12 +13,12 @@ public abstract class AbstractSessionManager implements SessionManager {
     protected YassosSessionAttrConverter sessionAttrConverter;
 
     protected String generateTokenKey(String token) {
-//        return globalProps.getSession().getRedis().getKeyPrefix() + token;
+        // return globalProps.getSession().getRedis().getKeyPrefix() + token;
         return token;
     }
 
     protected String generateUsernameKey(String username) {
-//        return globalProps.getSession().getRedis().getKeyPrefix() + username;
+        // return globalProps.getSession().getRedis().getKeyPrefix() + username;
         return username;
     }
 

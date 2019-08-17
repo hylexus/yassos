@@ -126,8 +126,9 @@ public class SimpleRedisSessionManager extends AbstractSessionManager {
     }
 
     private Long string2Date(String str) {
-        if (StringUtils.isEmpty(str))
+        if (StringUtils.isEmpty(str)) {
             return null;
+        }
         return Long.valueOf(str);
     }
 
